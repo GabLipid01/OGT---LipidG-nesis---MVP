@@ -68,15 +68,13 @@ def gerar_receita_lipidica(blend):
     df.index.name = 'Ácido Graxo'
     return df
 
-def gerar_receita_sensorial(linha, ocasião):
-    notas = {
-        "Ekos": {"Banho": "refrescante, leve", "Rosto": "suave, hidratante"},
-        "Chronos": {"Rosto": "anti-idade, sedosa", "Corpo": "nutritiva, rica"},
-        "Tododia": {"Banho": "aveludada, cremosa", "Corpo": "hidratante, reconfortante"},
-        "Mamãe e Bebê": {"Banho": "delicada, suave", "Corpo": "protetora, calmante"}
-    }
-    sensorial = notas.get(linha, {}).get(ocasião, "neutra")
-    return f"Perfil sensorial estimado: {sensorial}."
+if st.button("Gerar Receita Sensorial"):
+    sensorial = get_sensory_recipe(linha_produto, ocasiao_uso)
+    st.subheader("Receita Sensorial")
+    st.markdown(f"**Ingrediente-chave:** {sensorial['ingrediente']}")
+    st.markdown(f"**Notas olfativas:** {sensorial['notas']}")
+    st.markdown(f"**Emoções evocadas:** {sensorial['emoções']}")
+    st.markdown(f"*{sensorial['etiqueta']}*")
 
 def mostrar_comparativo(blend1, blend2, titulo):
     df = pd.DataFrame({'Blend Natura': blend1, 'LG Blend': blend2})
