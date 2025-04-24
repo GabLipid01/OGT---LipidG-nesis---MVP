@@ -1,4 +1,34 @@
 import streamlit as st
+def get_sensory_recipe(line, occasion):
+    aromatic_profiles = {
+        "Ekos": {
+            "Banho": {"ingrediente": "Breu-branco", "notas": "Balsâmico, incensado, fresco", "emoções": "Purificação, conexão espiritual", "etiqueta": "A floresta viva se dissolve no vapor. O breu sobe como reza ancestral, purificando alma e pele."},
+            "Rosto": {"ingrediente": "Priprioca", "notas": "Terroso, amadeirado, levemente doce", "emoções": "Enraizamento, mistério", "etiqueta": "A raiz terrosa e resinosa que ancora a pele na sabedoria da floresta. Um perfume de origem."},
+            "Corpo": {"ingrediente": "Castanha-do-Pará", "notas": "Cremoso, doce, oleoso", "emoções": "Nutrição, conforto", "etiqueta": "Textura cremosa, aroma nutritivo. A abundância da Amazônia se faz pele."},
+            "Cabelos": {"ingrediente": "Andiroba", "notas": "Herbal-amargo, medicinal", "emoções": "Força, proteção", "etiqueta": "Força medicinal que reveste cada fio. Amargor que cura, perfume que marca."}
+        },
+        "Chronos": {
+            "Banho": {"ingrediente": "Chá-verde amazônico", "notas": "Verde, leve, fresco", "emoções": "Clareza, renovação", "etiqueta": "Frescor técnico e elegante. Um banho de clareza e renovação celular."},
+            "Rosto": {"ingrediente": "Copaíba", "notas": "Amadeirado suave, doce-resinoso", "emoções": "Serenidade, equilíbrio", "etiqueta": "Amadeirado sutil, envolto em calma. A pele encontra seu equilíbrio atemporal."},
+            "Corpo": {"ingrediente": "Pequi", "notas": "Verde, frutado-oleoso", "emoções": "Originalidade, sofisticação", "etiqueta": "Exótico e refinado. O verde untuoso do cerrado encontra a pele urbana."},
+            "Cabelos": {"ingrediente": "Tucumã", "notas": "Vegetal denso, oleoso, levemente doce", "emoções": "Reconstrução, vigor", "etiqueta": "Textura rica e vegetal, com o perfume da reconstrução invisível."}
+        },
+        "Tododia": {
+            "Banho": {"ingrediente": "Pitanga", "notas": "Frutado verde, cítrico", "emoções": "Alegria, vivacidade", "etiqueta": "Explosão frutada e cítrica que convida ao sorriso. Energia fresca para o dia."},
+            "Rosto": {"ingrediente": "Maracujá", "notas": "Frutado fresco, ácido suave", "emoções": "Tranquilidade, equilíbrio", "etiqueta": "Ácido-suave que relaxa e equilibra. Um cuidado leve como um fim de tarde calmo."},
+            "Corpo": {"ingrediente": "Cupuaçu", "notas": "Doce, manteigado, tropical", "emoções": "Aconchego, prazer", "etiqueta": "Doçura tropical com toque amanteigado. A pele sorri com cada aplicação."},
+            "Cabelos": {"ingrediente": "Murumuru", "notas": "Vegetal cremoso, denso", "emoções": "Proteção, maciez", "etiqueta": "Densidade vegetal que amacia e modela. Um bálsamo diário de nutrição sensorial."}
+        },
+        "Mamãe e Bebê": {
+            "Banho": {"ingrediente": "Lavanda brasileira", "notas": "Floral suave, fresca, aromática", "emoções": "Calmaria, proteção", "etiqueta": "Calma floral que embala. Uma nuvem perfumada de proteção e amor."},
+            "Rosto": {"ingrediente": "Camomila", "notas": "Herbal adocicado, suave", "emoções": "Serenidade, aconchego", "etiqueta": "Erva doce que silencia a pele. Um carinho invisível no toque mais delicado."},
+            "Corpo": {"ingrediente": "Castanha de caju", "notas": "Doce-leitosa, cremosa", "emoções": "Acolhimento, suavidade", "etiqueta": "Doce-leitosa e familiar. A pele se reconhece nesse cuidado natural."},
+            "Cabelos": {"ingrediente": "Água de coco", "notas": "Aquático, leve, refrescante", "emoções": "Frescor, leveza", "etiqueta": "Refresco leve e transparente. Umidade que limpa, aroma que acalma."}
+        }
+    }
+    return aromatic_profiles.get(line, {}).get(occasion, {
+        "ingrediente": "N/A", "notas": "N/A", "emoções": "N/A", "etiqueta": "Combinação não disponível no banco atual."
+    })
 
 # === Perfis de Ácidos Graxos Reais (baseados em laudos Eurofins) ===
 
