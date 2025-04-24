@@ -126,8 +126,7 @@ with col1:
         st.dataframe(df_lipidica)
 with col2:
     if st.button("👃 Gerar Receita Sensorial"):
-        sensorial_txt = gerar_receita_sensorial(linha, ocasião)
-        st.success(sensorial_txt)
+        sensorial = get_sensory_recipe(linha_produto, ocasião_uso)
 
 # COMPARATIVO
 mostrar_comparativo(blend_natura, blend_lg, "Comparativo de Ácidos Graxos")
