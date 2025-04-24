@@ -68,7 +68,7 @@ def gerar_receita_lipidica(blend):
     df.index.name = 'Ácido Graxo'
     return df
 
-def if st.button("Gerar Receita Sensorial"):
+if st.button("Gerar Receita Sensorial"):
     sensorial = get_sensory_recipe(linha_produto, ocasiao_uso)
     st.subheader("Receita Sensorial")
     st.markdown(f"**Ingrediente-chave:** {sensorial['ingrediente']}")
