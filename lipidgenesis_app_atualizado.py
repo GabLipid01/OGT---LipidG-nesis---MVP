@@ -48,7 +48,7 @@ from fpdf import FPDF
 
 # CONFIGURAÇÃO
 st.set_page_config(page_title="LipidGenesis - Plataforma", layout="wide")
-st.title("🌿 LipidGenesis - The Future of Disruption, On Demand")
+st.title("🌿 LipidGenesis - Bioengineering of Oils for Nextgen")
 st.markdown("#### Comparativo entre Blend Natura 82/18 e LG Blend 82/18")
 
 # SIDEBAR
