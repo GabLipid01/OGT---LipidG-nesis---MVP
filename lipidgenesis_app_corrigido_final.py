@@ -29,6 +29,8 @@ def get_sensory_recipe(line, occasion):
     return aromatic_profiles.get(line, {}).get(occasion, {
         "ingrediente": "N/A", "notas": "N/A", "emoções": "N/A", "etiqueta": "Combinação não disponível no banco atual."
     })
+    linha_produto = st.selectbox("Linha de Produto", ["Ekos", "Chronos", "Tododia", "Mamãe e Bebê"])
+ocasiao_uso = st.selectbox("Ocasião de Uso", ["Banho", "Rosto", "Corpo", "Cabelos"])
 
 # === Perfis de Ácidos Graxos Reais (baseados em laudos Eurofins) ===
 
