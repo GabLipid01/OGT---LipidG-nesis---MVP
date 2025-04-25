@@ -1,4 +1,3 @@
-
 import streamlit as st
 import pandas as pd
 import matplotlib.pyplot as plt
@@ -7,8 +6,7 @@ import base64
 from io import BytesIO
 
 # Título e slogan
-st.markdown("## LipidGenesis
-### Bioengineering Of Oils For Nextgen")
+st.markdown("## LipidGenesis\n### Bioengineering Of Oils For Nextgen")
 
 # Seleção de óleos-base
 oleos_base = ['RPKO', 'RBDT']
@@ -33,7 +31,6 @@ perfis_acidos_graxos = {
 
 # Função para calcular o blend
 @st.cache_data
-
 def calcular_blend(oleo1, oleo2, proporcoes):
     perfil1 = perfis_acidos_graxos[oleo1]
     perfil2 = perfis_acidos_graxos[oleo2]
