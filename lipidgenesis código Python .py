@@ -159,5 +159,8 @@ def get_sensory_recipe(line, occasion):
             "Cabelos": {"ingrediente": "Murumuru", "notas": "Vegetal cremoso, denso", "emoções": "Proteção, maciez", "etiqueta": "Densidade vegetal que amacia e modela. Um bálsamo diário de nutrição sensorial."}
         },
         "Mamãe e Bebê": {
-            "Banho": {"ingrediente": "Lavanda brasileira", "notas": "Floral suave, fresca, aromática", "emoções": "Calmaria, proteção", "etiqueta": "Calma floral que embala. Uma nuvem perfumada de proteção e amor."},
-            "Rosto": {"ingrediente": "Alquimia do maracujá", "notas": "Hidratação, leveza", "emoções": "Suavidade, conforto."}
+    "Banho": {"ingrediente": "Lavanda brasileira", "notas": "Floral suave, fresca, aromática", "emoções": "Calmaria, proteção", "etiqueta": "Calma floral que embala. Uma nuvem perfumada de proteção e amor."},
+    "Rosto": {"ingrediente": "Camomila", "notas": "Herbal adocicado, suave", "emoções": "Serenidade, aconchego", "etiqueta": "Erva doce que silencia a pele. Um carinho invisível no toque mais delicado."},
+    "Corpo": {"ingrediente": "Castanha de caju", "notas": "Doce-leitosa, cremosa", "emoções": "Acolhimento, suavidade", "etiqueta": "Doce-leitosa e familiar. A pele se reconhece nesse cuidado natural."},
+    "Cabelos": {"ingrediente": "Água de coco", "notas": "Aquático, leve, refrescante", "emoções": "Frescor, leveza", "etiqueta": "Refresco leve e transparente. Umidade que limpa, aroma que acalma."}
+}
