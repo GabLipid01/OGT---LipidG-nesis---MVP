@@ -182,3 +182,6 @@ if st.button("📄 Exportar Relatório PDF"):
     sensorial_txt = f"Ingrediente-chave: {sensorial_data['ingrediente']}\nNotas olfativas: {sensorial_data['notas']}\nEmoções evocadas: {sensorial_data['emoções']}\nEtiqueta sensorial: {sensorial_data['etiqueta']}"
     caminho_pdf = gerar_pdf(df_lipidica, sensorial_txt)
     st.markdown(f"**[Baixar Relatório PDF]**({caminho_pdf})")
+
+# Mostrar o painel ESG
+painel_esg()
