@@ -1,4 +1,3 @@
-
 import streamlit as st
 import pandas as pd
 import numpy as np
@@ -15,22 +14,27 @@ def gerar_relatorio_pdf(ingredientes, notas, emoções, etiquetas, blend_compara
     pdf.ln(10)
     pdf.cell(200, 10, txt="Composição do Blend Natura x LipidGenesis", ln=True)
     pdf.ln(5)
+
+    # Corrigindo indentação e f-strings
     pdf.multi_cell(0, 10, (
-    f"Blend Natura: {blend_comparacao['Natura']}\n"
-    f"Blend LG: {blend_comparacao['LG']}\n"
-    f"Comparação: {blend_comparacao['Comparativo']}"
-))
-pdf.multi_cell(0, 10, (
-    f"Blend Natura: {blend_comparacao['Natura']}\n"
-    f"Blend LipidGenesis: {blend_comparacao['LipidGenesis']}\n"
-    f"Comparativo: {blend_comparacao['Comparativo']}"
-))
-pdf.ln(10)
+        f"Blend Natura: {blend_comparacao['Natura']}\n"
+        f"Blend LG: {blend_comparacao['LG']}\n"
+        f"Comparação: {blend_comparacao['Comparativo']}"
+    ))
+
+    pdf.multi_cell(0, 10, (
+        f"Blend Natura: {blend_comparacao['Natura']}\n"
+        f"Blend LipidGenesis: {blend_comparacao['LipidGenesis']}\n"
+        f"Comparativo: {blend_comparacao['Comparativo']}"
+    ))
+
+    pdf.ln(10)
     pdf.cell(200, 10, txt="Receita Lipídica:", ln=True)
     pdf.multi_cell(0, 10, receita_lipidica)
 
     pdf.ln(10)
     pdf.cell(200, 10, txt="Perfil Sensorial:", ln=True)
+    
     for i in range(len(ingredientes)):
         pdf.cell(200, 10, txt=f"{ingredientes[i]} - {notas[i]} - {emoções[i]} - {etiquetas[i]}", ln=True)
 
@@ -39,8 +43,7 @@ pdf.ln(10)
 # Função para gerar a receita lipídica
 def gerar_receita_lipidica(rpkp_composicao, rbdt_composicao):
     # Gerar receita lipídica com base nas composições
-    receita = f"Composição RPKO: {rpkp_composicao}%
-Composição RBDT: {rbdt_composicao}%"
+    receita = f"Composição RPKO: {rpkp_composicao}%\nComposição RBDT: {rbdt_composicao}%"
     return receita
 
 # Função para gerar a receita sensorial
