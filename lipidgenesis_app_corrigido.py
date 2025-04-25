@@ -151,6 +151,7 @@ def mostrar_impacto_ambiental():
     st.metric("🌍 Emissão CO₂ eq/kg", f"{lg:.2f}", delta=f"{(natura-lg)/natura*100:.1f}%", delta_color="inverse")
 
 mostrar_impacto_ambiental()
+
 # Função para mostrar o painel ESG
 def painel_esg():
     st.subheader("🌱 Painel ESG - Sustentabilidade e Responsabilidade")
