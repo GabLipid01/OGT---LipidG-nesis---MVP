@@ -144,6 +144,12 @@ def mostrar_comparativo(blend_natura, blend_lg, titulo):
     st.dataframe(df_comparativo)
 
 mostrar_comparativo(blend_natura, blend_lg, "Comparativo de Ácidos Graxos")
+# Função para mostrar o impacto ambiental
+def mostrar_impacto_ambiental():
+    natura = 1.25  # kg CO₂ eq / kg de produto
+    lg = 0.98
+    st.metric("🌍 Emissão CO₂ eq/kg", f"{lg:.2f}", delta=f"{(natura-lg)/natura*100:.1f}%", delta_color="inverse")
+
 mostrar_impacto_ambiental()
 
 # EXPORTAR
