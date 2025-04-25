@@ -130,6 +130,19 @@ with col2:
         st.success(sensorial_txt)
 
 # COMPARATIVO
+# Função para mostrar o comparativo entre os blends Natura e LG
+def mostrar_comparativo(blend_natura, blend_lg, titulo):
+    # Criando DataFrame para os comparativos
+    df_comparativo = pd.DataFrame({
+        'Ácido Graxo': list(blend_natura.keys()),
+        'Blend Natura (%)': list(blend_natura.values()),
+        'Blend LG (%)': list(blend_lg.values())
+    })
+    
+    # Exibindo o comparativo
+    st.subheader(titulo)
+    st.dataframe(df_comparativo)
+
 mostrar_comparativo(blend_natura, blend_lg, "Comparativo de Ácidos Graxos")
 mostrar_impacto_ambiental()
 
