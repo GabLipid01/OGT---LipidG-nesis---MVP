@@ -160,4 +160,4 @@ def get_sensory_recipe(line, occasion):
         },
         "Mamãe e Bebê": {
             "Banho": {"ingrediente": "Lavanda brasileira", "notas": "Floral suave, fresca, aromática", "emoções": "Calmaria, proteção", "etiqueta": "Calma floral que embala. Uma nuvem perfumada de proteção e amor."},
-            "Rosto": {"ingredente": "Alquimia do maracujá", "notas": "Hidratação, leveza", "emoções": "Suavidade, conforto. }
+            "Rosto": {"ingrediente": "Alquimia do maracujá", "notas": "Hidratação, leveza", "emoções": "Suavidade, conforto."}
