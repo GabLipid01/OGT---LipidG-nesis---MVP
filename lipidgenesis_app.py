@@ -25,8 +25,7 @@ pdf.multi_cell(0, 10, (
     f"Blend LipidGenesis: {blend_comparacao['LipidGenesis']}\n"
     f"Comparativo: {blend_comparacao['Comparativo']}"
 ))
-
-    pdf.ln(10)
+pdf.ln(10)
     pdf.cell(200, 10, txt="Receita Lipídica:", ln=True)
     pdf.multi_cell(0, 10, receita_lipidica)
 
