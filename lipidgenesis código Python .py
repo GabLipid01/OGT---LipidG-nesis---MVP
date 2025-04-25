@@ -1,4 +1,3 @@
-
 import streamlit as st
 import pandas as pd
 import numpy as np
@@ -111,35 +110,8 @@ def gerar_pdf(df_lipidica, sensorial_txt):
     pdf.output(caminho)
     return caminho
 
-# INTERFACE PRINCIPAL
-st.markdown("#### Receita Lipídica e Sensorial Personalizadas")
-
-col1, col2 = st.columns(2)
-with col1:
-    if st.button("🧪 Gerar Receita Lipídica"):
-        df_lipidica = gerar_receita_lipidica(blend_lg)
-        st.dataframe(df_lipidica)
-with col2:
-    if st.button("👃 Gerar Receita Sensorial"):
-        sensorial_txt = gerar_receita_sensorial(linha, ocasião)
-        st.success(sensorial_txt)
-
-# COMPARATIVO
-mostrar_comparativo(blend_natura, blend_lg, "Comparativo de Ácidos Graxos")
-mostrar_impacto_ambiental()
-mostrar_módulo_esg()
-
-# EXPORTAR
-if st.button("📄 Exportar Relatório PDF"):
-    df_lipidica = gerar_receita_lipidica(blend_lg)
-    sensorial_txt = gerar_receita_sensorial(linha, ocasião)
-    caminho_pdf = gerar_pdf(df_lipidica, sensorial_txt)
-    with open(caminho_pdf, "rb") as f:
-        st.download_button("⬇️ Baixar Relatório", f, file_name="relatorio_lipidgenesis.pdf")
-
 # === Banco de assinaturas aromáticas ===
 def get_sensory_recipe(line, occasion):
-    def get_sensory_recipe(line, occasion):
     aromatic_profiles = {
         "Ekos": {
             "Banho": {"ingrediente": "Breu-branco", "notas": "Balsâmico, incensado, fresco", "emoções": "Purificação, conexão espiritual", "etiqueta": "A floresta viva se dissolve no vapor. O breu sobe como reza ancestral, purificando alma e pele."},
