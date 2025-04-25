@@ -132,53 +132,23 @@ with col2:
 # COMPARATIVO
 # Função para mostrar o comparativo entre os blends Natura e LG
 def mostrar_comparativo(blend_natura, blend_lg, titulo):
-    # Criando DataFrame para os comparativos
     df_comparativo = pd.DataFrame({
         'Ácido Graxo': list(blend_natura.keys()),
         'Blend Natura (%)': list(blend_natura.values()),
         'Blend LG (%)': list(blend_lg.values())
     })
-    
-    # Exibindo o comparativo
+
     st.subheader(titulo)
     st.dataframe(df_comparativo)
 
-mostrar_comparativo(blend_natura, blend_lg, "Comparativo de Ácidos Graxos")
-# Função para mostrar o comparativo entre o blend Natura e o blend LG
-def mostrar_comparativo():
-    st.subheader("🔬 Comparativo com o Blend Natura")
-
-    blend_natura = {
-        'C6:0': 0.1, 'C8:0': 2.3, 'C10:0': 3.5, 'C12:0': 16.0, 'C14:0': 5.5,
-        'C16:0': 25.0, 'C16:1': 0.2, 'C18:0': 4.5, 'C18:1': 34.0,
-        'C18:2': 6.5, 'C18:3': 1.5, 'C20:0': 0.3, 'C20:1': 0.1, 'C22:0': 0.2
-    }
-
-    blend_lg = calcular_composicao_blend(oleos, 82, 18)
-
-    df_comparativo = pd.DataFrame({
-        'Ácido Graxo': list(blend_natura.keys()),
-        'Blend Natura (%)': list(blend_natura.values()),
-        'Blend LG (%)': list(blend_lg.values())
-    })
-
-    st.dataframe(df_comparativo)
-
-    # Gráfico comparativo de ácidos graxos
-    df_melted = df_comparativo.melt(id_vars="Ácido Graxo", 
-                                    value_vars=["Blend Natura (%)", "Blend LG (%)"],
-                                    var_name="Tipo de Blend", value_name="Concentração (%)")
-
-    fig = px.bar(
-        df_melted,
-        x="Ácido Graxo",
-        y="Concentração (%)",
-        color="Tipo de Blend",
-        barmode="group",
-        title="Comparativo de Ácidos Graxos entre Blend Natura e Blend LG",
-        text_auto=".2s"
-    )
+    # Gráfico comparativo de barras
+    df_melted = df_comparativo.melt(id_vars='Ácido Graxo', var_name='Blend', value_name='Porcentagem')
+    fig = px.bar(df_melted, x='Ácido Graxo', y='Porcentagem', color='Blend', barmode='group',
+                 title="Distribuição de Ácidos Graxos por Blend")
     st.plotly_chart(fig, use_container_width=True)
+
+mostrar_comparativo(blend_natura, blend_lg, "🔬 Comparativo com o Blend Natura")
+
 
 # Função para mostrar o impacto ambiental
 def mostrar_impacto_ambiental():
