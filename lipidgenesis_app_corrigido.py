@@ -151,6 +151,28 @@ def mostrar_impacto_ambiental():
     st.metric("🌍 Emissão CO₂ eq/kg", f"{lg:.2f}", delta=f"{(natura-lg)/natura*100:.1f}%", delta_color="inverse")
 
 mostrar_impacto_ambiental()
+# Função para mostrar o painel ESG
+def painel_esg():
+    st.subheader("🌱 Painel ESG - Sustentabilidade e Responsabilidade")
+    
+    # Seção Ambiental
+    st.markdown("#### 🌍 Aspectos Ambientais")
+    st.markdown("- **Emissões de CO₂**: A redução de emissões de carbono é uma prioridade em nossos processos produtivos.")
+    st.markdown("- **Pegada Hídrica**: Implementação de técnicas de uso eficiente da água.")
+    st.markdown("- **Matéria-Prima Sustentável**: Priorizamos o uso de óleos vegetais provenientes de fontes responsáveis.")
+    
+    # Seção Social
+    st.markdown("#### 🤝 Aspectos Sociais")
+    st.markdown("- **Desenvolvimento Comunitário**: Trabalhamos com comunidades locais para garantir práticas agrícolas sustentáveis.")
+    st.markdown("- **Condições de Trabalho**: Comprometemo-nos com condições de trabalho justas e seguras para todos os colaboradores.")
+    st.markdown("- **Responsabilidade Social**: Investimos em programas sociais e educacionais nas regiões onde atuamos.")
+    
+    # Seção Governança
+    st.markdown("#### 📊 Aspectos de Governança")
+    st.markdown("- **Transparência**: Mantemos a transparência nas nossas práticas de negócios e relatórios financeiros.")
+    st.markdown("- **Ética Empresarial**: Cumprimos rigorosamente as normas e leis locais e internacionais.")
+    st.markdown("- **Anti-Corrupção**: Implementação de políticas rigorosas de combate à corrupção em todos os níveis da empresa.")
+
 
 # EXPORTAR
 if st.button("📄 Exportar Relatório PDF"):
