@@ -20,7 +20,11 @@ def gerar_relatorio_pdf(ingredientes, notas, emoções, etiquetas, blend_compara
     f"Blend LG: {blend_comparacao['LG']}\n"
     f"Comparação: {blend_comparacao['Comparativo']}"
 ))
-Blend LipidGenesis: {blend_comparacao['LipidGenesis']}")
+pdf.multi_cell(0, 10, (
+    f"Blend Natura: {blend_comparacao['Natura']}\n"
+    f"Blend LipidGenesis: {blend_comparacao['LipidGenesis']}\n"
+    f"Comparativo: {blend_comparacao['Comparativo']}"
+))
 
     pdf.ln(10)
     pdf.cell(200, 10, txt="Receita Lipídica:", ln=True)
