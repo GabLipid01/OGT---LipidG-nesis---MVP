@@ -54,11 +54,22 @@ st.sidebar.title("🔬 Configurações")
 linha = st.sidebar.selectbox("Escolha a linha de produto Natura:", ["Ekos", "Chronos", "Tododia", "Mamãe e Bebê"])
 ocasião = st.sidebar.selectbox("Ocasião de uso:", ["Banho", "Rosto", "Corpo", "Cabelos"])
 
-# PERFIS DE ÁCIDOS GRAXOS (valores hipotéticos)
-perfil_rbdt = {'C16:0': 45.2, 'C18:0': 4.8, 'C18:1': 38.5, 'C18:2': 10.1, 'C18:3': 1.4}
-perfil_rpko = {'C12:0': 48.0, 'C14:0': 16.0, 'C16:0': 10.5, 'C18:1': 15.3, 'C18:2': 10.2}
-blend_natura = {k: 0.82 * perfil_rbdt.get(k, 0) + 0.18 * perfil_rpko.get(k, 0) for k in set(perfil_rbdt) | set(perfil_rpko)}
-blend_lg = {k: 0.82 * perfil_rbdt.get(k, 0) + 0.18 * perfil_rpko.get(k, 0) + np.random.normal(0, 0.2) for k in set(perfil_rbdt) | set(perfil_rpko)}
+# === Perfis reais do Blend Natura e simulação LG ===
+BLEND_NATURA_REAL = {
+    "C6:0": 0.0113, "C8:0": 0.2888, "C10:0": 0.3209, "C12:0": 6.7015, "C14:0": 2.9795,
+    "C15:0": 0.0296, "C16:0": 41.0650, "C16:1": 0.0607, "C17:0": 0.0678, "C18:0": 4.4098,
+    "C18:1": 36.7103, "C18:2": 6.8626, "C19:0": 0.0182, "C18:3": 0.1064,
+    "C20:0": 0.2758, "C22:0": 0.0394, "C22:1": 0.0084, "C24:0": 0.0440
+}
+
+# Blend LG calculado com perfis reais de RPKO e RBDT
+blend_lg = {}
+keys = set(RPKO_PROFILE.keys()) | set(RBDT_PROFILE.keys())
+for k in keys:
+    rpko_val = RPKO_PROFILE.get(k, 0)
+    rbdt_val = RBDT_PROFILE.get(k, 0)
+    blend_lg[k] = 0.18 * rpko_val + 0.82 * rbdt_val + np.random.normal(0, 0.1)
+
 
 # FUNÇÕES
 def gerar_receita_lipidica(blend):
@@ -147,7 +158,7 @@ def mostrar_comparativo(blend_natura, blend_lg, titulo):
                  title="Distribuição de Ácidos Graxos por Blend")
     st.plotly_chart(fig, use_container_width=True)
 
-mostrar_comparativo(blend_natura, blend_lg, "🔬 Comparativo com o Blend Natura")
+mostrar_comparativo(BLEND_NATURA_REAL, blend_lg, "🔬 Comparativo com o Blend Natura")
 
 
 # Função para mostrar o impacto ambiental
