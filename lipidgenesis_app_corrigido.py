@@ -143,20 +143,29 @@ with col2:
 # COMPARATIVO
 # Função para mostrar o comparativo entre os blends Natura e LG
 def mostrar_comparativo(blend_natura, blend_lg, titulo):
+    # Unir todas as chaves
+    todos_acidos = sorted(set(blend_natura.keys()) | set(blend_lg.keys()))
+    
+    # Garantir que todos os blends tenham todas as chaves com valor 0 se não existir
+    blend_natura_alinhado = {k: blend_natura.get(k, 0) for k in todos_acidos}
+    blend_lg_alinhado = {k: blend_lg.get(k, 0) for k in todos_acidos}
+    
+    # Criar o DataFrame
     df_comparativo = pd.DataFrame({
-        'Ácido Graxo': list(blend_natura.keys()),
-        'Blend Natura (%)': list(blend_natura.values()),
-        'Blend LG (%)': list(blend_lg.values())
+        'Ácido Graxo': todos_acidos,
+        'Blend Natura (%)': [blend_natura_alinhado[k] for k in todos_acidos],
+        'Blend LG (%)': [blend_lg_alinhado[k] for k in todos_acidos]
     })
 
     st.subheader(titulo)
     st.dataframe(df_comparativo)
 
-    # Gráfico comparativo de barras
+    # Gráfico comparativo
     df_melted = df_comparativo.melt(id_vars='Ácido Graxo', var_name='Blend', value_name='Porcentagem')
     fig = px.bar(df_melted, x='Ácido Graxo', y='Porcentagem', color='Blend', barmode='group',
                  title="Distribuição de Ácidos Graxos por Blend")
     st.plotly_chart(fig, use_container_width=True)
+
 
 mostrar_comparativo(BLEND_NATURA_REAL, blend_lg, "🔬 Comparativo com o Blend Natura")
 
