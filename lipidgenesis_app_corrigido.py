@@ -19,7 +19,9 @@ RBDT_PROFILE = {
 blend_lg = {k: 0.18 * RPKO_PROFILE.get(k, 0) + 0.82 * RBDT_PROFILE.get(k, 0) for k in set(RPKO_PROFILE) | set(RBDT_PROFILE)}
 
 st.set_page_config(page_title="LipidGenesis - Blend LG", layout="wide")
-st.title("🌿 LipidGenesis - Blend LG Bioengineering")
+st.title("🌿 LipidGenesis")
+st.markdown("**Bioengineering Of Oils For Nextgen**")
+st.markdown("*Produto: Blend LG 82/18 RBDT:RPKO*")
 
 # Sidebar
 st.sidebar.title("🔬 Configurações")
