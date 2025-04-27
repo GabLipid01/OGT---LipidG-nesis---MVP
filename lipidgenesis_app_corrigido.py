@@ -19,9 +19,7 @@ RBDT_PROFILE = {
 blend_lg = {k: 0.18 * RPKO_PROFILE.get(k, 0) + 0.82 * RBDT_PROFILE.get(k, 0) for k in set(RPKO_PROFILE) | set(RBDT_PROFILE)}
 
 st.set_page_config(page_title="LipidGenesis - Blend LG", layout="wide")
-st.title("🌿 LipidGenesis")
-st.markdown("**Bioengineering Of Oils For Nextgen**")
-st.markdown("*Produto: Blend LG 82/18 RBDT:RPKO*")
+st.title("🌿 LipidGenesis - Blend LG Bioengineering")
 
 # Sidebar
 st.sidebar.title("🔬 Configurações")
@@ -67,15 +65,27 @@ def get_sensory_recipe(line, occasion):
 def gerar_pdf(df_lipidica, sensorial_txt):
     pdf = FPDF()
     pdf.add_page()
-    pdf.set_font("Arial", size=12)
-    pdf.cell(0, 10, "Relatório Técnico - Blend LG", ln=True, align='C')
+    
+    # Título + Slogan
+    pdf.set_font("Arial", size=16)
+    pdf.cell(0, 10, "LipidGenesis - Bioengineering Of Oils For Nextgen", ln=True, align='C')
+    pdf.ln(5)
+    
+    # Produto centralizado
+    pdf.set_font("Arial", size=16)
+    pdf.cell(0, 10, "Produto: Blend LG 82/18 RBDT:RPKO", ln=True, align='C')
     pdf.ln(10)
+    
+    # Conteúdo normal
+    pdf.set_font("Arial", size=12)
     pdf.cell(0, 10, "Receita Lipídica:", ln=True)
     for i, row in df_lipidica.iterrows():
         pdf.cell(0, 10, f"{i}: {row['%']:.2f}%", ln=True)
+    
     pdf.ln(10)
     pdf.cell(0, 10, "Receita Sensorial:", ln=True)
     pdf.multi_cell(0, 10, sensorial_txt)
+    
     caminho = "/mnt/data/relatorio_blendlg.pdf"
     pdf.output(caminho)
     return caminho
