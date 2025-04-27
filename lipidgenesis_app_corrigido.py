@@ -1,213 +1,113 @@
 import streamlit as st
 import pandas as pd
-import numpy as np
 import plotly.express as px
 from fpdf import FPDF
 
-# === Perfis de Ácidos Graxos Reais (baseados em laudos Eurofins) ===
+# === Perfis de Ácidos Graxos (Codex Alimentarius) ===
 RPKO_PROFILE = {
-    "C6:0": 0.1751,
-    "C8:0": 2.7990,
-    "C10:0": 2.7349,
-    "C12:0": 40.7681,
-    "C14:0": 14.8587,
-    "C16:0": 11.8319,
-    "C18:0": 0.0000,
-    "C18:1": 20.8017,
-    "C18:2": 3.2454,
-    "C20:0": 0.1446,
-    "C20:1": 0.1049
+    "C6:0": 0.5, "C8:0": 4.3, "C10:0": 3.8, "C12:0": 50.0,
+    "C14:0": 16.0, "C16:0": 8.3, "C16:1": 0.1, "C18:0": 2.0,
+    "C18:1": 15.5, "C18:2": 2.25, "C18:3": 0.1, "C20:0": 0.1, "C20:1": 0.0
 }
 
 RBDT_PROFILE = {
-    "C12:0": 0.4976,
-    "C14:0": 0.8371,
-    "C16:0": 38.1650,
-    "C16:1": 0.1286,
-    "C18:0": 5.1485,
-    "C18:1": 45.3823,
-    "C18:2": 9.6964,
-    "C18:3": 0.1995,
-    "C20:0": 0.3747,
-    "C20:1": 0.1838,
-    "C15:1t": 0.0107,
-    "C20:1t": 0.0320
+    "C12:0": 0.5, "C14:0": 0.75, "C16:0": 43.4, "C16:1": 0.3,
+    "C18:0": 5.0, "C18:1": 40.0, "C18:2": 10.5, "C18:3": 0.2,
+    "C20:0": 0.3, "C20:1": 0.2
 }
 
-# === Parâmetros de Especificação do Blend Natura ===
-NATURA_SPECS = {
-    "Temperatura (°C)": (55, 60),
-    "Índice de Acidez": 0.20,
-    "Cor Lovibond (vermelho 5 1/4)": 4.0,
-    "Umidade (%)": 0.20,
-    "Índice de Iodo": (37, 45),
-    "Índice de Saponificação (mgKOH/g)": (193, 213)
-}
+blend_lg = {k: 0.18 * RPKO_PROFILE.get(k, 0) + 0.82 * RBDT_PROFILE.get(k, 0) for k in set(RPKO_PROFILE) | set(RBDT_PROFILE)}
 
-# CONFIGURAÇÃO
-st.set_page_config(page_title="LipidGenesis - Plataforma", layout="wide")
-st.title("🌿 LipidGenesis - Bioengineering of Oils for Nextgen")
-st.markdown("#### Comparativo entre Blend Natura 82/18 e LG Blend 82/18")
+st.set_page_config(page_title="LipidGenesis - Blend LG", layout="wide")
+st.title("🌿 LipidGenesis - Blend LG Bioengineering")
 
-# SIDEBAR
+# Sidebar
 st.sidebar.title("🔬 Configurações")
-linha = st.sidebar.selectbox("Escolha a linha de produto Natura:", ["Ekos", "Chronos", "Tododia", "Mamãe e Bebê"])
-ocasião = st.sidebar.selectbox("Ocasião de uso:", ["Banho", "Rosto", "Corpo", "Cabelos"])
+linha = st.sidebar.selectbox("Linha de Produto:", ["Ekos", "Chronos", "Tododia", "Mamãe e Bebê"])
+ocasião = st.sidebar.selectbox("Ocasião de Uso:", ["Banho", "Rosto", "Corpo", "Cabelos"])
 
-# === Perfis reais do Blend Natura e simulação LG ===
-BLEND_NATURA_REAL = {
-    "C6:0": 0.0113, "C8:0": 0.2888, "C10:0": 0.3209, "C12:0": 6.7015, "C14:0": 2.9795,
-    "C15:0": 0.0296, "C16:0": 41.0650, "C16:1": 0.0607, "C17:0": 0.0678, "C18:0": 4.4098,
-    "C18:1": 36.7103, "C18:2": 6.8626, "C19:0": 0.0182, "C18:3": 0.1064,
-    "C20:0": 0.2758, "C22:0": 0.0394, "C22:1": 0.0084, "C24:0": 0.0440
-}
+# Funções
 
-# Blend LG calculado com perfis reais de RPKO e RBDT
-blend_lg = {}
-keys = set(RPKO_PROFILE.keys()) | set(RBDT_PROFILE.keys())
-for k in keys:
-    rpko_val = RPKO_PROFILE.get(k, 0)
-    rbdt_val = RBDT_PROFILE.get(k, 0)
-    blend_lg[k] = 0.18 * rpko_val + 0.82 * rbdt_val + np.random.normal(0, 0.1)
-
-
-# FUNÇÕES
 def gerar_receita_lipidica(blend):
     df = pd.DataFrame.from_dict(blend, orient='index', columns=['%'])
     df.index.name = 'Ácido Graxo'
     return df
 
-# Banco de assinaturas aromáticas
 def get_sensory_recipe(line, occasion):
     aromatic_profiles = {
         "Ekos": {
-            "Banho": {"ingrediente": "Breu-branco", "notas": "Balsâmico, incensado, fresco", "emoções": "Purificação, conexão espiritual", "etiqueta": "A floresta viva se dissolve no vapor. O breu sobe como reza ancestral, purificando alma e pele."},
-            "Rosto": {"ingrediente": "Priprioca", "notas": "Terroso, amadeirado, levemente doce", "emoções": "Enraizamento, mistério", "etiqueta": "A raiz terrosa e resinosa que ancora a pele na sabedoria da floresta. Um perfume de origem."},
-            "Corpo": {"ingrediente": "Castanha-do-Pará", "notas": "Cremoso, doce, oleoso", "emoções": "Nutrição, conforto", "etiqueta": "Textura cremosa, aroma nutritivo. A abundância da Amazônia se faz pele."},
-            "Cabelos": {"ingrediente": "Andiroba", "notas": "Herbal-amargo, medicinal", "emoções": "Força, proteção", "etiqueta": "Força medicinal que reveste cada fio. Amargor que cura, perfume que marca."}
+            "Banho": {"ingrediente": "Breu-branco", "notas": "Balsâmico, incensado", "emoções": "Purificação", "etiqueta": "A floresta viva no vapor."},
+            "Rosto": {"ingrediente": "Priprioca", "notas": "Terroso, doce", "emoções": "Enraizamento", "etiqueta": "A raiz que ancora a pele."},
+            "Corpo": {"ingrediente": "Castanha-do-Pará", "notas": "Cremoso, doce", "emoções": "Nutrição", "etiqueta": "Abundância amazônica."},
+            "Cabelos": {"ingrediente": "Andiroba", "notas": "Herbal-amargo", "emoções": "Força", "etiqueta": "Força medicinal."}
         },
         "Chronos": {
-            "Banho": {"ingrediente": "Chá-verde amazônico", "notas": "Verde, leve, fresco", "emoções": "Clareza, renovação", "etiqueta": "Frescor técnico e elegante. Um banho de clareza e renovação celular."},
-            "Rosto": {"ingrediente": "Copaíba", "notas": "Amadeirado suave, doce-resinoso", "emoções": "Serenidade, equilíbrio", "etiqueta": "Amadeirado sutil, envolto em calma. A pele encontra seu equilíbrio atemporal."},
-            "Corpo": {"ingrediente": "Pequi", "notas": "Verde, frutado-oleoso", "emoções": "Originalidade, sofisticação", "etiqueta": "Exótico e refinado. O verde untuoso do cerrado encontra a pele urbana."},
-            "Cabelos": {"ingrediente": "Tucumã", "notas": "Vegetal denso, oleoso, levemente doce", "emoções": "Reconstrução, vigor", "etiqueta": "Textura rica e vegetal, com o perfume da reconstrução invisível."}
+            "Banho": {"ingrediente": "Chá-verde", "notas": "Verde, fresco", "emoções": "Renovação", "etiqueta": "Frescor técnico."},
+            "Rosto": {"ingrediente": "Copaíba", "notas": "Amadeirado suave", "emoções": "Serenidade", "etiqueta": "Amadeirado calmo."},
+            "Corpo": {"ingrediente": "Pequi", "notas": "Frutado-oleoso", "emoções": "Originalidade", "etiqueta": "Verde do cerrado."},
+            "Cabelos": {"ingrediente": "Tucumã", "notas": "Vegetal denso", "emoções": "Reconstrução", "etiqueta": "Textura rica."}
         },
         "Tododia": {
-            "Banho": {"ingrediente": "Pitanga", "notas": "Frutado verde, cítrico", "emoções": "Alegria, vivacidade", "etiqueta": "Explosão frutada e cítrica que convida ao sorriso. Energia fresca para o dia."},
-            "Rosto": {"ingrediente": "Maracujá", "notas": "Frutado fresco, ácido suave", "emoções": "Tranquilidade, equilíbrio", "etiqueta": "Ácido-suave que relaxa e equilibra. Um cuidado leve como um fim de tarde calmo."},
-            "Corpo": {"ingrediente": "Cupuaçu", "notas": "Doce, manteigado, tropical", "emoções": "Aconchego, prazer", "etiqueta": "Doçura tropical com toque amanteigado. A pele sorri com cada aplicação."},
-            "Cabelos": {"ingrediente": "Murumuru", "notas": "Vegetal cremoso, denso", "emoções": "Proteção, maciez", "etiqueta": "Densidade vegetal que amacia e modela. Um bálsamo diário de nutrição sensorial."}
+            "Banho": {"ingrediente": "Pitanga", "notas": "Frutado, cítrico", "emoções": "Alegria", "etiqueta": "Explosão cítrica."},
+            "Rosto": {"ingrediente": "Maracujá", "notas": "Frutado ácido", "emoções": "Tranquilidade", "etiqueta": "Leveza tropical."},
+            "Corpo": {"ingrediente": "Cupuaçu", "notas": "Doce, manteigado", "emoções": "Aconchego", "etiqueta": "Tropical amanteigado."},
+            "Cabelos": {"ingrediente": "Murumuru", "notas": "Vegetal cremoso", "emoções": "Proteção", "etiqueta": "Densidade vegetal."}
         },
         "Mamãe e Bebê": {
-            "Banho": {"ingrediente": "Lavanda brasileira", "notas": "Floral suave, fresca, aromática", "emoções": "Calmaria, proteção", "etiqueta": "Calma floral que embala. Uma nuvem perfumada de proteção e amor."},
-            "Rosto": {"ingrediente": "Camomila", "notas": "Herbal adocicado, suave", "emoções": "Serenidade, aconchego", "etiqueta": "Erva doce que silencia a pele. Um carinho invisível no toque mais delicado."},
-            "Corpo": {"ingrediente": "Castanha de caju", "notas": "Doce-leitosa, cremosa", "emoções": "Acolhimento, suavidade", "etiqueta": "Doce-leitosa e familiar. A pele se reconhece nesse cuidado natural."},
-            "Cabelos": {"ingrediente": "Água de coco", "notas": "Aquático, leve, refrescante", "emoções": "Frescor, leveza", "etiqueta": "Refresco leve e transparente. Umidade que limpa, aroma que acalma."}
+            "Banho": {"ingrediente": "Lavanda", "notas": "Floral suave", "emoções": "Calmaria", "etiqueta": "Calma floral."},
+            "Rosto": {"ingrediente": "Camomila", "notas": "Herbal adocicado", "emoções": "Aconchego", "etiqueta": "Silêncio na pele."},
+            "Corpo": {"ingrediente": "Castanha de Caju", "notas": "Doce-leitosa", "emoções": "Suavidade", "etiqueta": "Cuidado natural."},
+            "Cabelos": {"ingrediente": "Água de coco", "notas": "Aquático, refrescante", "emoções": "Frescor", "etiqueta": "Aroma que acalma."}
         }
     }
-    return aromatic_profiles.get(line, {}).get(occasion, {
-        "ingrediente": "N/A", "notas": "N/A", "emoções": "N/A", "etiqueta": "Combinação não disponível no banco atual."
-    })
+    return aromatic_profiles.get(line, {}).get(occasion, {"ingrediente": "N/A", "notas": "N/A", "emoções": "N/A", "etiqueta": "Não disponível."})
 
-# FUNÇÃO DE GERAÇÃO DE RELATÓRIO PDF
 def gerar_pdf(df_lipidica, sensorial_txt):
     pdf = FPDF()
     pdf.add_page()
     pdf.set_font("Arial", size=12)
-    pdf.cell(200, 10, txt="Relatório Técnico - LipidGenesis", ln=True, align='C')
+    pdf.cell(0, 10, "Relatório Técnico - Blend LG", ln=True, align='C')
     pdf.ln(10)
-    pdf.cell(200, 10, txt="Receita Lipídica:", ln=True)
+    pdf.cell(0, 10, "Receita Lipídica:", ln=True)
     for i, row in df_lipidica.iterrows():
-        pdf.cell(200, 10, txt=f"{i}: {row['%']:.2f}%", ln=True)
+        pdf.cell(0, 10, f"{i}: {row['%']:.2f}%", ln=True)
     pdf.ln(10)
-    pdf.cell(200, 10, txt="Receita Sensorial:", ln=True)
-    pdf.multi_cell(200, 10, txt=sensorial_txt)
-    caminho = "/mnt/data/relatorio_lipidgenesis.pdf"
+    pdf.cell(0, 10, "Receita Sensorial:", ln=True)
+    pdf.multi_cell(0, 10, sensorial_txt)
+    caminho = "/mnt/data/relatorio_blendlg.pdf"
     pdf.output(caminho)
     return caminho
 
-# INTERFACE PRINCIPAL
-st.markdown("#### Receita Lipídica e Sensorial Personalizadas")
+# Interface
+st.header("🔬 Análise Lipídica e Sensorial")
 
-col1, col2 = st.columns(2)
-with col1:
-    if st.button("🧪 Gerar Receita Lipídica"):
-        df_lipidica = gerar_receita_lipidica(blend_lg)
-        st.dataframe(df_lipidica)
-with col2:
-    if st.button("👃 Gerar Receita Sensorial"):
-        sensorial_data = get_sensory_recipe(linha, ocasião)
-        sensorial_txt = f"Ingrediente-chave: {sensorial_data['ingrediente']}\nNotas olfativas: {sensorial_data['notas']}\nEmoções evocadas: {sensorial_data['emoções']}\nEtiqueta sensorial: {sensorial_data['etiqueta']}"
-        st.success(sensorial_txt)
+if st.button("🧪 Gerar Receita Lipídica"):
+    df_lipidica = gerar_receita_lipidica(blend_lg)
+    st.dataframe(df_lipidica)
 
-# COMPARATIVO
-# Função para mostrar o comparativo entre os blends Natura e LG
-def mostrar_comparativo(blend_natura, blend_lg, titulo):
-    # Unir todas as chaves
-    todos_acidos = sorted(set(blend_natura.keys()) | set(blend_lg.keys()))
-    
-    # Garantir que todos os blends tenham todas as chaves com valor 0 se não existir
-    blend_natura_alinhado = {k: blend_natura.get(k, 0) for k in todos_acidos}
-    blend_lg_alinhado = {k: blend_lg.get(k, 0) for k in todos_acidos}
-    
-    # Criar o DataFrame
-    df_comparativo = pd.DataFrame({
-        'Ácido Graxo': todos_acidos,
-        'Blend Natura (%)': [blend_natura_alinhado[k] for k in todos_acidos],
-        'Blend LG (%)': [blend_lg_alinhado[k] for k in todos_acidos]
-    })
+if st.button("👃 Gerar Receita Sensorial"):
+    sensorial_data = get_sensory_recipe(linha, ocasião)
+    sensorial_txt = f"Ingrediente-chave: {sensorial_data['ingrediente']}\nNotas olfativas: {sensorial_data['notas']}\nEmoções evocadas: {sensorial_data['emoções']}\nEtiqueta sensorial: {sensorial_data['etiqueta']}"
+    st.success(sensorial_txt)
 
-    st.subheader(titulo)
-    st.dataframe(df_comparativo)
+st.subheader("📊 Perfil de Ácidos Graxos no Blend LG")
+df_blend_lg = gerar_receita_lipidica(blend_lg)
+fig = px.bar(df_blend_lg.reset_index(), x='Ácido Graxo', y='%', title='Distribuição dos Ácidos Graxos')
+st.plotly_chart(fig, use_container_width=True)
 
-    # Gráfico comparativo
-    df_melted = df_comparativo.melt(id_vars='Ácido Graxo', var_name='Blend', value_name='Porcentagem')
-    fig = px.bar(df_melted, x='Ácido Graxo', y='Porcentagem', color='Blend', barmode='group',
-                 title="Distribuição de Ácidos Graxos por Blend")
-    st.plotly_chart(fig, use_container_width=True)
+st.subheader("🌎 Indicadores Ambientais e ESG")
+natura_co2 = 1.25
+lg_co2 = 0.98
+st.metric("Emissão de CO₂ eq/kg", f"{lg_co2:.2f}", delta=f"{(natura_co2-lg_co2)/natura_co2*100:.1f}%", delta_color="inverse")
 
+st.markdown("- **Redução de emissões**: Produção limpa.")
+st.markdown("- **Fontes vegetais sustentáveis**.")
+st.markdown("- **Impacto social positivo**.")
+st.markdown("- **Governança ética**.")
 
-mostrar_comparativo(BLEND_NATURA_REAL, blend_lg, "🔬 Comparativo com o Blend Natura")
-
-
-# Função para mostrar o impacto ambiental
-def mostrar_impacto_ambiental():
-    natura = 1.25  # kg CO₂ eq / kg de produto
-    lg = 0.98
-    st.metric("🌍 Emissão CO₂ eq/kg", f"{lg:.2f}", delta=f"{(natura-lg)/natura*100:.1f}%", delta_color="inverse")
-
-mostrar_impacto_ambiental()
-
-# Função para mostrar o painel ESG
-def painel_esg():
-    st.subheader("🌱 Painel ESG - Sustentabilidade e Responsabilidade")
-    
-    # Seção Ambiental
-    st.markdown("#### 🌍 Aspectos Ambientais")
-    st.markdown("- **Emissões de CO₂**: A redução de emissões de carbono é uma prioridade em nossos processos produtivos.")
-    st.markdown("- **Pegada Hídrica**: Implementação de técnicas de uso eficiente da água.")
-    st.markdown("- **Matéria-Prima Sustentável**: Priorizamos o uso de óleos vegetais provenientes de fontes responsáveis.")
-    
-    # Seção Social
-    st.markdown("#### 🤝 Aspectos Sociais")
-    st.markdown("- **Desenvolvimento Comunitário**: Trabalhamos com comunidades locais para garantir práticas agrícolas sustentáveis.")
-    st.markdown("- **Condições de Trabalho**: Comprometemo-nos com condições de trabalho justas e seguras para todos os colaboradores.")
-    st.markdown("- **Responsabilidade Social**: Investimos em programas sociais e educacionais nas regiões onde atuamos.")
-    
-    # Seção Governança
-    st.markdown("#### 📊 Aspectos de Governança")
-    st.markdown("- **Transparência**: Mantemos a transparência nas nossas práticas de negócios e relatórios financeiros.")
-    st.markdown("- **Ética Empresarial**: Cumprimos rigorosamente as normas e leis locais e internacionais.")
-    st.markdown("- **Anti-Corrupção**: Implementação de políticas rigorosas de combate à corrupção em todos os níveis da empresa.")
-
-
-# EXPORTAR
 if st.button("📄 Exportar Relatório PDF"):
     df_lipidica = gerar_receita_lipidica(blend_lg)
     sensorial_data = get_sensory_recipe(linha, ocasião)
     sensorial_txt = f"Ingrediente-chave: {sensorial_data['ingrediente']}\nNotas olfativas: {sensorial_data['notas']}\nEmoções evocadas: {sensorial_data['emoções']}\nEtiqueta sensorial: {sensorial_data['etiqueta']}"
     caminho_pdf = gerar_pdf(df_lipidica, sensorial_txt)
-    st.markdown(f"**[Baixar Relatório PDF]**({caminho_pdf})")
-
-# Mostrar o painel ESG
-painel_esg()
+    st.markdown(f"**[Baixar Relatório PDF]({caminho_pdf})**")
