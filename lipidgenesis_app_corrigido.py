@@ -19,15 +19,17 @@ RBDT_PROFILE = {
 blend_lg = {k: 0.18 * RPKO_PROFILE.get(k, 0) + 0.82 * RBDT_PROFILE.get(k, 0) for k in set(RPKO_PROFILE) | set(RBDT_PROFILE)}
 
 st.set_page_config(page_title="LipidGenesis - Blend LG", layout="wide")
-st.title("🌿 LipidGenesis - Blend LG Bioengineering")
 
-# Sidebar
+# === Título principal ===
+st.title("🌿 LipidGenesis - Bioengineering Of Oils For Nextgen")
+st.markdown("<h3 style='text-align: center; color: #4C9B9C;'>Produto: Blend LG 82/18 RBDT:RPKO</h3>", unsafe_allow_html=True)
+
+# === Sidebar ===
 st.sidebar.title("🔬 Configurações")
-linha = st.sidebar.selectbox("Linha de Produto:", ["Ekos", "Chronos", "Tododia", "Mamãe e Bebê"])
-ocasião = st.sidebar.selectbox("Ocasião de Uso:", ["Banho", "Rosto", "Corpo", "Cabelos"])
+linha = st.sidebar.selectbox("Linha de Produto:", ["Ekos", "Chronos", "Tododia", "Mamãe e Bebê"], index=0)
+ocasião = st.sidebar.selectbox("Ocasião de Uso:", ["Banho", "Rosto", "Corpo", "Cabelos"], index=0)
 
-# Funções
-
+# === Funções ===
 def gerar_receita_lipidica(blend):
     df = pd.DataFrame.from_dict(blend, orient='index', columns=['%'])
     df.index.name = 'Ácido Graxo'
@@ -65,59 +67,69 @@ def get_sensory_recipe(line, occasion):
 def gerar_pdf(df_lipidica, sensorial_txt):
     pdf = FPDF()
     pdf.add_page()
-    
-    # Título + Slogan
-    pdf.set_font("Arial", size=16)
-    pdf.cell(0, 10, "LipidGenesis - Bioengineering Of Oils For Nextgen", ln=True, align='C')
-    pdf.ln(5)
-    
-    # Produto centralizado
-    pdf.set_font("Arial", size=16)
-    pdf.cell(0, 10, "Produto: Blend LG 82/18 RBDT:RPKO", ln=True, align='C')
+
+    # Título + Slogan (Ajustado para estilo refinado)
+    pdf.set_font("Arial", 'B', 18)
+    pdf.cell(200, 10, "LipidGenesis - Bioengineering Of Oils For Nextgen", ln=True, align='C')
     pdf.ln(10)
-    
-    # Conteúdo normal
-    pdf.set_font("Arial", size=12)
+
+    # Produto centralizado
+    pdf.set_font("Arial", 'B', 16)
+    pdf.cell(200, 10, "Produto: Blend LG 82/18 RBDT:RPKO", ln=True, align='C')
+    pdf.ln(20)
+
+    # Receita Lipídica - Tabela Bonita
+    pdf.set_font("Arial", 'B', 12)
     pdf.cell(0, 10, "Receita Lipídica:", ln=True)
+    pdf.set_font("Arial", '', 12)
     for i, row in df_lipidica.iterrows():
         pdf.cell(0, 10, f"{i}: {row['%']:.2f}%", ln=True)
-    
+
+    # Receita Sensorial
     pdf.ln(10)
+    pdf.set_font("Arial", 'B', 12)
     pdf.cell(0, 10, "Receita Sensorial:", ln=True)
+    pdf.set_font("Arial", '', 12)
     pdf.multi_cell(0, 10, sensorial_txt)
-    
-    caminho = "/mnt/data/relatorio_blendlg.pdf"
+
+    # Seção Gráficos
+    pdf.ln(10)
+    pdf.set_font("Arial", 'B', 12)
+    pdf.cell(0, 10, "Gráfico de Ácidos Graxos", ln=True)
+
+    # Aqui você pode adicionar um gráfico (em PNG) gerado no Streamlit, se necessário
+
+    caminho = "/mnt/data/relatorio_refinado_blendlg.pdf"
     pdf.output(caminho)
     return caminho
 
-# Interface
-st.header("🔬 Análise Lipídica e Sensorial")
+# === Interface ===
+st.header("🔬 Análise Lipídica e Sensorial Refinada")
 
-if st.button("🧪 Gerar Receita Lipídica"):
+# Botões com design refinado
+if st.button("🧪 Gerar Receita Lipídica", key="lipidica_btn"):
     df_lipidica = gerar_receita_lipidica(blend_lg)
     st.dataframe(df_lipidica)
 
-if st.button("👃 Gerar Receita Sensorial"):
+if st.button("👃 Gerar Receita Sensorial", key="sensorial_btn"):
     sensorial_data = get_sensory_recipe(linha, ocasião)
     sensorial_txt = f"Ingrediente-chave: {sensorial_data['ingrediente']}\nNotas olfativas: {sensorial_data['notas']}\nEmoções evocadas: {sensorial_data['emoções']}\nEtiqueta sensorial: {sensorial_data['etiqueta']}"
     st.success(sensorial_txt)
 
+# Estilo visual para o gráfico
 st.subheader("📊 Perfil de Ácidos Graxos no Blend LG")
 df_blend_lg = gerar_receita_lipidica(blend_lg)
-fig = px.bar(df_blend_lg.reset_index(), x='Ácido Graxo', y='%', title='Distribuição dos Ácidos Graxos')
+fig = px.bar(df_blend_lg.reset_index(), x='Ácido Graxo', y='%', title='Distribuição dos Ácidos Graxos', template="plotly_dark")
 st.plotly_chart(fig, use_container_width=True)
 
+# Indicadores Ambientais
 st.subheader("🌎 Indicadores Ambientais e ESG")
 natura_co2 = 1.25
 lg_co2 = 0.98
 st.metric("Emissão de CO₂ eq/kg", f"{lg_co2:.2f}", delta=f"{(natura_co2-lg_co2)/natura_co2*100:.1f}%", delta_color="inverse")
 
-st.markdown("- **Redução de emissões**: Produção limpa.")
-st.markdown("- **Fontes vegetais sustentáveis**.")
-st.markdown("- **Impacto social positivo**.")
-st.markdown("- **Governança ética**.")
-
-if st.button("📄 Exportar Relatório PDF"):
+# Exportação Refinada
+if st.button("📄 Exportar Relatório PDF", key="export_pdf"):
     df_lipidica = gerar_receita_lipidica(blend_lg)
     sensorial_data = get_sensory_recipe(linha, ocasião)
     sensorial_txt = f"Ingrediente-chave: {sensorial_data['ingrediente']}\nNotas olfativas: {sensorial_data['notas']}\nEmoções evocadas: {sensorial_data['emoções']}\nEtiqueta sensorial: {sensorial_data['etiqueta']}"
