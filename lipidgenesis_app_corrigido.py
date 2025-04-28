@@ -3,6 +3,95 @@ import pandas as pd
 import plotly.express as px
 from fpdf import FPDF
 
+import streamlit as st
+from fpdf import FPDF
+
+# Configurações de página
+st.set_page_config(
+    page_title="LipidGenesis - Bioengineering of Oils for Nextgen",
+    page_icon=":leaves:",
+    layout="wide",
+    initial_sidebar_state="expanded"
+)
+
+# Estilo customizado
+st.markdown(
+    """
+    <style>
+    body {
+        background-color: #f5f5f5;
+    }
+    .reportview-container {
+        background: #f5f5f5;
+        color: #333333;
+    }
+    h1, h2, h3, h4, h5, h6 {
+        color: #2e2e2e;
+        font-family: 'Helvetica Neue', sans-serif;
+    }
+    .stButton>button {
+        color: white;
+        background-color: #006d5b;
+        border: None;
+        border-radius: 8px;
+        padding: 0.6em 1.2em;
+        font-size: 1em;
+        font-weight: bold;
+    }
+    .stButton>button:hover {
+        background-color: #004d40;
+        color: white;
+    }
+    footer {
+        visibility: hidden;
+    }
+    </style>
+    """,
+    unsafe_allow_html=True
+)
+
+# Cabeçalho
+st.title("LipidGenesis")
+st.subheader("Bioengineering of Oils for Nextgen")
+
+st.write("---")
+
+# Interface principal
+st.header("Simulação de Blend Lipídico e Receita Sensorial")
+st.write("Selecione os parâmetros abaixo para gerar a composição ideal para seu produto:")
+
+# Exemplo de seleção de opções
+linha_produto = st.selectbox("Linha de Produto", ["Ekos", "Chronos", "Tododia"])
+ocasiao_uso = st.selectbox("Ocasião de Uso", ["Banho", "Rosto", "Corpo", "Cabelos"])
+
+# Botões de ação
+col1, col2 = st.columns(2)
+with col1:
+    if st.button("Gerar Receita Lipídica"):
+        st.success("Receita Lipídica gerada com sucesso!")
+        # (Aqui entra seu código de geração)
+
+with col2:
+    if st.button("Gerar Receita Sensorial"):
+        st.success("Receita Sensorial gerada com sucesso!")
+        # (Aqui entra seu código de geração)
+
+# Espaço para exibir tabelas, gráficos etc.
+# (insira aqui seus dataframes e gráficos, já com a melhoria visual)
+
+st.write("---")
+
+# Rodapé institucional
+st.markdown(
+    """
+    <div style='text-align: center; font-size: 0.8em; color: #7a7a7a; padding: 20px 0;'>
+        LipidGenesis | Reinventing Oils for the Next Generation<br>
+        © 2025 OGT - The Future of Disruption, On Demand
+    </div>
+    """,
+    unsafe_allow_html=True
+)
+
 # === Perfis de Ácidos Graxos (Codex Alimentarius) ===
 RPKO_PROFILE = {
     "C6:0": 0.5, "C8:0": 4.3, "C10:0": 3.8, "C12:0": 50.0,
