@@ -164,15 +164,8 @@ for indicator, values in impacto_ambiental.items():
 # Estilos refinados para facilitar a leitura e a comparação visual
 st.markdown("""
     <style>
-        .css-1d391kg { font-size: 1.2em; font-weight: bold; }
-        .stDataFrame { font-size: 1em; padding: 10px; border: 1px solid #ddd; }
+        .css-1d391kg { font-size: 1.2em; font-weight: bold; color: #00796B;}
+        .css-15zrgfz { font-size: 1.2em; font-weight: bold; color: #388E3C;}
+        .css-yyb8g4 { background-color: #F1F8E9; }
     </style>
 """, unsafe_allow_html=True)
-
-# Exportação Refinada
-if st.button("📄 Exportar Relatório PDF", key="export_pdf"):
-    df_lipidica = gerar_receita_lipidica(blend_lg)
-    sensorial_data = get_sensory_recipe(linha, ocasião)
-    sensorial_txt = f"Ingrediente-chave: {sensorial_data['ingrediente']}\nNotas olfativas: {sensorial_data['notas']}\nEmoções evocadas: {sensorial_data['emoções']}\nEtiqueta sensorial: {sensorial_data['etiqueta']}"
-    caminho_pdf = gerar_pdf(df_lipidica, sensorial_txt)
-    st.markdown(f"**[Baixar Relatório PDF]({caminho_pdf})**")
