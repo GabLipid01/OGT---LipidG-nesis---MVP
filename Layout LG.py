@@ -22,7 +22,7 @@ st.set_page_config(page_title="LipidGenesis - Blend LG", layout="wide")
 
 # === Título principal ===
 st.title("🌿 LipidGenesis - Bioengineering Of Oils For Nextgen")
-st.markdown("<h3 style='text-align: center; color: #4C9B9C;'>Produto: PLATAFORMA DE FORMULAÇÃO PERSONALIZADA DE BLENDS DE PALMA E PALMISTE</h3>", unsafe_allow_html=True)
+st.markdown("<h3 style='text-align: center; color: #4C9B9C;'>PLATAFORMA DE FORMULAÇÃO PERSONALIZADA DE BLENDS DE PALMA E PALMISTE</h3>", unsafe_allow_html=True)
 
 # === Sidebar ===
 st.sidebar.title("🔬 Configurações")
