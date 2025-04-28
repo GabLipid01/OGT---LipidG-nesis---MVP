@@ -116,6 +116,20 @@ if st.button("👃 Gerar Receita Sensorial", key="sensorial_btn"):
     sensorial_txt = f"Ingrediente-chave: {sensorial_data['ingrediente']}\nNotas olfativas: {sensorial_data['notas']}\nEmoções evocadas: {sensorial_data['emoções']}\nEtiqueta sensorial: {sensorial_data['etiqueta']}"
     st.success(sensorial_txt)
 
+# Gerar e baixar PDF
+if st.button("📥 Baixar Relatório em PDF"):
+    df_lipidica = gerar_receita_lipidica(blend_lg)
+    sensorial_data = get_sensory_recipe(linha, ocasião)
+    sensorial_txt = f"Ingrediente-chave: {sensorial_data['ingrediente']}\nNotas olfativas: {sensorial_data['notas']}\nEmoções evocadas: {sensorial_data['emoções']}\nEtiqueta sensorial: {sensorial_data['etiqueta']}"
+    caminho_pdf = gerar_pdf(df_lipidica, sensorial_txt)
+    
+    st.download_button(
+        label="Baixar PDF",
+        data=open(caminho_pdf, "rb").read(),
+        file_name="relatorio_blendlg.pdf",
+        mime="application/pdf"
+    )
+
 # Estilo visual para o gráfico
 st.subheader("📊 Perfil de Ácidos Graxos no Blend LG")
 df_blend_lg = gerar_receita_lipidica(blend_lg)
