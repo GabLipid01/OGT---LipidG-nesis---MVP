@@ -26,7 +26,7 @@ st.markdown("<h3 style='text-align: center; color: #4C9B9C;'>Produto: Blend LG 8
 
 # === Sidebar ===
 st.sidebar.title("🔬 Configurações")
-linha = st.sidebar.selectbox("Linha de Produto:", ["Ekos", "Chronos", "Tododia", "Mamãe e Bebê"], index=0)
+linha = st.sidebar.selectbox("Linha de Produto:", ["Vitalis", "Essentia", "Ardor", "Lúmina"], index=0)
 ocasião = st.sidebar.selectbox("Ocasião de Uso:", ["Banho", "Rosto", "Corpo", "Cabelos"], index=0)
 
 # === Funções ===
@@ -64,9 +64,6 @@ def get_sensory_recipe(line, occasion):
         }
     }
     return aromatic_profiles.get(line, {}).get(occasion, {"ingrediente": "N/A", "notas": "N/A", "emoções": "N/A", "etiqueta": "Não disponível."})
-
-# === Sidebar ===
-linha = st.sidebar.selectbox("Linha de Produto:", ["Vitalis", "Essentia", "Ardor", "Lúmina"], index=0)
 
 
 def gerar_pdf(df_lipidica, sensorial_txt):
