@@ -119,6 +119,23 @@ if st.button("🧪 Gerar Receita Lipídica", key="lipidica_btn"):
     df_lipidica = gerar_receita_lipidica(blend_lg)
     st.dataframe(df_lipidica)
 
+    # === Cálculo físico-químico com BlendCalculator ===
+    blend_percentages = {
+        'Palm Oil': 40,
+        'Palm Olein': 10,
+        'Palm Stearin': 10,
+        'Palm Kernel Oil': 30,
+        'Palm Kernel Olein': 5,
+        'Palm Kernel Stearin': 5
+    }
+    resultados_blend = blend_calc.compute(blend_percentages)
+
+    st.subheader("⚗️ Parâmetros Físico-Químicos do Blend LG")
+    st.metric("Índice de Iodo (II)", f"{resultados_blend['Índice de Iodo (II)']:.2f}")
+    st.metric("Índice de Saponificação (IS)", f"{resultados_blend['Índice de Saponificação (IS)']:.2f} mg KOH/g")
+    st.metric("Ponto de Fusão Estimado", f"{resultados_blend['Ponto de Fusão (PF)']:.2f} °C")
+
+
 if st.button("👃 Gerar Receita Sensorial", key="sensorial_btn"):
     sensorial_data = get_sensory_recipe(linha, ocasião)
     sensorial_txt = f"Ingrediente-chave: {sensorial_data['ingrediente']}\nNotas olfativas: {sensorial_data['notas']}\nEmoções evocadas: {sensorial_data['emoções']}\nEtiqueta sensorial: {sensorial_data['etiqueta']}"
