@@ -144,51 +144,9 @@ benchmark_co2 = {
     "Natura": 1.25,  # Emissões do blend da Natura
     "Unilever": 1.20,  # Benchmark do setor (valores hipotéticos)
     "Johnson & Johnson": 1.15,  # Benchmark de outra empresa do setor (hipotético)
-    "LipidGenesis": 0.98  # Sua pegada de CO₂ eq/kg
+    "LipidGenesis": 0.8  # Emissões do novo blend desenvolvido
 }
 
-# Cálculo da diferença entre seu produto e os benchmarks
-for company, co2_value in benchmark_co2.items():
-    delta = (co2_value - benchmark_co2["LipidGenesis"]) / co2_value * 100
-    st.metric(f"Emissão de CO₂ eq/kg ({company})", f"{co2_value:.2f}", delta=f"{delta:.1f}%", delta_color="inverse" if delta > 0 else "normal")
-
-# Adicionando outros indicadores ambientais como água, energia, e impacto social
-# (Os valores aqui são fictícios e podem ser ajustados conforme necessário)
-impacto_ambiental = {
-    "Água Consumida (L/kg)": {
-        "LipidGenesis": 5.0,  # Exemplo de valor
-        "Natura": 6.5,
-        "Unilever": 7.0,
-        "Johnson & Johnson": 5.5
-    },
-    "Uso de Energia (kWh/kg)": {
-        "LipidGenesis": 0.25,
-        "Natura": 0.30,
-        "Unilever": 0.28,
-        "Johnson & Johnson": 0.35
-    }
-}
-
-# Exibir os dados de impacto ambiental em tabelas comparativas
-for indicator, values in impacto_ambiental.items():
-    st.subheader(f"Impacto Ambiental - {indicator}")
-    df_impacto = pd.DataFrame.from_dict(values, orient='index', columns=[indicator])
-    st.dataframe(df_impacto)
-
-# Estilos refinados para facilitar a leitura e a comparação visual
-st.markdown("""
-    <style>
-        .css-1d391kg { font-size: 1.2em; font-weight: bold; color: #00796B;}
-        .css-15zrgfz { font-size: 1.2em; font-weight: bold; color: #388E3C;}
-        .css-yyb8g4 { background-color: #F1F8E9; }
-    </style>
-""", unsafe_allow_html=True)
-
-# === Rodapé ===
-st.markdown("""
-    <footer style="background-color: #4C9B9C; color: white; padding: 10px; text-align: center; font-size: 12px;">
-        <p>&copy; 2025 LipidGenesis | Bioengineering Of Oils For Nextgen</p>
-        <p>Todos os direitos reservados. Sustentabilidade e inovação em cada gota.</p>
-        <p><a href="https://www.ogt.com" style="color: white; text-decoration: underline;">www.ogt.com</a></p>
-    </footer>
-""", unsafe_allow_html=True)
+df_co2 = pd.DataFrame(list(benchmark_co2.items()), columns=["Empresa", "CO₂ eq/kg"])
+fig_co2 = px.bar(df_co2, x='Empresa', y='CO₂ eq/kg', title='Comparativo de Pegada de Carbono', template="plotly_dark")
+st.plotly_chart(fig_co2, use_container_width=True)
