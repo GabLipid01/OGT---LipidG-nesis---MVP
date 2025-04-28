@@ -35,6 +35,37 @@ def gerar_receita_lipidica(blend):
     df.index.name = 'Ácido Graxo'
     return df
 
+import streamlit as st
+import pandas as pd
+
+# Exemplo de dados dos parâmetros físico-químicos estimados
+parametros = {
+    'Parâmetro': [
+        'Índice de Acidez (mgKOH/g)',
+        'Cor Lovibond (vermelho 5 1/4")',
+        'Umidade (%)',
+        'Ponto de Fusão (°C)',
+        'Índice de Iodo (Wijs)',
+        'Índice de Saponificação (mgKOH/g)'
+    ],
+    'Valor Estimado': [
+        round(acido_palmatico * 2.19, 2),  # Substituir acido_palmatico pela variável real
+        '2.5',   # Exemplo fixo - pode ser estimado se quiser
+        '0.1',   # Exemplo fixo
+        '24.0',  # Exemplo fixo
+        '54.0',  # Estimado com base nos ácidos graxos
+        '196.0'  # Estimado com base nos ácidos graxos
+    ]
+}
+
+# Criar o DataFrame
+df_parametros = pd.DataFrame(parametros)
+
+# Mostrar tabela
+st.subheader("🔬 Parâmetros Físico-Químicos Estimados")
+st.dataframe(df_parametros, use_container_width=True)
+
+
 # === Função para obter a receita sensorial ===
 def get_sensory_recipe(line, occasion):
     aromatic_profiles = {
