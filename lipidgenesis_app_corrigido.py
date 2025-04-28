@@ -122,11 +122,52 @@ df_blend_lg = gerar_receita_lipidica(blend_lg)
 fig = px.bar(df_blend_lg.reset_index(), x='Ácido Graxo', y='%', title='Distribuição dos Ácidos Graxos', template="plotly_dark")
 st.plotly_chart(fig, use_container_width=True)
 
-# Indicadores Ambientais
+# === Indicadores Ambientais e ESG ===
 st.subheader("🌎 Indicadores Ambientais e ESG")
-natura_co2 = 1.25
-lg_co2 = 0.98
-st.metric("Emissão de CO₂ eq/kg", f"{lg_co2:.2f}", delta=f"{(natura_co2-lg_co2)/natura_co2*100:.1f}%", delta_color="inverse")
+
+# Benchmark de CO₂ eq/kg de algumas empresas do setor
+benchmark_co2 = {
+    "Natura": 1.25,  # Emissões do blend da Natura
+    "Unilever": 1.20,  # Benchmark do setor (valores hipotéticos)
+    "Johnson & Johnson": 1.15,  # Benchmark de outra empresa do setor (hipotético)
+    "LipidGenesis": 0.98  # Sua pegada de CO₂ eq/kg
+}
+
+# Cálculo da diferença entre seu produto e os benchmarks
+for company, co2_value in benchmark_co2.items():
+    delta = (co2_value - benchmark_co2["LipidGenesis"]) / co2_value * 100
+    st.metric(f"Emissão de CO₂ eq/kg ({company})", f"{co2_value:.2f}", delta=f"{delta:.1f}%", delta_color="inverse" if delta > 0 else "normal")
+
+# Adicionando outros indicadores ambientais como água, energia, e impacto social
+# (Os valores aqui são fictícios e podem ser ajustados conforme necessário)
+impacto_ambiental = {
+    "Água Consumida (L/kg)": {
+        "LipidGenesis": 5.0,  # Exemplo de valor
+        "Natura": 6.5,
+        "Unilever": 7.0,
+        "Johnson & Johnson": 5.5
+    },
+    "Uso de Energia (kWh/kg)": {
+        "LipidGenesis": 0.25,
+        "Natura": 0.30,
+        "Unilever": 0.28,
+        "Johnson & Johnson": 0.35
+    }
+}
+
+# Exibir os dados de impacto ambiental em tabelas comparativas
+for indicator, values in impacto_ambiental.items():
+    st.subheader(f"Impacto Ambiental - {indicator}")
+    df_impacto = pd.DataFrame.from_dict(values, orient='index', columns=[indicator])
+    st.dataframe(df_impacto)
+
+# Estilos refinados para facilitar a leitura e a comparação visual
+st.markdown("""
+    <style>
+        .css-1d391kg { font-size: 1.2em; font-weight: bold; }
+        .stDataFrame { font-size: 1em; padding: 10px; border: 1px solid #ddd; }
+    </style>
+""", unsafe_allow_html=True)
 
 # Exportação Refinada
 if st.button("📄 Exportar Relatório PDF", key="export_pdf"):
