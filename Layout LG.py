@@ -36,30 +36,113 @@ def gerar_receita_lipidica(blend):
     return df
 
 def get_sensory_recipe(line, occasion):
-    aromatic_profiles = {
-        "Ekos": {
-            "Banho": {"ingrediente": "Breu-branco", "notas": "Balsâmico, incensado", "emoções": "Purificação", "etiqueta": "A floresta viva no vapor."},
-            "Rosto": {"ingrediente": "Priprioca", "notas": "Terroso, doce", "emoções": "Enraizamento", "etiqueta": "A raiz que ancora a pele."},
-            "Corpo": {"ingrediente": "Castanha-do-Pará", "notas": "Cremoso, doce", "emoções": "Nutrição", "etiqueta": "Abundância amazônica."},
-            "Cabelos": {"ingrediente": "Andiroba", "notas": "Herbal-amargo", "emoções": "Força", "etiqueta": "Força medicinal."}
-        },
-        "Chronos": {
-            "Banho": {"ingrediente": "Chá-verde", "notas": "Verde, fresco", "emoções": "Renovação", "etiqueta": "Frescor técnico."},
-            "Rosto": {"ingrediente": "Copaíba", "notas": "Amadeirado suave", "emoções": "Serenidade", "etiqueta": "Amadeirado calmo."},
-            "Corpo": {"ingrediente": "Pequi", "notas": "Frutado-oleoso", "emoções": "Originalidade", "etiqueta": "Verde do cerrado."},
-            "Cabelos": {"ingrediente": "Tucumã", "notas": "Vegetal denso", "emoções": "Reconstrução", "etiqueta": "Textura rica."}
-        },
-        "Tododia": {
-            "Banho": {"ingrediente": "Pitanga", "notas": "Frutado, cítrico", "emoções": "Alegria", "etiqueta": "Explosão cítrica."},
-            "Rosto": {"ingrediente": "Maracujá", "notas": "Frutado ácido", "emoções": "Tranquilidade", "etiqueta": "Leveza tropical."},
-            "Corpo": {"ingrediente": "Cupuaçu", "notas": "Doce, manteigado", "emoções": "Aconchego", "etiqueta": "Tropical amanteigado."},
-            "Cabelos": {"ingrediente": "Murumuru", "notas": "Vegetal cremoso", "emoções": "Proteção", "etiqueta": "Densidade vegetal."}
-        },
-        "Mamãe e Bebê": {
-            "Banho": {"ingrediente": "Lavanda", "notas": "Floral suave", "emoções": "Calmaria", "etiqueta": "Calma floral."},
-            "Rosto": {"ingrediente": "Camomila", "notas": "Herbal adocicado", "emoções": "Aconchego", "etiqueta": "Silêncio na pele."},
-            "Corpo": {"ingrediente": "Castanha de Caju", "notas": "Doce-leitosa", "emoções": "Suavidade", "etiqueta": "Cuidado natural."},
-            "Cabelos": {"ingrediente": "Água de coco", "notas": "Aquático, refrescante", "emoções": "Frescor", "etiqueta": "Aroma que acalma."}
+    {
+  "Vitalis": {
+    "Banho": {
+      "Ingrediente-chave": "Capim-santo da Amazônia",
+      "Notas olfativas": "Verde, Refrescante",
+      "Emoções evocadas": "Revitalização, Energia",
+      "Etiqueta sensorial": "Despertar amazônico"
+    },
+    "Rosto": {
+      "Ingrediente-chave": "Guaraná",
+      "Notas olfativas": "Frutado, Vibrante",
+      "Emoções evocadas": "Frescor, Vitalidade",
+      "Etiqueta sensorial": "Brisa tropical"
+    },
+    "Corpo": {
+      "Ingrediente-chave": "Andiroba",
+      "Notas olfativas": "Herbal, Terroso",
+      "Emoções evocadas": "Renovação, Força",
+      "Etiqueta sensorial": "Força da floresta"
+    },
+    "Cabelos": {
+      "Ingrediente-chave": "Menta amazônica",
+      "Notas olfativas": "Mentolado, Refrescante",
+      "Emoções evocadas": "Leveza, Frescor",
+      "Etiqueta sensorial": "Toque verde amazônico"
+    }
+  },
+  "Essentia": {
+    "Banho": {
+      "Ingrediente-chave": "Flor de Vitória-Régia",
+      "Notas olfativas": "Aquático, Floral",
+      "Emoções evocadas": "Leveza, Plenitude",
+      "Etiqueta sensorial": "Flor d'água"
+    },
+    "Rosto": {
+      "Ingrediente-chave": "Açaí",
+      "Notas olfativas": "Frutado, Doce",
+      "Emoções evocadas": "Vitalidade, Juventude",
+      "Etiqueta sensorial": "Brilho tropical"
+    },
+    "Corpo": {
+      "Ingrediente-chave": "Copaíba",
+      "Notas olfativas": "Balsâmico, Quente",
+      "Emoções evocadas": "Proteção, Bem-estar",
+      "Etiqueta sensorial": "Cura da floresta"
+    },
+    "Cabelos": {
+      "Ingrediente-chave": "Buriti",
+      "Notas olfativas": "Frutado, Solar",
+      "Emoções evocadas": "Luminosidade, Vida",
+      "Etiqueta sensorial": "Raio dourado"
+    }
+  },
+  "Ardor": {
+    "Banho": {
+      "Ingrediente-chave": "Pimenta-de-macaco",
+      "Notas olfativas": "Especiado, Quente",
+      "Emoções evocadas": "Excitação, Coragem",
+      "Etiqueta sensorial": "Chama tropical"
+    },
+    "Rosto": {
+      "Ingrediente-chave": "Breu Branco",
+      "Notas olfativas": "Resinoso, Amadeirado",
+      "Emoções evocadas": "Misticismo, Foco",
+      "Etiqueta sensorial": "Resina da alma"
+    },
+    "Corpo": {
+      "Ingrediente-chave": "Cumaru (Baunilha Amazônica)",
+      "Notas olfativas": "Doce, Ambarado",
+      "Emoções evocadas": "Sedução, Doçura",
+      "Etiqueta sensorial": "Âmbar da floresta"
+    },
+    "Cabelos": {
+      "Ingrediente-chave": "Castanha-do-Pará",
+      "Notas olfativas": "Amendoado, Envolvente",
+      "Emoções evocadas": "Conforto, Riqueza",
+      "Etiqueta sensorial": "Nutrição natural"
+    }
+  },
+  "Lúmina": {
+    "Banho": {
+      "Ingrediente-chave": "Jambu",
+      "Notas olfativas": "Verde, Refrescante",
+      "Emoções evocadas": "Sensação, Frescor",
+      "Etiqueta sensorial": "Sopro amazônico"
+    },
+    "Rosto": {
+      "Ingrediente-chave": "Priprioca",
+      "Notas olfativas": "Terroso, Aromático",
+      "Emoções evocadas": "Conexão, Profundidade",
+      "Etiqueta sensorial": "Essência da terra"
+    },
+    "Corpo": {
+      "Ingrediente-chave": "Patuá",
+      "Notas olfativas": "Frutado, Exótico",
+      "Emoções evocadas": "Vitalidade, Energia",
+      "Etiqueta sensorial": "Semente vital"
+    },
+    "Cabelos": {
+      "Ingrediente-chave": "Murumuru",
+      "Notas olfativas": "Cremoso, Natural",
+      "Emoções evocadas": "Maciez, Proteção",
+      "Etiqueta sensorial": "Véu protetor"
+    }
+  }
+}
+
         }
     }
     return aromatic_profiles.get(line, {}).get(occasion, {"ingrediente": "N/A", "notas": "N/A", "emoções": "N/A", "etiqueta": "Não disponível."})
