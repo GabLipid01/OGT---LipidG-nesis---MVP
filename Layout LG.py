@@ -38,6 +38,36 @@ def gerar_receita_lipidica(blend):
 import streamlit as st
 import pandas as pd
 
+# Cálculo do ácido palmítico
+acido_palmatico = perfil_blend.loc[perfil_blend['Acido Graxo'] == 'Palmítico', 'Composição (%)'].values[0]
+
+# Agora gera os parâmetros físico-químicos
+parametros = {
+    'Parâmetro': [
+        'Índice de Acidez (mgKOH/g)',
+        'Cor Lovibond (vermelho 5 1/4")',
+        'Umidade (%)',
+        'Ponto de Fusão (°C)',
+        'Índice de Iodo (Wijs)',
+        'Índice de Saponificação (mgKOH/g)'
+    ],
+    'Valor Estimado': [
+        round(acido_palmatico * 2.19, 2),
+        '2.5',  
+        '0.1',
+        '24.0',
+        '54.0',
+        '196.0'
+    ]
+}
+
+df_parametros = pd.DataFrame(parametros)
+
+# Mostra a tabela
+st.subheader("🔬 Parâmetros Físico-Químicos Estimados")
+st.dataframe(df_parametros, use_container_width=True)
+
+
 # Exemplo de dados dos parâmetros físico-químicos estimados
 parametros = {
     'Parâmetro': [
