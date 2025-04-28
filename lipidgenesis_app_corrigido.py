@@ -175,6 +175,6 @@ st.markdown("""
     <footer style="background-color: #4C9B9C; color: white; padding: 10px; text-align: center; font-size: 12px;">
         <p>&copy; 2025 LipidGenesis | Bioengineering Of Oils For Nextgen</p>
         <p>Todos os direitos reservados. Sustentabilidade e inovação em cada gota.</p>
-        <p><a href="https://www.natura.com.br" style="color: white; text-decoration: underline;">www.natura.com.br</a> | <a href="https://www.ogt.com" style="color: white; text-decoration: underline;">www.ogt.com</a></p>
+        <p><a href="https://www.ogt.com" style="color: white; text-decoration: underline;">www.ogt.com</a></p>
     </footer>
 """, unsafe_allow_html=True)
