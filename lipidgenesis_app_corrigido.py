@@ -120,33 +120,8 @@ if st.button("👃 Gerar Receita Sensorial", key="sensorial_btn"):
 if st.button("📥 Baixar Relatório em PDF"):
     df_lipidica = gerar_receita_lipidica(blend_lg)
     sensorial_data = get_sensory_recipe(linha, ocasião)
-    sensorial_txt = f"Ingrediente-chave: {sensorial_data['ingrediente']}\nNotas olfativas: {sensorial_data['notas']}\nEmoções evocadas: {sensorial_data['emoções']}\nEtiqueta sensorial: {sensorial_data['etiqueta']}"
+    sensorial_txt = f"Ingrediente-chave: {sensorial_data['ingrediente']}\nNotas olfativas: {sensorial_data['notas']
+
+}\nEmoções evocadas: {sensorial_data['emoções']}\nEtiqueta sensorial: {sensorial_data['etiqueta']}"
     caminho_pdf = gerar_pdf(df_lipidica, sensorial_txt)
-    
-    st.download_button(
-        label="Baixar PDF",
-        data=open(caminho_pdf, "rb").read(),
-        file_name="relatorio_blendlg.pdf",
-        mime="application/pdf"
-    )
-
-# Estilo visual para o gráfico
-st.subheader("📊 Perfil de Ácidos Graxos no Blend LG")
-df_blend_lg = gerar_receita_lipidica(blend_lg)
-fig = px.bar(df_blend_lg.reset_index(), x='Ácido Graxo', y='%', title='Distribuição dos Ácidos Graxos', template="plotly_dark")
-st.plotly_chart(fig, use_container_width=True)
-
-# === Indicadores Ambientais e ESG ===
-st.subheader("🌎 Indicadores Ambientais e ESG")
-
-# Benchmark de CO₂ eq/kg de algumas empresas do setor
-benchmark_co2 = {
-    "Natura": 1.25,  # Emissões do blend da Natura
-    "Unilever": 1.20,  # Benchmark do setor (valores hipotéticos)
-    "Johnson & Johnson": 1.15,  # Benchmark de outra empresa do setor (hipotético)
-    "LipidGenesis": 0.8  # Emissões do novo blend desenvolvido
-}
-
-df_co2 = pd.DataFrame(list(benchmark_co2.items()), columns=["Empresa", "CO₂ eq/kg"])
-fig_co2 = px.bar(df_co2, x='Empresa', y='CO₂ eq/kg', title='Comparativo de Pegada de Carbono', template="plotly_dark")
-st.plotly_chart(fig_co2, use_container_width=True)
+    st.download_button("Clique para baixar o PDF", caminho_pdf, "relatorio_blendlg.pdf")
