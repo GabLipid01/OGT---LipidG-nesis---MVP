@@ -73,43 +73,48 @@ def get_sensory_recipe(line, occasion):
 
 
 def gerar_pdf(df_lipidica, sensorial_txt):
+    from fpdf import FPDF
+from io import BytesIO
+from datetime import datetime
+
+def gerar_pdf(df_lipidica, sensorial_txt):
     pdf = FPDF()
     pdf.add_page()
+    pdf.set_font("Arial", size=12)
+    pdf.set_text_color(33, 37, 41)
 
-    # Título + Slogan (Ajustado para estilo refinado)
-    pdf.set_font("Arial", 'B', 18)
-    pdf.cell(200, 10, "LipidGenesis - Bioengineering Of Oils For Nextgen", ln=True, align='C')
+    # Título
+    pdf.set_font("Arial", 'B', size=16)
+    pdf.cell(200, 10, txt="Relatório LipidGenesis", ln=True, align='C')
+    pdf.set_font("Arial", size=12)
     pdf.ln(10)
 
-    # Produto centralizado
-    pdf.set_font("Arial", 'B', 16)
-    pdf.cell(200, 10, "Produto: Blend LG 82/18 RBDT:RPKO", ln=True, align='C')
-    pdf.ln(20)
+    # Data
+    pdf.cell(200, 10, txt="Data: " + datetime.now().strftime('%d/%m/%Y %H:%M'), ln=True, align='L')
+    pdf.ln(10)
 
-    # Receita Lipídica - Tabela Bonita
-    pdf.set_font("Arial", 'B', 12)
-    pdf.cell(0, 10, "Receita Lipídica:", ln=True)
-    pdf.set_font("Arial", '', 12)
-    for i, row in df_lipidica.iterrows():
-        pdf.cell(0, 10, f"{i}: {row['%']:.2f}%", ln=True)
+    # Receita Lipídica
+    pdf.set_font("Arial", 'B', size=14)
+    pdf.cell(200, 10, txt="Receita Lipídica", ln=True)
+    pdf.set_font("Arial", size=12)
+    for index, row in df_lipidica.iterrows():
+        pdf.cell(200, 10, txt=f"{row['ácido graxo']}: {row['% (m/m)']:.2f}%", ln=True)
+
+    pdf.ln(10)
 
     # Receita Sensorial
-    pdf.ln(10)
-    pdf.set_font("Arial", 'B', 12)
-    pdf.cell(0, 10, "Receita Sensorial:", ln=True)
-    pdf.set_font("Arial", '', 12)
-    pdf.multi_cell(0, 10, sensorial_txt)
+    pdf.set_font("Arial", 'B', size=14)
+    pdf.cell(200, 10, txt="Receita Sensorial", ln=True)
+    pdf.set_font("Arial", size=12)
+    for linha in sensorial_txt.split("\n"):
+        pdf.multi_cell(0, 10, txt=linha)
 
-    # Seção Gráficos
-    pdf.ln(10)
-    pdf.set_font("Arial", 'B', 12)
-    pdf.cell(0, 10, "Gráfico de Ácidos Graxos", ln=True)
+    # Salvar para memória (BytesIO)
+    buffer = BytesIO()
+    pdf.output(buffer)
+    buffer.seek(0)
+    return buffer
 
-    # Aqui você pode adicionar um gráfico (em PNG) gerado no Streamlit, se necessário
-
-    caminho = "/mnt/data/relatorio_refinado_blendlg.pdf"
-    pdf.output(caminho)
-    return caminho
 
 # === Interface ===
 st.header("🔬 Análise Lipídica e Sensorial Refinada")
@@ -195,9 +200,17 @@ st.markdown("""
 """, unsafe_allow_html=True)
 
 # Exportação Refinada
+# Exportação Refinada
 if st.button("📄 Exportar Relatório PDF", key="export_pdf"):
     df_lipidica = gerar_receita_lipidica(blend_lg)
     sensorial_data = get_sensory_recipe(linha, ocasião)
     sensorial_txt = f"Ingrediente-chave: {sensorial_data['ingrediente']}\nNotas olfativas: {sensorial_data['notas']}\nEmoções evocadas: {sensorial_data['emoções']}\nEtiqueta sensorial: {sensorial_data['etiqueta']}"
-    caminho_pdf = gerar_pdf(df_lipidica, sensorial_txt)
-    st.markdown(f"**[Baixar Relatório PDF]({caminho_pdf})**")
+    pdf_buffer = gerar_pdf(df_lipidica, sensorial_txt)
+
+    st.download_button(
+        label="📥 Baixar Relatório PDF",
+        data=pdf_buffer,
+        file_name=f"relatorio_lipidgenesis_{datetime.now().strftime('%Y%m%d_%H%M%S')}.pdf",
+        mime="application/pdf"
+    )
+
