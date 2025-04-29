@@ -4,19 +4,67 @@ import plotly.express as px
 from fpdf import FPDF
 
 # === Perfis de Ácidos Graxos (Codex Alimentarius) ===
-RPKO_PROFILE = {
-    "C6:0": 0.5, "C8:0": 4.3, "C10:0": 3.8, "C12:0": 50.0,
-    "C14:0": 16.0, "C16:0": 8.3, "C16:1": 0.1, "C18:0": 2.0,
-    "C18:1": 15.5, "C18:2": 2.25, "C18:3": 0.1, "C20:0": 0.1, "C20:1": 0.0
+# === Perfis de Ácidos Graxos (Codex Alimentarius) ===
+FATTY_ACID_PROFILES = {
+    "Palm Oil": {
+        "C12:0": 0.2, "C14:0": 1.0, "C16:0": 44.0, "C16:1": 0.2,
+        "C18:0": 4.5, "C18:1": 39.0, "C18:2": 10.0, "C18:3": 0.3,
+        "C20:0": 0.2, "C20:1": 0.1
+    },
+    "Palm Olein": {
+        "C12:0": 0.1, "C14:0": 1.0, "C16:0": 39.0, "C16:1": 0.2,
+        "C18:0": 4.5, "C18:1": 43.5, "C18:2": 11.0, "C18:3": 0.3,
+        "C20:0": 0.2, "C20:1": 0.2
+    },
+    "Palm Stearin": {
+        "C14:0": 1.2, "C16:0": 56.0, "C16:1": 0.1, "C18:0": 6.5,
+        "C18:1": 30.0, "C18:2": 5.0, "C18:3": 0.1, "C20:0": 0.3
+    },
+    "Palm Kernel Oil": {
+        "C6:0": 0.2, "C8:0": 3.6, "C10:0": 3.5, "C12:0": 48.2,
+        "C14:0": 16.2, "C16:0": 8.4, "C16:1": 0.1, "C18:0": 2.0,
+        "C18:1": 15.3, "C18:2": 2.3, "C18:3": 0.1, "C20:0": 0.1
+    },
+    "Palm Kernel Olein": {
+        "C6:0": 0.3, "C8:0": 4.0, "C10:0": 3.7, "C12:0": 49.5,
+        "C14:0": 15.7, "C16:0": 8.0, "C16:1": 0.1, "C18:0": 1.9,
+        "C18:1": 14.5, "C18:2": 2.1, "C18:3": 0.1, "C20:0": 0.1
+    },
+    "Palm Kernel Stearin": {
+        "C8:0": 3.0, "C10:0": 3.0, "C12:0": 47.0, "C14:0": 17.5,
+        "C16:0": 9.5, "C16:1": 0.1, "C18:0": 2.5, "C18:1": 14.0,
+        "C18:2": 2.0, "C18:3": 0.1, "C20:0": 0.1
+    }
 }
 
-RBDT_PROFILE = {
-    "C12:0": 0.5, "C14:0": 0.75, "C16:0": 43.4, "C16:1": 0.3,
-    "C18:0": 5.0, "C18:1": 40.0, "C18:2": 10.5, "C18:3": 0.2,
-    "C20:0": 0.3, "C20:1": 0.2
-}
 
-blend_lg = {k: 0.18 * RPKO_PROFILE.get(k, 0) + 0.82 * RBDT_PROFILE.get(k, 0) for k in set(RPKO_PROFILE) | set(RBDT_PROFILE)}
+# Sidebar: Sliders para montagem do blend personalizado
+st.sidebar.markdown("### Monte seu Blend Personalizado (%)")
+
+oil_keys = list(FATTY_ACID_PROFILES.keys())
+
+# Captura das porcentagens via sliders
+oil_percentages = {}
+total_pct = 0
+for oil in oil_keys:
+    pct = st.sidebar.slider(f"{oil} (%)", 0, 100, 0, 1)
+    oil_percentages[oil] = pct
+    total_pct += pct
+
+# Cálculo da média ponderada do perfil lipídico
+blend_lg = {}
+if total_pct == 0:
+    st.warning("Defina pelo menos um óleo com percentual maior que 0.")
+else:
+    normalized = {k: v / total_pct for k, v in oil_percentages.items()}
+    all_fatty_acids = set()
+    for profile in FATTY_ACID_PROFILES.values():
+        all_fatty_acids |= set(profile.keys())
+
+    blend_lg = {
+        fa: sum(normalized[oil] * FATTY_ACID_PROFILES[oil].get(fa, 0) for oil in oil_keys)
+        for fa in all_fatty_acids
+    }
 
 st.set_page_config(page_title="LipidGenesis - Blend LG", layout="wide")
 
