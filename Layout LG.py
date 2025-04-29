@@ -6,7 +6,6 @@ import plotly.express as px
 from fpdf import FPDF
 
 # === Perfis de Ácidos Graxos (Codex Alimentarius) ===
-# === Perfis de Ácidos Graxos (Codex Alimentarius) ===
 FATTY_ACID_PROFILES = {
     "Palm Oil": {
         "C12:0": 0.2, "C14:0": 1.0, "C16:0": 44.0, "C16:1": 0.2,
