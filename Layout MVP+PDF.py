@@ -152,11 +152,6 @@ def gerar_pdf(df_lipidica, sensorial_txt):
     pdf.set_font("Arial", 'B', size=14)
     pdf.cell(200, 10, txt="Receita Lipídica", ln=True)
     pdf.set_font("Arial", size=12)
-
-    # Receita Lipídica
-    pdf.set_font("Arial", 'B', size=14)
-    pdf.cell(200, 10, txt="Receita Lipídica", ln=True)
-    pdf.set_font("Arial", size=12)
     for index, row in df_lipidica.iterrows():
         nome = f"{nomes_acidos.get(index, index)} ({index})"
         pdf.cell(200, 10, txt=f"{nome}: {row['%']:.2f}%", ln=True)
