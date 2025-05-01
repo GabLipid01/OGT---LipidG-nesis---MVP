@@ -84,11 +84,11 @@ ocasião = st.sidebar.selectbox("Ocasião de Uso:", ["Banho", "Rosto", "Corpo", 
 # === Funções ===
 def gerar_receita_lipidica(blend):
     df = pd.DataFrame.from_dict(blend, orient='index', columns=['%'])
+    df.index.name = 'Ácido Graxo'
     df = df.reset_index()
-    df.columns = ['Ácido Graxo', '%']
     df['Nome Completo'] = df['Ácido Graxo'].apply(lambda x: f"{nomes_acidos.get(x, x)} ({x})")
-    df = df[['Nome Completo', '%']]
     return df
+
 
 
 # === Função para obter a receita sensorial ===
@@ -179,7 +179,8 @@ st.header("🔬 Análise Lipídica e Sensorial Refinada")
 # Botões com design refinado
 if st.button("🧪 Gerar Receita Lipídica", key="lipidica_btn"):
     df_lipidica = gerar_receita_lipidica(blend_lg)
-    st.dataframe(df_lipidica)
+    st.dataframe(df_lipidica[['Nome Completo', '%']])
+
 
     # === Cálculo físico-químico dinâmico com base nas proporções do usuário ===
     valores_iodo = {
