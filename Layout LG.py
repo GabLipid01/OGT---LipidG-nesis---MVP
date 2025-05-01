@@ -180,9 +180,9 @@ if st.button("🧪 Gerar Receita Lipídica", key="lipidica_btn"):
         'C16:0': 241.0, 'C18:0': 222.0, 'C18:1': 198.0, 'C18:2': 195.0, 'C18:3': 190.0
     }
 
-    valores_peroxido = {
-        "Palm Oil": 10.0, "Palm Olein": 10.0, "Palm Stearin": 10.0,
-        "Palm Kernel Oil": 5.0, "Palm Kernel Olein": 5.0, "Palm Kernel Stearin": 5.0
+    valores_ponto_fusao = {
+        'C6:0': -3.0, 'C8:0': 16.0, 'C10:0': 31.0, 'C12:0': 44.0, 'C14:0': 53.0,
+        'C16:0': 63.0, 'C18:0': 70.0, 'C18:1': 13.0, 'C18:2': -5.0, 'C18:3': -11.0
     }
 
     # Índice de Iodo
@@ -195,20 +195,17 @@ if st.button("🧪 Gerar Receita Lipídica", key="lipidica_btn"):
         blend_lg.get(fa, 0) * valores_saponificacao.get(fa, 0) / 100 for fa in blend_lg
     )
 
-    # Índice de Peróxidos (média ponderada com base nas proporções reais)
-    if total_pct > 0:
-        indice_peroxido = sum(
-            (oil_percentages[oil] / total_pct) * valores_peroxido.get(oil, 0)
-            for oil in oil_percentages
-        )
-    else:
-        indice_peroxido = 0
+    # Ponto de Fusão estimado (média ponderada simples)
+    ponto_fusao = sum(
+        blend_lg.get(fa, 0) * valores_ponto_fusao.get(fa, 0) / 100 for fa in blend_lg
+    )
 
     # Exibição
     st.subheader("⚗️ Parâmetros Físico-Químicos do Blend LG (Dinâmico)")
     st.metric("Índice de Iodo (II)", f"{indice_iodo:.2f}")
     st.metric("Índice de Saponificação (IS)", f"{indice_saponificacao:.2f} mg KOH/g")
-    st.metric("Índice de Peróxidos (máx)", f"{indice_peroxido:.2f} mEq/kg")
+    st.metric("Ponto de Fusão Estimado", f"{ponto_fusao:.2f} °C")
+
 
 
 if st.button("👃 Gerar Receita Sensorial", key="sensorial_btn"):
