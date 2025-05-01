@@ -149,9 +149,8 @@ def gerar_pdf(df_lipidica, sensorial_txt):
     pdf.cell(200, 10, txt="Receita Lipídica", ln=True)
     pdf.set_font("Arial", size=12)
     for index, row in df_lipidica.iterrows():
-        nome = f"{nomes_acidos.get(index, index)} ({index})"
-        pdf.cell(200, 10, txt=f"{nome}: {row['%']:.2f}%", ln=True)
-        pdf.cell(200, 10, txt=f"{row['ácido graxo']}: {row['% (m/m)']:.2f}%", ln=True)
+    nome = f"{nomes_acidos.get(index, index)} ({index})"
+    pdf.cell(200, 10, txt=f"{nome}: {row['%']:.2f}%", ln=True)
 
     pdf.ln(10)
 
