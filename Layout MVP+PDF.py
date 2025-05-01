@@ -89,6 +89,10 @@ nomes_acidos = {
     "C18:2": "Ácido Linoleico", "C18:3": "Ácido Linolênico", "C20:0": "Ácido Araquídico",
     "C20:1": "Ácido Gadoleico"
 
+}
+
+
+
 # === Funções ===
 def gerar_receita_lipidica(blend):
     df = pd.DataFrame.from_dict(blend, orient='index', columns=['%'])
