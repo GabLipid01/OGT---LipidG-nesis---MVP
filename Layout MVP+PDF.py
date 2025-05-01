@@ -85,7 +85,11 @@ ocasião = st.sidebar.selectbox("Ocasião de Uso:", ["Banho", "Rosto", "Corpo", 
 def gerar_receita_lipidica(blend):
     df = pd.DataFrame.from_dict(blend, orient='index', columns=['%'])
     df.index.name = 'Ácido Graxo'
+    df = df.reset_index()
+    df['Nome Completo'] = df['Ácido Graxo'].apply(lambda x: f"{nomes_acidos.get(x, x)} ({x})")
+    df = df[['Nome Completo', '%']]
     return df
+
 
 # === Função para obter a receita sensorial ===
 def get_sensory_recipe(line, occasion):
