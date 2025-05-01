@@ -129,9 +129,6 @@ def get_sensory_recipe(line, occasion):
     }
     return aromatic_profiles.get(line, {}).get(occasion, {"ingrediente": "N/A", "notas": "N/A", "emoções": "N/A", "etiqueta": "Não disponível."})
 
-
-def gerar_pdf(df_lipidica, sensorial_txt):
-    from fpdf import FPDF
 from io import BytesIO
 from datetime import datetime
 
