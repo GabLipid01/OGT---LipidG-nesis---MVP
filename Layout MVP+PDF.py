@@ -84,8 +84,8 @@ ocasião = st.sidebar.selectbox("Ocasião de Uso:", ["Banho", "Rosto", "Corpo", 
 # === Funções ===
 def gerar_receita_lipidica(blend):
     df = pd.DataFrame.from_dict(blend, orient='index', columns=['%'])
-    df.index.name = 'Ácido Graxo'
     df = df.reset_index()
+    df.columns = ['Ácido Graxo', '%']
     df['Nome Completo'] = df['Ácido Graxo'].apply(lambda x: f"{nomes_acidos.get(x, x)} ({x})")
     df = df[['Nome Completo', '%']]
     return df
