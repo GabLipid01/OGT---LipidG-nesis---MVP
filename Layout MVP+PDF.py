@@ -235,7 +235,6 @@ if st.button("👃 Gerar Receita Sensorial", key="sensorial_btn"):
 st.subheader("📊 Perfil de Ácidos Graxos no Blend LG")
 df_blend_lg = gerar_receita_lipidica(blend_lg)
 
-}
 df_blend_lg = df_blend_lg.reset_index()
 df_blend_lg['Nome Completo'] = df_blend_lg['Ácido Graxo'].apply(lambda x: f"{nomes_acidos.get(x, x)} ({x})")
 
