@@ -152,6 +152,7 @@ def gerar_pdf(df_lipidica, sensorial_txt):
     nome = f"{nomes_acidos.get(index, index)} ({index})"
     pdf.cell(200, 10, txt=f"{nome}: {row['%']:.2f}%", ln=True)
 
+
     pdf.ln(10)
 
     # Receita Sensorial
