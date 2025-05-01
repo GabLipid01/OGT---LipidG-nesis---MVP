@@ -170,50 +170,45 @@ if st.button("🧪 Gerar Receita Lipídica", key="lipidica_btn"):
     df_lipidica = gerar_receita_lipidica(blend_lg)
     st.dataframe(df_lipidica)
 
-    # === Cálculo físico-químico dinâmico com base nos sliders ===
-# Perfis físico-químicos aproximados (valores médios por ácido graxo)
-valores_iodo = {
-    'C18:1': 86, 'C18:2': 173, 'C18:3': 260
-}
+    # === Cálculo físico-químico dinâmico com base nas proporções do usuário ===
+    valores_iodo = {
+        'C18:1': 86, 'C18:2': 173, 'C18:3': 260
+    }
 
-valores_saponificacao = {
-    'C6:0': 325.0, 'C8:0': 305.0, 'C10:0': 295.0, 'C12:0': 276.0, 'C14:0': 255.0,
-    'C16:0': 241.0, 'C18:0': 222.0, 'C18:1': 198.0, 'C18:2': 195.0, 'C18:3': 190.0
-}
+    valores_saponificacao = {
+        'C6:0': 325.0, 'C8:0': 305.0, 'C10:0': 295.0, 'C12:0': 276.0, 'C14:0': 255.0,
+        'C16:0': 241.0, 'C18:0': 222.0, 'C18:1': 198.0, 'C18:2': 195.0, 'C18:3': 190.0
+    }
 
-valores_peroxido = {
-    "Palm Oil": 10.0, "Palm Olein": 10.0, "Palm Stearin": 10.0,
-    "Palm Kernel Oil": 5.0, "Palm Kernel Olein": 5.0, "Palm Kernel Stearin": 5.0
-}
+    valores_peroxido = {
+        "Palm Oil": 10.0, "Palm Olein": 10.0, "Palm Stearin": 10.0,
+        "Palm Kernel Oil": 5.0, "Palm Kernel Olein": 5.0, "Palm Kernel Stearin": 5.0
+    }
 
-# Índice de Iodo
-indice_iodo = sum(
-    blend_lg.get(fa, 0) * valores_iodo.get(fa, 0) / 100 for fa in blend_lg
-)
+    # Índice de Iodo
+    indice_iodo = sum(
+        blend_lg.get(fa, 0) * valores_iodo.get(fa, 0) / 100 for fa in blend_lg
+    )
 
-# Índice de Saponificação
-indice_saponificacao = sum(
-    blend_lg.get(fa, 0) * valores_saponificacao.get(fa, 0) / 100 for fa in blend_lg
-)
+    # Índice de Saponificação
+    indice_saponificacao = sum(
+        blend_lg.get(fa, 0) * valores_saponificacao.get(fa, 0) / 100 for fa in blend_lg
+    )
 
-# Índice de Peróxidos (média ponderada dos óleos usados)
-indice_peroxido = sum(
-    (oil_percentages[oil] / total_pct) * valores_peroxido[oil]
-    for oil in oil_percentages if total_pct > 0
-)
+    # Índice de Peróxidos (média ponderada com base nas proporções reais)
+    if total_pct > 0:
+        indice_peroxido = sum(
+            (oil_percentages[oil] / total_pct) * valores_peroxido.get(oil, 0)
+            for oil in oil_percentages
+        )
+    else:
+        indice_peroxido = 0
 
-# Exibição dinâmica dos resultados
-st.subheader("⚗️ Parâmetros Físico-Químicos do Blend LG (Dinâmico)")
-st.metric("Índice de Iodo (II)", f"{indice_iodo:.2f}")
-st.metric("Índice de Saponificação (IS)", f"{indice_saponificacao:.2f} mg KOH/g")
-st.metric("Índice de Peróxidos (máx)", f"{indice_peroxido:.2f} mEq/kg")
-
-    
-
-    st.subheader("⚗️ Parâmetros Físico-Químicos do Blend LG")
-    st.metric("Índice de Iodo (II)", f"{resultados_blend['Índice de Iodo (II)']:.2f}")
-    st.metric("Índice de Saponificação (IS)", f"{resultados_blend['Índice de Saponificação (IS)']:.2f} mg KOH/g")
-    st.metric("Ponto de Fusão Estimado", f"{resultados_blend['Ponto de Fusão (PF)']:.2f} °C")
+    # Exibição
+    st.subheader("⚗️ Parâmetros Físico-Químicos do Blend LG (Dinâmico)")
+    st.metric("Índice de Iodo (II)", f"{indice_iodo:.2f}")
+    st.metric("Índice de Saponificação (IS)", f"{indice_saponificacao:.2f} mg KOH/g")
+    st.metric("Índice de Peróxidos (máx)", f"{indice_peroxido:.2f} mEq/kg")
 
 
 if st.button("👃 Gerar Receita Sensorial", key="sensorial_btn"):
