@@ -81,6 +81,14 @@ st.sidebar.title("🔬 Configurações")
 linha = st.sidebar.selectbox("Linha de Produto:", ["Vitalis", "Essentia", "Ardor", "Lúmina"], index=0)
 ocasião = st.sidebar.selectbox("Ocasião de Uso:", ["Banho", "Rosto", "Corpo", "Cabelos"], index=0)
 
+# Nome completo dos ácidos graxos
+nomes_acidos = {
+    "C6:0": "Ácido Capróico", "C8:0": "Ácido Caprílico", "C10:0": "Ácido Cáprico",
+    "C12:0": "Ácido Láurico", "C14:0": "Ácido Mirístico", "C16:0": "Ácido Palmítico",
+    "C16:1": "Ácido Palmitoleico", "C18:0": "Ácido Esteárico", "C18:1": "Ácido Oleico",
+    "C18:2": "Ácido Linoleico", "C18:3": "Ácido Linolênico", "C20:0": "Ácido Araquídico",
+    "C20:1": "Ácido Gadoleico"
+
 # === Funções ===
 def gerar_receita_lipidica(blend):
     df = pd.DataFrame.from_dict(blend, orient='index', columns=['%'])
@@ -231,13 +239,6 @@ if st.button("👃 Gerar Receita Sensorial", key="sensorial_btn"):
 st.subheader("📊 Perfil de Ácidos Graxos no Blend LG")
 df_blend_lg = gerar_receita_lipidica(blend_lg)
 
-# Nome completo dos ácidos graxos
-nomes_acidos = {
-    "C6:0": "Ácido Capróico", "C8:0": "Ácido Caprílico", "C10:0": "Ácido Cáprico",
-    "C12:0": "Ácido Láurico", "C14:0": "Ácido Mirístico", "C16:0": "Ácido Palmítico",
-    "C16:1": "Ácido Palmitoleico", "C18:0": "Ácido Esteárico", "C18:1": "Ácido Oleico",
-    "C18:2": "Ácido Linoleico", "C18:3": "Ácido Linolênico", "C20:0": "Ácido Araquídico",
-    "C20:1": "Ácido Gadoleico"
 }
 df_blend_lg = df_blend_lg.reset_index()
 df_blend_lg['Nome Completo'] = df_blend_lg['Ácido Graxo'].apply(lambda x: f"{nomes_acidos.get(x, x)} ({x})")
