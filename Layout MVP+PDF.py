@@ -49,7 +49,7 @@ import plotly.express as px
 import pandas as pd
 
 # === Pirâmide olfativa gráfica com proporções ===
-def exibir_piramide_olfativa(sensorial_data):
+def exibir_piramide_olfativa(sensorial_data, line, occasion):
     st.subheader("🔺 Pirâmide Olfativa com Proporções")
 
     # Define proporções clássicas
@@ -59,11 +59,23 @@ def exibir_piramide_olfativa(sensorial_data):
         'Fundo': 35
     }
 
-    # Identifica notas (assumindo que 'notas' tem formato: 'Lavanda, Gerânio, Patchouli')
-    notas = sensorial_data['notas'].split(',')
-    nota_topo = notas[0].strip() if len(notas) > 0 else "Nota de Topo"
-    nota_fundo = notas[-1].strip() if len(notas) > 1 else "Nota de Fundo"
-    nota_corpo = sensorial_data['ingrediente']
+    # Obtém a receita sensorial da linha e ocasião específicas
+    receita = get_sensory_recipe(line, occasion)
+    notas = receita['notas'].split(',')
+    
+    # Garantir que temos 3 camadas (Topo, Corpo e Fundo)
+    if len(notas) == 1:
+        nota_topo = notas[0].strip()
+        nota_fundo = "Amadeirado suave"  # Preencher com uma nota coerente, por exemplo
+        nota_corpo = "Cremoso, doce"  # Preencher com uma nota coerente, por exemplo
+    elif len(notas) == 2:
+        nota_topo = notas[0].strip()
+        nota_corpo = notas[1].strip()
+        nota_fundo = "Amadeirado suave"  # Preencher com uma nota coerente, por exemplo
+    else:
+        nota_topo = notas[0].strip()
+        nota_corpo = notas[1].strip()
+        nota_fundo = notas[2].strip()
 
     # Dados para o gráfico
     df = pd.DataFrame({
