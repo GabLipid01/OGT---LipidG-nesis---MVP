@@ -45,26 +45,77 @@ SENSORY_EMOJIS = {
     "Calmaria": "🕊️", "Suavidade": "☁️", "Frescor": "🌬️"
 }
 
-# === Pirâmide olfativa visual ===
+import plotly.express as px
+import pandas as pd
+
+# === Pirâmide olfativa gráfica com proporções ===
 def exibir_piramide_olfativa(sensorial_data):
-    st.subheader("🔺 Pirâmide Olfativa")
-    with st.container():
-        st.markdown(f"""
-        <div style='text-align: center; font-size: 18px;'>
-            <div><b>🌸 Topo:</b> {sensorial_data['notas'].split(',')[0].strip()}</div>
-            <div><b>🌿 Corpo:</b> {sensorial_data['ingrediente']}</div>
-            <div><b>🌳 Fundo:</b> {sensorial_data['notas'].split(',')[-1].strip()}</div>
-        </div>
-        """, unsafe_allow_html=True)
+    st.subheader("🔺 Pirâmide Olfativa com Proporções")
+
+    # Define proporções clássicas
+    proporcoes = {
+        'Topo': 15,
+        'Corpo': 50,
+        'Fundo': 35
+    }
+
+    # Identifica notas (assumindo que 'notas' tem formato: 'Lavanda, Gerânio, Patchouli')
+    notas = sensorial_data['notas'].split(',')
+    nota_topo = notas[0].strip() if len(notas) > 0 else "Nota de Topo"
+    nota_fundo = notas[-1].strip() if len(notas) > 1 else "Nota de Fundo"
+    nota_corpo = sensorial_data['ingrediente']
+
+    # Dados para o gráfico
+    df = pd.DataFrame({
+        'Nota': [nota_topo, nota_corpo, nota_fundo],
+        'Camada': ['Topo', 'Corpo', 'Fundo'],
+        'Proporção (%)': [proporcoes['Topo'], proporcoes['Corpo'], proporcoes['Fundo']]
+    })
+
+    # Ordena para o gráfico em pirâmide invertida (base larga = fundo)
+    camada_ordem = {'Fundo': 0, 'Corpo': 1, 'Topo': 2}
+    df['ordem'] = df['Camada'].map(camada_ordem)
+    df = df.sort_values(by='ordem', ascending=False)
+
+    # Gráfico de pirâmide
+    fig = px.bar(
+        df,
+        x="Proporção (%)",
+        y="Camada",
+        orientation="h",
+        color="Camada",
+        text="Nota",
+        color_discrete_map={"Topo": "#FFC1E3", "Corpo": "#B2E4B2", "Fundo": "#A0C4FF"},
+        height=400
+    )
+
+    fig.update_traces(textposition='outside')
+    fig.update_layout(
+        yaxis=dict(categoryorder='array', categoryarray=["Fundo", "Corpo", "Topo"]),
+        showlegend=False,
+        margin=dict(t=30, b=30),
+        xaxis_title=None,
+        yaxis_title=None
+    )
+
+    st.plotly_chart(fig, use_container_width=True)
+
+    # Exibe as proporções também como texto
+    st.markdown(f"""
+    <div style='text-align: center; font-size: 16px;'>
+        <b>Ingredientes e proporções sugeridas:</b><br>
+        🌸 <b>{nota_topo}</b> (Topo): {proporcoes['Topo']}%<br>
+        🌿 <b>{nota_corpo}</b> (Corpo): {proporcoes['Corpo']}%<br>
+        🌳 <b>{nota_fundo}</b> (Fundo): {proporcoes['Fundo']}%
+    </div>
+    """, unsafe_allow_html=True)
+
 
 # === Storytelling de marca ===
 def exibir_storytelling(sensorial_data):
     st.subheader("📖 Storytelling Sensorial")
     emoji = SENSORY_EMOJIS.get(sensorial_data['emoções'], "✨")
     st.markdown(f"**{emoji} {sensorial_data['etiqueta']}**")
-
-
-
 
 # Sidebar: Sliders para montagem do blend personalizado
 st.sidebar.markdown("### Monte seu Blend Personalizado (%)")
