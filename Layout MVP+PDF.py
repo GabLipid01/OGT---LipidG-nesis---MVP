@@ -283,7 +283,8 @@ with col2:
 
 # === Cálculo físico-químico dinâmico com base nas proporções do usuário ===
 if gerar_lipidica:
-    gerar_receita_lipidica()
+    df_lipidico = gerar_receita_lipidica(blend_lg)
+st.dataframe(df_lipidico)
 
     valores_iodo = {
         'C18:1': 86, 'C18:2': 173, 'C18:3': 260
