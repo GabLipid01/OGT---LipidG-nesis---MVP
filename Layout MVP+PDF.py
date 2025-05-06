@@ -281,12 +281,6 @@ with col1:
     if st.button("🧪 Gerar Receita Lipídica", key="lipidica_btn"):
         gerar_receita_lipidica()
 
-with col2:
-    if st.button("👃 Gerar Receita Sensorial", key="sensorial_btn"):
-        sensorial_data = get_sensory_recipe(linha, ocasião)
-        exibir_piramide_olfativa(sensorial_data)
-        exibir_storytelling(sensorial_data)
-
 
     # === Cálculo físico-químico dinâmico com base nas proporções do usuário ===
     valores_iodo = {
@@ -323,6 +317,12 @@ with col2:
     st.metric("Índice de Iodo (II)", f"{indice_iodo:.2f}")
     st.metric("Índice de Saponificação (IS)", f"{indice_saponificacao:.2f} mg KOH/g")
     st.metric("Ponto de Fusão Estimado", f"{ponto_fusao:.2f} °C")
+
+with col2:
+    if st.button("👃 Gerar Receita Sensorial", key="sensorial_btn"):
+        sensorial_data = get_sensory_recipe(linha, ocasião)
+        exibir_piramide_olfativa(sensorial_data)
+        exibir_storytelling(sensorial_data)
 
 
 # Estilo visual para o gráfico
