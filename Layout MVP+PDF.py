@@ -286,35 +286,36 @@ if gerar_lipidica:
     df_lipidico = gerar_receita_lipidica(blend_lg)
 st.dataframe(df_lipidico)
     valores_iodo = {
-        'C18:1': 86, 'C18:2': 173, 'C18:3': 260
-    }
+    'C18:1': 86, 'C18:2': 173, 'C18:3': 260
+}
 
-    valores_saponificacao = {
-        'C6:0': 325.0, 'C8:0': 305.0, 'C10:0': 295.0, 'C12:0': 276.0, 'C14:0': 255.0,
-        'C16:0': 241.0, 'C18:0': 222.0, 'C18:1': 198.0, 'C18:2': 195.0, 'C18:3': 190.0
-    }
+valores_saponificacao = {
+    'C6:0': 325.0, 'C8:0': 305.0, 'C10:0': 295.0, 'C12:0': 276.0, 'C14:0': 255.0,
+    'C16:0': 241.0, 'C18:0': 222.0, 'C18:1': 198.0, 'C18:2': 195.0, 'C18:3': 190.0
+}
 
-    valores_ponto_fusao = {
-        'C6:0': -3.0, 'C8:0': 16.0, 'C10:0': 31.0, 'C12:0': 44.0, 'C14:0': 53.0,
-        'C16:0': 63.0, 'C18:0': 70.0, 'C18:1': 13.0, 'C18:2': -5.0, 'C18:3': -11.0
-    }
+valores_ponto_fusao = {
+    'C6:0': -3.0, 'C8:0': 16.0, 'C10:0': 31.0, 'C12:0': 44.0, 'C14:0': 53.0,
+    'C16:0': 63.0, 'C18:0': 70.0, 'C18:1': 13.0, 'C18:2': -5.0, 'C18:3': -11.0
+}
 
-    indice_iodo = sum(
-        blend_lg.get(fa, 0) * valores_iodo.get(fa, 0) / 100 for fa in blend_lg
-    )
+indice_iodo = sum(
+    blend_lg.get(fa, 0) * valores_iodo.get(fa, 0) / 100 for fa in blend_lg
+)
 
-    indice_saponificacao = sum(
-        blend_lg.get(fa, 0) * valores_saponificacao.get(fa, 0) / 100 for fa in blend_lg
-    )
+indice_saponificacao = sum(
+    blend_lg.get(fa, 0) * valores_saponificacao.get(fa, 0) / 100 for fa in blend_lg
+)
 
-    ponto_fusao = sum(
-        blend_lg.get(fa, 0) * valores_ponto_fusao.get(fa, 0) / 100 for fa in blend_lg
-    )
+ponto_fusao = sum(
+    blend_lg.get(fa, 0) * valores_ponto_fusao.get(fa, 0) / 100 for fa in blend_lg
+)
 
-    st.subheader("⚗️ Parâmetros Físico-Químicos do Blend LG (Dinâmico)")
-    st.metric("Índice de Iodo (II)", f"{indice_iodo:.2f}")
-    st.metric("Índice de Saponificação (IS)", f"{indice_saponificacao:.2f} mg KOH/g")
-    st.metric("Ponto de Fusão Estimado", f"{ponto_fusao:.2f} °C")
+st.subheader("⚗️ Parâmetros Físico-Químicos do Blend LG (Dinâmico)")
+st.metric("Índice de Iodo (II)", f"{indice_iodo:.2f}")
+st.metric("Índice de Saponificação (IS)", f"{indice_saponificacao:.2f} mg KOH/g")
+st.metric("Ponto de Fusão Estimado", f"{ponto_fusao:.2f} °C")
+
 
 if gerar_sensorial:
     sensorial_data = get_sensory_recipe(linha, ocasião)
