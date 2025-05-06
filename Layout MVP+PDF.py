@@ -189,8 +189,6 @@ nomes_acidos = {
 
 }
 
-
-
 # === Funções ===
 def gerar_receita_lipidica(blend):
     df = pd.DataFrame.from_dict(blend, orient='index', columns=['%'])
@@ -198,8 +196,6 @@ def gerar_receita_lipidica(blend):
     df = df.reset_index()
     df['Nome Completo'] = df['Ácido Graxo'].apply(lambda x: f"{nomes_acidos.get(x, x)} ({x})")
     return df
-
-
 
 # === Função para obter a receita sensorial ===
 def get_sensory_recipe(line, occasion):
@@ -258,7 +254,6 @@ def gerar_pdf(df_lipidica, sensorial_txt):
         nome = f"{nomes_acidos.get(index, index)} ({index})"
         pdf.cell(200, 10, txt=f"{nome}: {row['%']:.2f}%", ln=True)
 
-
     pdf.ln(10)
 
     # Receita Sensorial
@@ -279,9 +274,18 @@ def gerar_pdf(df_lipidica, sensorial_txt):
 st.header("🔬 Análise Lipídica e Sensorial Refinada")
 
 # Botões com design refinado
-if st.button("🧪 Gerar Receita Lipídica", key="lipidica_btn"):
-    df_lipidica = gerar_receita_lipidica(blend_lg)
-    st.dataframe(df_lipidica[['Nome Completo', '%']])
+# Alinhar os botões lado a lado
+col1, col2 = st.columns(2)
+
+with col1:
+    if st.button("🧪 Gerar Receita Lipídica", key="lipidica_btn"):
+        gerar_receita_lipidica()
+
+with col2:
+    if st.button("👃 Gerar Receita Sensorial", key="sensorial_btn"):
+        sensorial_data = get_sensory_recipe(linha, ocasião)
+        exibir_piramide_olfativa(sensorial_data)
+        exibir_storytelling(sensorial_data)
 
 
     # === Cálculo físico-químico dinâmico com base nas proporções do usuário ===
@@ -319,12 +323,6 @@ if st.button("🧪 Gerar Receita Lipídica", key="lipidica_btn"):
     st.metric("Índice de Iodo (II)", f"{indice_iodo:.2f}")
     st.metric("Índice de Saponificação (IS)", f"{indice_saponificacao:.2f} mg KOH/g")
     st.metric("Ponto de Fusão Estimado", f"{ponto_fusao:.2f} °C")
-
-if st.button("👃 Gerar Receita Sensorial", key="sensorial_btn"):
-    sensorial_data = get_sensory_recipe(linha, ocasião)
-    sensorial_txt = f"Ingrediente-chave: {sensorial_data['ingrediente']}\nNotas olfativas: {sensorial_data['notas']}\nEmoções evocadas: {sensorial_data['emoções']}\nEtiqueta sensorial: {sensorial_data['etiqueta']}"
-    exibir_piramide_olfativa(sensorial_data)
-    exibir_storytelling(sensorial_data)
 
 
 # Estilo visual para o gráfico
