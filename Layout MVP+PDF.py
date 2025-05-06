@@ -282,136 +282,79 @@ def gerar_pdf(df_lipidica, sensorial_txt):
     buffer.seek(0)
     return buffer
 
-# === Interface ===
-st.header("🔬 Análise Lipídica e Sensorial Refinada")
+# === Tabs ===
+tab1, tab2, tab3, tab4 = st.tabs(["🌿 Blend & Perfil", "🌸 Sensorial", "🌍 Ambiental & ESG", "📄 Exportar PDF"])
 
-# Alinhar os botões lado a lado
-col1, col2 = st.columns(2)
-
-with col1:
+with tab1:
+    st.header("🔬 Análise Lipídica e Parâmetros Físico-Químicos")
     gerar_lipidica = st.button("🧪 Gerar Receita Lipídica", key="lipidica_btn")
 
-with col2:
+    if gerar_lipidica:
+        df_lipidico = gerar_receita_lipidica(blend_lg)
+        st.dataframe(df_lipidico)
+
+        indice_iodo = sum(
+            blend_lg.get(fa, 0) * valores_iodo.get(fa, 0) / 100 for fa in blend_lg
+        )
+        indice_saponificacao = sum(
+            blend_lg.get(fa, 0) * valores_saponificacao.get(fa, 0) / 100 for fa in blend_lg
+        )
+        ponto_fusao = sum(
+            blend_lg.get(fa, 0) * valores_ponto_fusao.get(fa, 0) / 100 for fa in blend_lg
+        )
+
+        st.metric("Índice de Iodo (II)", f"{indice_iodo:.2f}")
+        st.metric("Índice de Saponificação (IS)", f"{indice_saponificacao:.2f} mg KOH/g")
+        st.metric("Ponto de Fusão Estimado", f"{ponto_fusao:.2f} °C")
+
+        st.subheader("📊 Perfil de Ácidos Graxos no Blend LG")
+        df_blend_lg = gerar_receita_lipidica(blend_lg)
+        df_blend_lg = df_blend_lg.reset_index()
+        df_blend_lg['Nome Completo'] = df_blend_lg['Ácido Graxo'].apply(lambda x: f"{nomes_acidos.get(x, x)} ({x})")
+
+        fig = px.bar(
+            df_blend_lg,
+            x='Nome Completo',
+            y='%',
+            title='Distribuição dos Ácidos Graxos',
+            template="plotly_dark"
+        )
+        st.plotly_chart(fig, use_container_width=True)
+
+with tab2:
+    st.header("🌸 Análise Sensorial e Pirâmide Olfativa")
     gerar_sensorial = st.button("👃 Gerar Receita Sensorial", key="sensorial_btn")
 
-# === Cálculo físico-químico dinâmico com base nas proporções do usuário ===
-if gerar_lipidica:
-    df_lipidico = gerar_receita_lipidica(blend_lg)
-    st.dataframe(df_lipidico)
+    if gerar_sensorial:
+        sensorial_data = get_sensory_recipe(linha, ocasião)
+        exibir_piramide_olfativa(sensorial_data)
+        exibir_storytelling(sensorial_data)
 
-    valores_iodo = {
-        'C18:1': 86, 'C18:2': 173, 'C18:3': 260
-    }
+with tab3:
+    st.header("🌍 Indicadores Ambientais e ESG")
 
-    valores_saponificacao = {
-        'C6:0': 325.0, 'C8:0': 305.0, 'C10:0': 295.0, 'C12:0': 276.0, 'C14:0': 255.0,
-        'C16:0': 241.0, 'C18:0': 222.0, 'C18:1': 198.0, 'C18:2': 195.0, 'C18:3': 190.0
-    }
+    for company, co2_value in benchmark_co2.items():
+        delta = (co2_value - benchmark_co2["LipidGenesis"]) / co2_value * 100
+        st.metric(f"Emissão de CO₂ eq/kg ({company})", f"{co2_value:.2f}", delta=f"{delta:.1f}%", delta_color="inverse" if delta > 0 else "normal")
 
-    valores_ponto_fusao = {
-        'C6:0': -3.0, 'C8:0': 16.0, 'C10:0': 31.0, 'C12:0': 44.0, 'C14:0': 53.0,
-        'C16:0': 63.0, 'C18:0': 70.0, 'C18:1': 13.0, 'C18:2': -5.0, 'C18:3': -11.0
-    }
+    for indicator, values in impacto_ambiental.items():
+        st.subheader(f"Impacto Ambiental - {indicator}")
+        df_impacto = pd.DataFrame.from_dict(values, orient='index', columns=[indicator])
+        st.dataframe(df_impacto)
 
-    indice_iodo = sum(
-        blend_lg.get(fa, 0) * valores_iodo.get(fa, 0) / 100 for fa in blend_lg
-    )
+with tab4:
+    st.header("📄 Exportar Relatório PDF")
+    if st.button("📥 Baixar Relatório PDF", key="export_pdf"):
+        df_lipidica = gerar_receita_lipidica(blend_lg)
+        sensorial_data = get_sensory_recipe(linha, ocasião)
+        sensorial_txt = f"Ingrediente-chave: {sensorial_data['ingrediente']}\nNotas olfativas: {sensorial_data['notas']}\nEmoções evocadas: {sensorial_data['emoções']}\nEtiqueta sensorial: {sensorial_data['etiqueta']}"
+        pdf_buffer = gerar_pdf(df_lipidica, sensorial_txt)
 
-    indice_saponificacao = sum(
-        blend_lg.get(fa, 0) * valores_saponificacao.get(fa, 0) / 100 for fa in blend_lg
-    )
+        st.download_button(
+            label="📥 Baixar Relatório PDF",
+            data=pdf_buffer,
+            file_name=f"relatorio_lipidgenesis_{datetime.now().strftime('%Y%m%d_%H%M%S')}.pdf",
+            mime="application/pdf"
+        )
 
-    ponto_fusao = sum(
-        blend_lg.get(fa, 0) * valores_ponto_fusao.get(fa, 0) / 100 for fa in blend_lg
-    )
-
-    st.subheader("⚗️ Parâmetros Físico-Químicos do Blend LG (Dinâmico)")
-    st.metric("Índice de Iodo (II)", f"{indice_iodo:.2f}")
-    st.metric("Índice de Saponificação (IS)", f"{indice_saponificacao:.2f} mg KOH/g")
-    st.metric("Ponto de Fusão Estimado", f"{ponto_fusao:.2f} °C")
-
-if gerar_sensorial:
-    sensorial_data = get_sensory_recipe(linha, ocasião)
-    exibir_piramide_olfativa(sensorial_data, linha, ocasião)
-    exibir_storytelling(sensorial_data)
-
-# Estilo visual para o gráfico
-
-# Estilo visual para o gráfico
-st.subheader("📊 Perfil de Ácidos Graxos no Blend LG")
-df_blend_lg = gerar_receita_lipidica(blend_lg)
-
-df_blend_lg = df_blend_lg.reset_index()
-df_blend_lg['Nome Completo'] = df_blend_lg['Ácido Graxo'].apply(lambda x: f"{nomes_acidos.get(x, x)} ({x})")
-
-fig = px.bar(
-    df_blend_lg,
-    x='Nome Completo',
-    y='%',
-    title='Distribuição dos Ácidos Graxos',
-    template="plotly_dark"
-)
-st.plotly_chart(fig, use_container_width=True)
-
-# === Indicadores Ambientais e ESG ===
-st.subheader("🌎 Indicadores Ambientais e ESG")
-
-# Benchmark de CO₂ eq/kg de algumas empresas do setor
-benchmark_co2 = {
-    "Natura": 1.25,  # Emissões do blend da Natura
-    "Unilever": 1.20,  # Benchmark do setor (valores hipotéticos)
-    "Johnson & Johnson": 1.15,  # Benchmark de outra empresa do setor (hipotético)
-    "LipidGenesis": 0.98  # Sua pegada de CO₂ eq/kg
-}
-
-# Cálculo da diferença entre seu produto e os benchmarks
-for company, co2_value in benchmark_co2.items():
-    delta = (co2_value - benchmark_co2["LipidGenesis"]) / co2_value * 100
-    st.metric(f"Emissão de CO₂ eq/kg ({company})", f"{co2_value:.2f}", delta=f"{delta:.1f}%", delta_color="inverse" if delta > 0 else "normal")
-
-# Adicionando outros indicadores ambientais como água, energia, e impacto social
-# (Os valores aqui são fictícios e podem ser ajustados conforme necessário)
-impacto_ambiental = {
-    "Água Consumida (L/kg)": {
-        "LipidGenesis": 5.0,  # Exemplo de valor
-        "Natura": 6.5,
-        "Unilever": 7.0,
-        "Johnson & Johnson": 5.5
-    },
-    "Uso de Energia (kWh/kg)": {
-        "LipidGenesis": 0.25,
-        "Natura": 0.30,
-        "Unilever": 0.28,
-        "Johnson & Johnson": 0.35
-    }
-}
-
-# Exibir os dados de impacto ambiental em tabelas comparativas
-for indicator, values in impacto_ambiental.items():
-    st.subheader(f"Impacto Ambiental - {indicator}")
-    df_impacto = pd.DataFrame.from_dict(values, orient='index', columns=[indicator])
-    st.dataframe(df_impacto)
-
-# Estilos refinados para facilitar a leitura e a comparação visual
-st.markdown("""
-    <style>
-        .css-1d391kg { font-size: 1.2em; font-weight: bold; }
-        .stDataFrame { font-size: 1em; padding: 10px; border: 1px solid #ddd; }
-    </style>
-""", unsafe_allow_html=True)
-
-# Exportação Refinada
-# Exportação Refinada
-if st.button("📄 Exportar Relatório PDF", key="export_pdf"):
-    df_lipidica = gerar_receita_lipidica(blend_lg)
-    sensorial_data = get_sensory_recipe(linha, ocasião)
-    sensorial_txt = f"Ingrediente-chave: {sensorial_data['ingrediente']}\nNotas olfativas: {sensorial_data['notas']}\nEmoções evocadas: {sensorial_data['emoções']}\nEtiqueta sensorial: {sensorial_data['etiqueta']}"
-    pdf_buffer = gerar_pdf(df_lipidica, sensorial_txt)
-
-    st.download_button(
-        label="📥 Baixar Relatório PDF",
-        data=pdf_buffer,
-        file_name=f"relatorio_lipidgenesis_{datetime.now().strftime('%Y%m%d_%H%M%S')}.pdf",
-        mime="application/pdf"
-    )
 
