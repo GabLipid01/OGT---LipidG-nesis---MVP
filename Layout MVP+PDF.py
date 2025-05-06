@@ -110,7 +110,7 @@ def exibir_piramide_olfativa(sensorial_data):
     </div>
     """, unsafe_allow_html=True)
 
-# === Storytelling sensorial refinado ===
+# === Storytelling sensorial adaptado para modo escuro/claro ===
 def exibir_storytelling(sensorial_data):
     st.subheader("📖 Storytelling Sensorial")
 
@@ -122,8 +122,10 @@ def exibir_storytelling(sensorial_data):
     etiqueta = sensorial_data['etiqueta']
 
     narrativa = f"""
-    <div style="font-size: 16px; line-height: 1.6; text-align: justify; padding: 10px 20px; background-color: #f9f9f9; border-radius: 12px;">
-        Imagine a primeira impressão: <b>{topo}</b> — uma nota que desperta os sentidos com leveza e frescor. Logo depois, o coração da criação revela <b>{ingrediente}</b>, alma desta composição, conectando profundamente com o propósito da sua ocasião. 
+    <div style="font-size: 16px; line-height: 1.6; text-align: justify; padding: 1rem; border-radius: 12px;
+                background-color: rgba(255, 255, 255, 0.05); border: 1px solid rgba(255, 255, 255, 0.1);">
+        Imagine a primeira impressão: <b>{topo}</b> — uma nota que desperta os sentidos com leveza e frescor. 
+        Logo depois, o coração da criação revela <b>{ingrediente}</b>, alma desta composição, conectando profundamente com o propósito da sua ocasião. 
         Por fim, a base se firma em <b>{fundo}</b>, sustentando a memória aromática com elegância e permanência.
         <br><br>
         Essa jornada sensorial evoca <b>{emocao}</b> 🌟, alinhando-se com a etiqueta <b>{etiqueta}</b> e transmitindo valor olfativo com propósito e emoção.
@@ -131,6 +133,7 @@ def exibir_storytelling(sensorial_data):
     """
 
     st.markdown(narrativa, unsafe_allow_html=True)
+
 
 
 # Sidebar: Sliders para montagem do blend personalizado
