@@ -330,13 +330,10 @@ if gerar_lipidica:
     st.metric("Índice de Saponificação (IS)", f"{indice_saponificacao:.2f} mg KOH/g")
     st.metric("Ponto de Fusão Estimado", f"{ponto_fusao:.2f} °C")
 
-
-
 if gerar_sensorial:
     sensorial_data = get_sensory_recipe(linha, ocasião)
-    exibir_piramide_olfativa(sensorial_data)
+    exibir_piramide_olfativa(sensorial_data, linha, ocasião)
     exibir_storytelling(sensorial_data)
-
 
 # Estilo visual para o gráfico
 
