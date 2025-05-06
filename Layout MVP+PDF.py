@@ -146,8 +146,6 @@ def exibir_storytelling(sensorial_data):
 
     st.markdown(narrativa, unsafe_allow_html=True)
 
-
-
 # Sidebar: Sliders para montagem do blend personalizado
 st.sidebar.markdown("### Monte seu Blend Personalizado (%)")
 
@@ -333,14 +331,41 @@ with tab2:
 with tab3:
     st.header("🌍 Indicadores Ambientais e ESG")
 
+    with tab3:
+    st.header("🌍 Indicadores Ambientais e ESG")
+
+    # ✅ Defina a variável aqui dentro
+    benchmark_co2 = {
+        "Natura": 1.25,
+        "Unilever": 1.20,
+        "Johnson & Johnson": 1.15,
+        "LipidGenesis": 0.98
+    }
+
     for company, co2_value in benchmark_co2.items():
         delta = (co2_value - benchmark_co2["LipidGenesis"]) / co2_value * 100
         st.metric(f"Emissão de CO₂ eq/kg ({company})", f"{co2_value:.2f}", delta=f"{delta:.1f}%", delta_color="inverse" if delta > 0 else "normal")
+
+    impacto_ambiental = {
+        "Água Consumida (L/kg)": {
+            "LipidGenesis": 5.0,
+            "Natura": 6.5,
+            "Unilever": 7.0,
+            "Johnson & Johnson": 5.5
+        },
+        "Uso de Energia (kWh/kg)": {
+            "LipidGenesis": 0.25,
+            "Natura": 0.30,
+            "Unilever": 0.28,
+            "Johnson & Johnson": 0.35
+        }
+    }
 
     for indicator, values in impacto_ambiental.items():
         st.subheader(f"Impacto Ambiental - {indicator}")
         df_impacto = pd.DataFrame.from_dict(values, orient='index', columns=[indicator])
         st.dataframe(df_impacto)
+
 
 with tab4:
     st.header("📄 Exportar Relatório PDF")
