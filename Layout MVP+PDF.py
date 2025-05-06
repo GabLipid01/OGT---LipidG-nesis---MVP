@@ -253,7 +253,6 @@ if st.button("🧪 Gerar Receita Lipídica", key="lipidica_btn"):
 if st.button("👃 Gerar Receita Sensorial", key="sensorial_btn"):
     sensorial_data = get_sensory_recipe(linha, ocasião)
     sensorial_txt = f"Ingrediente-chave: {sensorial_data['ingrediente']}\nNotas olfativas: {sensorial_data['notas']}\nEmoções evocadas: {sensorial_data['emoções']}\nEtiqueta sensorial: {sensorial_data['etiqueta']}"
-    st.success(sensorial_txt)
     exibir_piramide_olfativa(sensorial_data)
     exibir_storytelling(sensorial_data)
 
