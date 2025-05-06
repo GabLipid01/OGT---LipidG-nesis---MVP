@@ -285,7 +285,7 @@ with col2:
 if gerar_lipidica:
     df_lipidico = gerar_receita_lipidica(blend_lg)
 st.dataframe(df_lipidico)
-    valores_iodo = {
+valores_iodo = {
     'C18:1': 86, 'C18:2': 173, 'C18:3': 260
 }
 
