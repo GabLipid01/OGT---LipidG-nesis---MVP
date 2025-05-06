@@ -269,20 +269,22 @@ def gerar_pdf(df_lipidica, sensorial_txt):
     buffer.seek(0)
     return buffer
 
-
 # === Interface ===
 st.header("🔬 Análise Lipídica e Sensorial Refinada")
 
-# Botões com design refinado
 # Alinhar os botões lado a lado
 col1, col2 = st.columns(2)
 
 with col1:
-    if st.button("🧪 Gerar Receita Lipídica", key="lipidica_btn"):
-        gerar_receita_lipidica()
+    gerar_lipidica = st.button("🧪 Gerar Receita Lipídica", key="lipidica_btn")
 
+with col2:
+    gerar_sensorial = st.button("👃 Gerar Receita Sensorial", key="sensorial_btn")
 
-    # === Cálculo físico-químico dinâmico com base nas proporções do usuário ===
+# === Cálculo físico-químico dinâmico com base nas proporções do usuário ===
+if gerar_lipidica:
+    gerar_receita_lipidica()
+
     valores_iodo = {
         'C18:1': 86, 'C18:2': 173, 'C18:3': 260
     }
@@ -297,32 +299,27 @@ with col1:
         'C16:0': 63.0, 'C18:0': 70.0, 'C18:1': 13.0, 'C18:2': -5.0, 'C18:3': -11.0
     }
 
-    # Índice de Iodo
     indice_iodo = sum(
         blend_lg.get(fa, 0) * valores_iodo.get(fa, 0) / 100 for fa in blend_lg
     )
 
-    # Índice de Saponificação
     indice_saponificacao = sum(
         blend_lg.get(fa, 0) * valores_saponificacao.get(fa, 0) / 100 for fa in blend_lg
     )
 
-    # Ponto de Fusão estimado (média ponderada simples)
     ponto_fusao = sum(
         blend_lg.get(fa, 0) * valores_ponto_fusao.get(fa, 0) / 100 for fa in blend_lg
     )
 
-    # Exibição
     st.subheader("⚗️ Parâmetros Físico-Químicos do Blend LG (Dinâmico)")
     st.metric("Índice de Iodo (II)", f"{indice_iodo:.2f}")
     st.metric("Índice de Saponificação (IS)", f"{indice_saponificacao:.2f} mg KOH/g")
     st.metric("Ponto de Fusão Estimado", f"{ponto_fusao:.2f} °C")
 
-with col2:
-    if st.button("👃 Gerar Receita Sensorial", key="sensorial_btn"):
-        sensorial_data = get_sensory_recipe(linha, ocasião)
-        exibir_piramide_olfativa(sensorial_data)
-        exibir_storytelling(sensorial_data)
+if gerar_sensorial:
+    sensorial_data = get_sensory_recipe(linha, ocasião)
+    exibir_piramide_olfativa(sensorial_data)
+    exibir_storytelling(sensorial_data)
 
 
 # Estilo visual para o gráfico
