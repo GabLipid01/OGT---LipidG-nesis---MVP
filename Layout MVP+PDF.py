@@ -331,9 +331,6 @@ with tab2:
 with tab3:
     st.header("🌍 Indicadores Ambientais e ESG")
 
-    with tab3:
-    st.header("🌍 Indicadores Ambientais e ESG")
-
     # ✅ Defina a variável aqui dentro
     benchmark_co2 = {
         "Natura": 1.25,
