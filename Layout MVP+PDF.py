@@ -288,9 +288,11 @@ with tab1:
     gerar_lipidica = st.button("🧪 Gerar Receita Lipídica", key="lipidica_btn")
 
     if gerar_lipidica:
+        # Gerar a receita lipídica e armazenar o DataFrame
         df_lipidico = gerar_receita_lipidica(blend_lg)
         st.dataframe(df_lipidico)
 
+        # Calcular os parâmetros físico-químicos
         indice_iodo = sum(
             blend_lg.get(fa, 0) * valores_iodo.get(fa, 0) / 100 for fa in blend_lg
         )
@@ -301,15 +303,18 @@ with tab1:
             blend_lg.get(fa, 0) * valores_ponto_fusao.get(fa, 0) / 100 for fa in blend_lg
         )
 
+        # Exibir os resultados dos parâmetros
         st.metric("Índice de Iodo (II)", f"{indice_iodo:.2f}")
         st.metric("Índice de Saponificação (IS)", f"{indice_saponificacao:.2f} mg KOH/g")
         st.metric("Ponto de Fusão Estimado", f"{ponto_fusao:.2f} °C")
 
         st.subheader("📊 Perfil de Ácidos Graxos no Blend LG")
-        df_blend_lg = gerar_receita_lipidica(blend_lg)
-        df_blend_lg = df_blend_lg.reset_index()
+        
+        # Atualizar o DataFrame para incluir o nome completo do ácido graxo
+        df_blend_lg = df_lipidico.reset_index()
         df_blend_lg['Nome Completo'] = df_blend_lg['Ácido Graxo'].apply(lambda x: f"{nomes_acidos.get(x, x)} ({x})")
 
+        # Criar o gráfico de barras
         fig = px.bar(
             df_blend_lg,
             x='Nome Completo',
@@ -318,6 +323,7 @@ with tab1:
             template="plotly_dark"
         )
         st.plotly_chart(fig, use_container_width=True)
+
 
 with tab2:
     st.header("🌸 Análise Sensorial e Pirâmide Olfativa")
