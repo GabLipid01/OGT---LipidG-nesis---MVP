@@ -49,19 +49,20 @@ SENSORY_EMOJIS = {
 def exibir_piramide_olfativa(sensorial_data):
     st.subheader("🔺 Pirâmide Olfativa")
     with st.container():
-        st.markdown(f\"\"\"
+        st.markdown(f"""
         <div style='text-align: center; font-size: 18px;'>
             <div><b>🌸 Topo:</b> {sensorial_data['notas'].split(',')[0].strip()}</div>
             <div><b>🌿 Corpo:</b> {sensorial_data['ingrediente']}</div>
             <div><b>🌳 Fundo:</b> {sensorial_data['notas'].split(',')[-1].strip()}</div>
         </div>
-        \"\"\", unsafe_allow_html=True)
+        """, unsafe_allow_html=True)
 
 # === Storytelling de marca ===
 def exibir_storytelling(sensorial_data):
     st.subheader("📖 Storytelling Sensorial")
     emoji = SENSORY_EMOJIS.get(sensorial_data['emoções'], "✨")
     st.markdown(f"**{emoji} {sensorial_data['etiqueta']}**")
+
 
 
 
