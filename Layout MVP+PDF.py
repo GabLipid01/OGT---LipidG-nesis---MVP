@@ -37,6 +37,33 @@ FATTY_ACID_PROFILES = {
     }
 }
 
+# === Ícones/emojis sensoriais ===
+SENSORY_EMOJIS = {
+    "Purificação": "🧼", "Enraizamento": "🌱", "Nutrição": "🥥", "Força": "💪",
+    "Renovação": "💧", "Serenidade": "🌿", "Originalidade": "🍑", "Reconstrução": "🔧",
+    "Alegria": "😊", "Tranquilidade": "🍃", "Aconchego": "🛏️", "Proteção": "🛡️",
+    "Calmaria": "🕊️", "Suavidade": "☁️", "Frescor": "🌬️"
+}
+
+# === Pirâmide olfativa visual ===
+def exibir_piramide_olfativa(sensorial_data):
+    st.subheader("🔺 Pirâmide Olfativa")
+    with st.container():
+        st.markdown(f\"\"\"
+        <div style='text-align: center; font-size: 18px;'>
+            <div><b>🌸 Topo:</b> {sensorial_data['notas'].split(',')[0].strip()}</div>
+            <div><b>🌿 Corpo:</b> {sensorial_data['ingrediente']}</div>
+            <div><b>🌳 Fundo:</b> {sensorial_data['notas'].split(',')[-1].strip()}</div>
+        </div>
+        \"\"\", unsafe_allow_html=True)
+
+# === Storytelling de marca ===
+def exibir_storytelling(sensorial_data):
+    st.subheader("📖 Storytelling Sensorial")
+    emoji = SENSORY_EMOJIS.get(sensorial_data['emoções'], "✨")
+    st.markdown(f"**{emoji} {sensorial_data['etiqueta']}**")
+
+
 
 # Sidebar: Sliders para montagem do blend personalizado
 st.sidebar.markdown("### Monte seu Blend Personalizado (%)")
@@ -222,12 +249,13 @@ if st.button("🧪 Gerar Receita Lipídica", key="lipidica_btn"):
     st.metric("Índice de Saponificação (IS)", f"{indice_saponificacao:.2f} mg KOH/g")
     st.metric("Ponto de Fusão Estimado", f"{ponto_fusao:.2f} °C")
 
-
-
 if st.button("👃 Gerar Receita Sensorial", key="sensorial_btn"):
     sensorial_data = get_sensory_recipe(linha, ocasião)
     sensorial_txt = f"Ingrediente-chave: {sensorial_data['ingrediente']}\nNotas olfativas: {sensorial_data['notas']}\nEmoções evocadas: {sensorial_data['emoções']}\nEtiqueta sensorial: {sensorial_data['etiqueta']}"
     st.success(sensorial_txt)
+    exibir_piramide_olfativa(sensorial_data)
+    exibir_storytelling(sensorial_data)
+
 
 # Estilo visual para o gráfico
 
