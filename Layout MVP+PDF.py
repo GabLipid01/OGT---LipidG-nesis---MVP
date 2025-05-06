@@ -110,12 +110,28 @@ def exibir_piramide_olfativa(sensorial_data):
     </div>
     """, unsafe_allow_html=True)
 
-
-# === Storytelling de marca ===
+# === Storytelling sensorial refinado ===
 def exibir_storytelling(sensorial_data):
     st.subheader("📖 Storytelling Sensorial")
-    emoji = SENSORY_EMOJIS.get(sensorial_data['emoções'], "✨")
-    st.markdown(f"**{emoji} {sensorial_data['etiqueta']}**")
+
+    ingrediente = sensorial_data['ingrediente']
+    notas = sensorial_data['notas'].split(',')
+    topo = notas[0].strip() if len(notas) > 0 else "uma nota de topo"
+    fundo = notas[-1].strip() if len(notas) > 1 else "uma nota de fundo"
+    emocao = sensorial_data['emoções']
+    etiqueta = sensorial_data['etiqueta']
+
+    narrativa = f"""
+    <div style="font-size: 16px; line-height: 1.6; text-align: justify; padding: 10px 20px; background-color: #f9f9f9; border-radius: 12px;">
+        Imagine a primeira impressão: <b>{topo}</b> — uma nota que desperta os sentidos com leveza e frescor. Logo depois, o coração da criação revela <b>{ingrediente}</b>, alma desta composição, conectando profundamente com o propósito da sua ocasião. 
+        Por fim, a base se firma em <b>{fundo}</b>, sustentando a memória aromática com elegância e permanência.
+        <br><br>
+        Essa jornada sensorial evoca <b>{emocao}</b> 🌟, alinhando-se com a etiqueta <b>{etiqueta}</b> e transmitindo valor olfativo com propósito e emoção.
+    </div>
+    """
+
+    st.markdown(narrativa, unsafe_allow_html=True)
+
 
 # Sidebar: Sliders para montagem do blend personalizado
 st.sidebar.markdown("### Monte seu Blend Personalizado (%)")
