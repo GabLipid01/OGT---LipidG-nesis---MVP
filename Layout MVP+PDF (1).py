@@ -113,14 +113,17 @@ def gerar_pdf(df_lipidica, sensorial_txt):
     buffer.seek(0)
     return buffer
 
-# === Interface em Abas ===
-tabs = st.tabs(["🏠 Home", "🧪 Blend Lipídico", "👃 Receita Sensorial", "🌱 ESG e Ambiental", "📍 Rastreabilidade", "📄 Exportação PDF"])
+# === Configuração da página ===
+st.set_page_config(page_title="LipidGenesis - Blend LG", layout="wide")
 
-# === Home ===
-with tabs[0]:
-    st.title("🌿 LipidGenesis - Bioengineering Of Oils For Nextgen")
-    st.markdown("<h3 style='text-align: center; color: #4C9B9C;'>PLATAFORMA DE FORMULAÇÃO PERSONALIZADA DE BLENDS DE PALMA E PALMISTE</h3>", unsafe_allow_html=True)
+# === Título e Slogan (fora das abas) ===
+st.title("🌿 LipidGenesis - Bioengineering Of Oils For Nextgen")
+st.markdown(
+    "<h3 style='text-align: center; color: #4C9B9C;'>PLATAFORMA DE FORMULAÇÃO PERSONALIZADA DE BLENDS DE PALMA E PALMISTE</h3>",
+    unsafe_allow_html=True
+)
 
+# === Interface em Abas (logo abaixo do slogan) ===
 tabs = st.tabs([
     "🏠 Home",
     "🧪 Blend Lipídico",
@@ -129,6 +132,11 @@ tabs = st.tabs([
     "📍 Rastreabilidade",
     "📄 Exportação PDF"
 ])
+
+# === Home ===
+with tabs[0]:
+    st.header("🏠 Visão Geral")
+    st.markdown("Explore os recursos desta plataforma inovadora para bioengenharia sensorial e funcional.")
 
 # === Blend Lipídico ===
 with tabs[1]:
