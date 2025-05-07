@@ -96,9 +96,10 @@ def gerar_pdf(df_lipidica, sensorial_txt):
         pdf.multi_cell(0, 10, txt=linha)
 
     buffer = BytesIO()
-    pdf.output(buffer)
-    buffer.seek(0)
-    return buffer
+pdf_output = pdf.output(dest='S').encode('latin1')  # Retorna como string binária e converte
+buffer.write(pdf_output)
+buffer.seek(0)
+return buffer
 
 # === Interface em Abas ===
 tabs = st.tabs(["🏠 Home", "🧪 Blend Lipídico", "👃 Receita Sensorial", "🌱 ESG e Ambiental", "📍 Rastreabilidade", "📄 Exportação PDF"])
