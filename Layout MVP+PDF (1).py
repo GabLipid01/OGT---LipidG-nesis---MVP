@@ -77,29 +77,41 @@ def gerar_pdf(df_lipidica, sensorial_txt):
     pdf = FPDF()
     pdf.add_page()
     pdf.set_font("Arial", size=12)
+    pdf.set_text_color(33, 37, 41)
+
+    # Título
+    pdf.set_font("Arial", 'B', size=16)
     pdf.cell(200, 10, txt="Relatório LipidGenesis", ln=True, align='C')
-    pdf.ln(10)
-    pdf.cell(200, 10, txt="Data: " + datetime.now().strftime('%d/%m/%Y %H:%M'), ln=True)
+    pdf.set_font("Arial", size=12)
     pdf.ln(10)
 
+    # Data
+    pdf.cell(200, 10, txt="Data: " + datetime.now().strftime('%d/%m/%Y %H:%M'), ln=True, align='L')
+    pdf.ln(10)
+
+    # Receita Lipídica
     pdf.set_font("Arial", 'B', size=14)
     pdf.cell(200, 10, txt="Receita Lipídica", ln=True)
     pdf.set_font("Arial", size=12)
     for _, row in df_lipidica.iterrows():
-        pdf.cell(200, 10, txt=f"{row['Nome Completo']}: {row['%']:.2f}%", ln=True)
+        nome = f"{row['Nome Completo']}"
+        pdf.cell(200, 10, txt=f"{nome}: {row['%']:.2f}%", ln=True)
+
     pdf.ln(10)
 
+    # Receita Sensorial
     pdf.set_font("Arial", 'B', size=14)
     pdf.cell(200, 10, txt="Receita Sensorial", ln=True)
     pdf.set_font("Arial", size=12)
     for linha in sensorial_txt.split("\n"):
         pdf.multi_cell(0, 10, txt=linha)
 
+    # Exporta para BytesIO com a codificação correta
     buffer = BytesIO()
-pdf_output = pdf.output(dest='S').encode('latin1')  # Retorna como string binária e converte
-buffer.write(pdf_output)
-buffer.seek(0)
-return buffer
+    pdf_output = pdf.output(dest='S').encode('latin1')
+    buffer.write(pdf_output)
+    buffer.seek(0)
+    return buffer
 
 # === Interface em Abas ===
 tabs = st.tabs(["🏠 Home", "🧪 Blend Lipídico", "👃 Receita Sensorial", "🌱 ESG e Ambiental", "📍 Rastreabilidade", "📄 Exportação PDF"])
