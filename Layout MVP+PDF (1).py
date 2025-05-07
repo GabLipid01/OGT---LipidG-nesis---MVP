@@ -6,10 +6,58 @@ from datetime import datetime
 from io import BytesIO
 from blend_calculator import BlendCalculator
 
-import streamlit as st
+st.set_page_config(
+    page_title="LipidGenesis - Blend LG",
+    layout="wide",
+    initial_sidebar_state="expanded"
+)
 
-# === Configuração da página ===
-st.set_page_config(page_title="LipidGenesis - Blend LG", layout="wide")
+# === Estilo Visual Customizado ===
+st.markdown("""
+    <style>
+    /* Estilo geral da página */
+    .stApp {
+        background-color: #F7F9F9;
+        font-family: 'Helvetica Neue', sans-serif;
+    }
+
+    /* Títulos */
+    h1, h2, h3, .css-10trblm, .css-hxt7ib {
+        color: #4C9B9C;
+    }
+
+    /* Botões */
+    .stButton>button {
+        background-color: #4C9B9C;
+        color: white;
+        border-radius: 8px;
+        padding: 0.5em 1em;
+        border: none;
+    }
+    .stButton>button:hover {
+        background-color: #3C888A;
+        color: white;
+    }
+
+    /* Aba selecionada */
+    .stTabs [data-baseweb="tab"]:first-child {
+        background-color: #A0C4FF;
+        color: black;
+        font-weight: bold;
+    }
+
+    /* DataFrame e métricas */
+    .stDataFrame, .stMetric {
+        background-color: white;
+        border-radius: 6px;
+        padding: 10px;
+        border: 1px solid #DDD;
+    }
+
+    /* Rodapé removido para aparência clean */
+    footer {visibility: hidden;}
+    </style>
+""", unsafe_allow_html=True)
 
 # === Título e Slogan (fora das abas) ===
 st.title("🌿 LipidGenesis - Bioengineering Of Oils For Nextgen")
