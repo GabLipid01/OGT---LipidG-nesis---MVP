@@ -44,13 +44,6 @@ FATTY_ACID_PROFILES = {
     "Palm Kernel Stearin": {"C8:0": 3.0, "C10:0": 3.0, "C12:0": 47.0, "C14:0": 17.5, "C16:0": 9.5, "C16:1": 0.1, "C18:0": 2.5, "C18:1": 14.0, "C18:2": 2.0, "C18:3": 0.1, "C20:0": 0.1}
 }
 
-SENSORY_EMOJIS = {
-    "Purificação": "🧼", "Enraizamento": "🌱", "Nutrição": "🥥", "Força": "💪",
-    "Renovação": "💧", "Serenidade": "🌿", "Originalidade": "🍑", "Reconstrução": "🔧",
-    "Alegria": "😊", "Tranquilidade": "🍃", "Aconchego": "🛏️", "Proteção": "🛡️",
-    "Calmaria": "🕊️", "Suavidade": "☁️", "Frescor": "🌬️"
-}
-
 nomes_acidos = {
     "C6:0": "Ácido Capróico", "C8:0": "Ácido Caprílico", "C10:0": "Ácido Cáprico",
     "C12:0": "Ácido Láurico", "C14:0": "Ácido Mirístico", "C16:0": "Ácido Palmítico",
@@ -60,82 +53,95 @@ nomes_acidos = {
 }
 
 # === Receita Sensorial ===
-def get_sensory_recipe(line, occasion):
-    aromatic_profiles = {
-        "Vitalis": {
-            "Banho": {"ingrediente": "Breu-branco", "notas": "Balsâmico, incensado", "emoções": "Purificação", "etiqueta": "A floresta viva no vapor."},
-            "Rosto": {"ingrediente": "Priprioca", "notas": "Terroso, doce", "emoções": "Enraizamento", "etiqueta": "A raiz que ancora a pele."},
-            "Corpo": {"ingrediente": "Castanha-do-Pará", "notas": "Cremoso, doce", "emoções": "Nutrição", "etiqueta": "Abundância amazônica."},
-            "Cabelos": {"ingrediente": "Andiroba", "notas": "Herbal-amargo", "emoções": "Força", "etiqueta": "Força medicinal."}
-        },
-        "Essentia": {
-            "Banho": {"ingrediente": "Chá-verde", "notas": "Verde, fresco", "emoções": "Renovação", "etiqueta": "Frescor técnico."},
-            "Rosto": {"ingrediente": "Copaíba", "notas": "Amadeirado suave", "emoções": "Serenidade", "etiqueta": "Amadeirado calmo."},
-            "Corpo": {"ingrediente": "Pequi", "notas": "Frutado-oleoso", "emoções": "Originalidade", "etiqueta": "Verde do cerrado."},
-            "Cabelos": {"ingrediente": "Tucumã", "notas": "Vegetal denso", "emoções": "Reconstrução", "etiqueta": "Textura rica."}
-        },
-        "Ardor": {
-            "Banho": {"ingrediente": "Pitanga", "notas": "Frutado, cítrico", "emoções": "Alegria", "etiqueta": "Explosão cítrica."},
-            "Rosto": {"ingrediente": "Maracujá", "notas": "Frutado ácido", "emoções": "Tranquilidade", "etiqueta": "Leveza tropical."},
-            "Corpo": {"ingrediente": "Cupuaçu", "notas": "Doce, manteigado", "emoções": "Aconchego", "etiqueta": "Tropical amanteigado."},
-            "Cabelos": {"ingrediente": "Murumuru", "notas": "Vegetal cremoso", "emoções": "Proteção", "etiqueta": "Densidade vegetal."}
-        },
-        "Lúmina": {
-            "Banho": {"ingrediente": "Lavanda", "notas": "Floral suave", "emoções": "Calmaria", "etiqueta": "Calma floral."},
-            "Rosto": {"ingrediente": "Camomila", "notas": "Herbal adocicado", "emoções": "Aconchego", "etiqueta": "Silêncio na pele."},
-            "Corpo": {"ingrediente": "Castanha de Caju", "notas": "Doce-leitosa", "emoções": "Suavidade", "etiqueta": "Cuidado natural."},
-            "Cabelos": {"ingrediente": "Água de coco", "notas": "Aquático, refrescante", "emoções": "Frescor", "etiqueta": "Aroma que acalma."}
-        }
+
+# Perfis de compostos voláteis para os óleos selecionados
+perfils_volateis = {
+    "Óleo de Palma": {
+        "2,2,6-Trimethylcyclohexanone": ("Palmeira", 35),
+        "3,3,5-Trimethylcyclohex-2-enone": ("Palmeira", 25),
+        "Nonanone": ("Doce", 15),
+        "Nonanal": ("Doce", 15),
+        "Linalol": ("Floral", 5),
+        "Trans-allo-ocimene": ("Fresca", 3),
+        "β-Cyclocitral": ("Cítrica", 2),
+        "Ionol": ("Floral", 5),
+    },
+    "Oleína de Palma": {
+        "Heptanal": ("Fresca, frutada", 30),
+        "Trans-2-heptenal": ("Verde", 20),
+        "Decanal": ("Doce", 25),
+        "Trans-2-undecenal": ("Doce", 25),
+    },
+    "Estearina de Palma": {
+        "Ácido acético": ("Azeda", 30),
+        "Ácido butanoico": ("Láctea", 25),
+        "1-Hexanol": ("Verde", 20),
+        "Metilcetona": ("Frutada", 25),
+    },
+    "Óleo de Palmiste": {
+        "2-Nonanona": ("Doce", 40),
+        "Ácido octanoico": ("Gordurosa", 20),
+        "Metil octanoato": ("Doce", 20),
+        "Pirazinas": ("Tostadas, amadeiradas", 10),
+        "Maltol": ("Doce", 5),
+    },
+    "Oleína de Palmiste": {
+        "2-Nonanona": ("Doce", 40),
+        "Ácido octanoico": ("Gordurosa", 20),
+        "Metil octanoato": ("Doce", 20),
+        "Pirazinas": ("Tostadas, amadeiradas", 10),
+        "Maltol": ("Doce", 5),
+    },
+    "Estearina de Palmiste": {
+        "Pirazinas": ("Tostadas, amadeiradas", 40),
+        "Maltol": ("Doce", 30),
+        "Ácido benzoico etil éster": ("Doce", 20),
+        "Ácido octanoico": ("Gordurosa", 10),
+    },
+}
+
+# Função para gerar receita sensorial
+def gerar_receita_sensoria(oleos_selecionados):
+    receita = []
+    for oleo in oleos_selecionados:
+        for composto, (nota, porcentagem) in perfils_volateis[oleo].items():
+            receita.append(f"{composto}: {nota} - {porcentagem}%")
+    return receita
+
+# Interface do usuário
+st.title("Receita Sensorial - LipidGenesis")
+st.write("Selecione os óleos para gerar a receita sensorial.")
+
+# Seleção de óleos
+oleos_opcoes = list(perfils_volateis.keys())
+oleos_selecionados = st.multiselect("Escolha os óleos", oleos_opcoes)
+
+# Gerar e exibir receita sensorial
+if oleos_selecionados:
+    receita = gerar_receita_sensoria(oleos_selecionados)
+    st.write("**Receita Sensorial Gerada:**")
+    for item in receita:
+        st.write(item)
+
+    # Exibir referências científicas para cada óleo selecionado
+    referencias = {
+        "Óleo de Palma": "Referência: Kuntum, A., Dirinck, P. J., & Schamp, N. M. (1989). Identification of volatile compounds that contribute to the aroma of fresh palm oil and oxidized oil. Journal of Oil Palm Research.",
+        "Oleína de Palma": "Referência: Omar, M. N. B., Idris, N. A. M., & Idris, N. A. (2007). Changes of headspace volatile constituents of palm olein and selected oils after frying French fries. Pakistan Journal of Biological Sciences.",
+        "Estearina de Palma": "Referência: Omar, M. N. B., Idris, N. A. M., & Idris, N. A. (2007). Changes of headspace volatile constituents of palm olein and selected oils after frying French fries. Pakistan Journal of Biological Sciences.",
+        "Óleo de Palmiste": "Referência: Zhang, Y., et al. (2016). Changes in volatiles of palm kernel oil before and after kernel roasting. Food Research International.",
+        "Oleína de Palmiste": "Referência: Zhang, Y., et al. (2016). Changes in volatiles of palm kernel oil before and after kernel roasting. Food Research International.",
+        "Estearina de Palmiste": "Referência: Zhang, Y., et al. (2016). Changes in volatiles of palm kernel oil before and after kernel roasting. Food Research International.",
     }
-    return aromatic_profiles.get(line, {}).get(occasion, {})
+    
+    if len(oleos_selecionados) == 1:
+        st.write(f"**Referência:** {referencias[oleos_selecionados[0]]}")
+    else:
+        for oleo in oleos_selecionados:
+            st.write(f"**{oleo}:** {referencias[oleo]}")
 
-# === Funções auxiliares ===
-def gerar_receita_lipidica(blend):
-    df = pd.DataFrame.from_dict(blend, orient='index', columns=['%'])
-    df.index.name = 'Ácido Graxo'
-    df = df.reset_index()
-    df['Nome Completo'] = df['Ácido Graxo'].apply(lambda x: f"{nomes_acidos.get(x, x)} ({x})")
-    return df
+else:
+    st.write("Selecione ao menos um óleo para gerar a receita sensorial.")
 
-def gerar_pdf(df_lipidica, sensorial_txt):
-    pdf = FPDF()
-    pdf.add_page()
-    pdf.set_font("Arial", size=12)
-    pdf.set_text_color(33, 37, 41)
-
-    # Título
-    pdf.set_font("Arial", 'B', size=16)
-    pdf.cell(200, 10, txt="Relatório LipidGenesis", ln=True, align='C')
-    pdf.set_font("Arial", size=12)
-    pdf.ln(10)
-
-    # Data
-    pdf.cell(200, 10, txt="Data: " + datetime.now().strftime('%d/%m/%Y %H:%M'), ln=True, align='L')
-    pdf.ln(10)
-
-    # Receita Lipídica
-    pdf.set_font("Arial", 'B', size=14)
-    pdf.cell(200, 10, txt="Receita Lipídica", ln=True)
-    pdf.set_font("Arial", size=12)
-    for _, row in df_lipidica.iterrows():
-        nome = f"{row['Nome Completo']}"
-        pdf.cell(200, 10, txt=f"{nome}: {row['%']:.2f}%", ln=True)
-
-    pdf.ln(10)
-
-    # Receita Sensorial
-    pdf.set_font("Arial", 'B', size=14)
-    pdf.cell(200, 10, txt="Receita Sensorial", ln=True)
-    pdf.set_font("Arial", size=12)
-    for linha in sensorial_txt.split("\n"):
-        pdf.multi_cell(0, 10, txt=linha)
-
-    # Exporta para BytesIO com a codificação correta
-    buffer = BytesIO()
-    pdf_output = pdf.output(dest='S').encode('latin1')
-    buffer.write(pdf_output)
-    buffer.seek(0)
-    return buffer
 
 # === Blend Lipídico ===
 with tabs[1]:
