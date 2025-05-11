@@ -12,11 +12,7 @@ st.set_page_config(
 )
 
 # === Título e Slogan (fora das abas) ===
-st.title("🌿 LipidGenesis - Formulação Inteligente para Cosmética Avançada e Sob Medida")
-st.markdown(
-    "<h3 style='text-align: center; color: #4C9B9C;'>INTELIGÊNCIA LIPÍDICA COM ALMA AMAZÔNICA</h3>",
-    unsafe_allow_html=True
-)
+st.title("🌿 LipidGenesis - Bioengenharia Lipídica Aplicada à Indústrias de Óleos Vegetais")
 
 # === Interface em Abas (logo abaixo do slogan) ===
 tabs = st.tabs([
