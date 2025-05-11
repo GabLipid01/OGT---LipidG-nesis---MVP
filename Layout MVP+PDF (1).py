@@ -133,71 +133,95 @@ with tabs[1]:
 
 # === Receita Sensorial ===
 with tabs[2]:
-    st.header("👃 Receita Sensorial e Storytelling")
+    st.header("👃 Receita Sensorial")
 
-    sensorial_data = get_sensory_recipe(linha, ocasião)
-    notas = sensorial_data['notas'].split(',')
-    proporcoes = {'Topo': 15, 'Corpo': 50, 'Fundo': 35}
+# Perfis de compostos voláteis para os óleos selecionados
+perfils_volateis = {
+    "Óleo de Palma": {
+        "2,2,6-Trimethylcyclohexanone": ("Palmeira", 35),
+        "3,3,5-Trimethylcyclohex-2-enone": ("Palmeira", 25),
+        "Nonanone": ("Doce", 15),
+        "Nonanal": ("Doce", 15),
+        "Linalol": ("Floral", 5),
+        "Trans-allo-ocimene": ("Fresca", 3),
+        "β-Cyclocitral": ("Cítrica", 2),
+        "Ionol": ("Floral", 5),
+    },
+    "Oleína de Palma": {
+        "Heptanal": ("Fresca, frutada", 30),
+        "Trans-2-heptenal": ("Verde", 20),
+        "Decanal": ("Doce", 25),
+        "Trans-2-undecenal": ("Doce", 25),
+    },
+    "Estearina de Palma": {
+        "Ácido acético": ("Azeda", 30),
+        "Ácido butanoico": ("Láctea", 25),
+        "1-Hexanol": ("Verde", 20),
+        "Metilcetona": ("Frutada", 25),
+    },
+    "Óleo de Palmiste": {
+        "2-Nonanona": ("Doce", 40),
+        "Ácido octanoico": ("Gordurosa", 20),
+        "Metil octanoato": ("Doce", 20),
+        "Pirazinas": ("Tostadas, amadeiradas", 10),
+        "Maltol": ("Doce", 5),
+    },
+    "Oleína de Palmiste": {
+        "2-Nonanona": ("Doce", 40),
+        "Ácido octanoico": ("Gordurosa", 20),
+        "Metil octanoato": ("Doce", 20),
+        "Pirazinas": ("Tostadas, amadeiradas", 10),
+        "Maltol": ("Doce", 5),
+    },
+    "Estearina de Palmiste": {
+        "Pirazinas": ("Tostadas, amadeiradas", 40),
+        "Maltol": ("Doce", 30),
+        "Ácido benzoico etil éster": ("Doce", 20),
+        "Ácido octanoico": ("Gordurosa", 10),
+    },
+}
 
-    # Ajuste para garantir 3 notas
-    if len(notas) == 1:
-        nota_topo = notas[0].strip()
-        nota_corpo = "Cremoso, doce"
-        nota_fundo = "Amadeirado suave"
-    elif len(notas) == 2:
-        nota_topo = notas[0].strip()
-        nota_corpo = notas[1].strip()
-        nota_fundo = "Amadeirado suave"
+# Função para gerar receita sensorial
+def gerar_receita_sensoria(oleos_selecionados):
+    receita = []
+    for oleo in oleos_selecionados:
+        for composto, (nota, porcentagem) in perfils_volateis[oleo].items():
+            receita.append(f"{composto}: {nota} - {porcentagem}%")
+    return receita
+
+# Interface do usuário
+st.title("Receita Sensorial - LipidGenesis")
+st.write("Selecione os óleos para gerar a receita sensorial.")
+
+# Seleção de óleos
+oleos_opcoes = list(perfils_volateis.keys())
+oleos_selecionados = st.multiselect("Escolha os óleos", oleos_opcoes)
+
+# Gerar e exibir receita sensorial
+if oleos_selecionados:
+    receita = gerar_receita_sensoria(oleos_selecionados)
+    st.write("**Receita Sensorial Gerada:**")
+    for item in receita:
+        st.write(item)
+
+    # Exibir referências científicas para cada óleo selecionado
+    referencias = {
+        "Óleo de Palma": "Referência: Kuntum, A., Dirinck, P. J., & Schamp, N. M. (1989). Identification of volatile compounds that contribute to the aroma of fresh palm oil and oxidized oil. Journal of Oil Palm Research.",
+        "Oleína de Palma": "Referência: Omar, M. N. B., Idris, N. A. M., & Idris, N. A. (2007). Changes of headspace volatile constituents of palm olein and selected oils after frying French fries. Pakistan Journal of Biological Sciences.",
+        "Estearina de Palma": "Referência: Omar, M. N. B., Idris, N. A. M., & Idris, N. A. (2007). Changes of headspace volatile constituents of palm olein and selected oils after frying French fries. Pakistan Journal of Biological Sciences.",
+        "Óleo de Palmiste": "Referência: Zhang, Y., et al. (2016). Changes in volatiles of palm kernel oil before and after kernel roasting. Food Research International.",
+        "Oleína de Palmiste": "Referência: Zhang, Y., et al. (2016). Changes in volatiles of palm kernel oil before and after kernel roasting. Food Research International.",
+        "Estearina de Palmiste": "Referência: Zhang, Y., et al. (2016). Changes in volatiles of palm kernel oil before and after kernel roasting. Food Research International.",
+    }
+    
+    if len(oleos_selecionados) == 1:
+        st.write(f"**Referência:** {referencias[oleos_selecionados[0]]}")
     else:
-        nota_topo, nota_corpo, nota_fundo = [n.strip() for n in notas[:3]]
+        for oleo in oleos_selecionados:
+            st.write(f"**{oleo}:** {referencias[oleo]}")
 
-    df_piramide = pd.DataFrame({
-        'Nota': [nota_topo, nota_corpo, nota_fundo],
-        'Camada': ['Topo', 'Corpo', 'Fundo'],
-        'Proporção (%)': [proporcoes['Topo'], proporcoes['Corpo'], proporcoes['Fundo']]
-    })
-    camada_ordem = {'Fundo': 0, 'Corpo': 1, 'Topo': 2}
-    df_piramide['ordem'] = df_piramide['Camada'].map(camada_ordem)
-    df_piramide = df_piramide.sort_values('ordem', ascending=False)
-
-    fig = px.bar(
-        df_piramide,
-        x="Proporção (%)",
-        y="Camada",
-        orientation="h",
-        color="Camada",
-        text="Nota",
-        color_discrete_map={"Topo": "#FFC1E3", "Corpo": "#B2E4B2", "Fundo": "#A0C4FF"},
-        height=400
-    )
-    fig.update_layout(showlegend=False)
-    st.plotly_chart(fig, use_container_width=True)
-
-    st.markdown(f"""
-    <div style='text-align: center; font-size: 16px;'>
-        🌸 <b>{nota_topo}</b> (Topo) — {proporcoes['Topo']}%<br>
-        🌿 <b>{nota_corpo}</b> (Corpo) — {proporcoes['Corpo']}%<br>
-        🌳 <b>{nota_fundo}</b> (Fundo) — {proporcoes['Fundo']}%
-    </div>
-    """, unsafe_allow_html=True)
-
-    st.subheader("📖 Storytelling Sensorial")
-    emocao = sensorial_data['emoções']
-    emoji = SENSORY_EMOJIS.get(emocao, "")
-    ingrediente = sensorial_data['ingrediente']
-    etiqueta = sensorial_data['etiqueta']
-
-    narrativa = f"""
-    <div style="font-size: 16px; line-height: 1.6; text-align: justify; padding: 1rem; border-radius: 12px;
-                background-color: rgba(255, 255, 255, 0.05); border: 1px solid rgba(255, 255, 255, 0.1);">
-        Imagine a primeira impressão: <b>{nota_topo}</b> — uma nota que desperta os sentidos com leveza e frescor. 
-        Logo depois, o coração da criação revela <b>{ingrediente}</b>, alma desta composição, conectando profundamente com o propósito da sua ocasião. 
-        Por fim, a base se firma em <b>{nota_fundo}</b>, sustentando a memória aromática com elegância e permanência.
-        <br><br>
-        Essa jornada sensorial evoca <b>{emocao}</b> {emoji}, alinhando-se com a etiqueta <b>{etiqueta}</b> e transmitindo valor olfativo com propósito e emoção.
-    </div>
-    """
-    st.markdown(narrativa, unsafe_allow_html=True)
+else:
+    st.write("Selecione ao menos um óleo para gerar a receita sensorial.")
 
 # === ESG e Ambiental ===
 with tabs[3]:
