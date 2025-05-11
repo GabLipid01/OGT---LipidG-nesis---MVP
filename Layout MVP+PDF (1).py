@@ -40,13 +40,6 @@ FATTY_ACID_PROFILES = {
     "Palm Kernel Stearin": {"C8:0": 3.0, "C10:0": 3.0, "C12:0": 47.0, "C14:0": 17.5, "C16:0": 9.5, "C16:1": 0.1, "C18:0": 2.5, "C18:1": 14.0, "C18:2": 2.0, "C18:3": 0.1, "C20:0": 0.1}
 }
 
-SENSORY_EMOJIS = {
-    "Purificação": "🧼", "Enraizamento": "🌱", "Nutrição": "🥥", "Força": "💪",
-    "Renovação": "💧", "Serenidade": "🌿", "Originalidade": "🍑", "Reconstrução": "🔧",
-    "Alegria": "😊", "Tranquilidade": "🍃", "Aconchego": "🛏️", "Proteção": "🛡️",
-    "Calmaria": "🕊️", "Suavidade": "☁️", "Frescor": "🌬️"
-}
-
 nomes_acidos = {
     "C6:0": "Ácido Capróico", "C8:0": "Ácido Caprílico", "C10:0": "Ácido Cáprico",
     "C12:0": "Ácido Láurico", "C14:0": "Ácido Mirístico", "C16:0": "Ácido Palmítico",
