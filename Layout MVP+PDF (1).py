@@ -85,13 +85,6 @@ def gerar_pdf(df_lipidica, sensorial_txt):
 
     pdf.ln(10)
 
-    # Receita Sensorial
-    pdf.set_font("Arial", 'B', size=14)
-    pdf.cell(200, 10, txt="Receita Sensorial", ln=True)
-    pdf.set_font("Arial", size=12)
-    for linha in sensorial_txt.split("\n"):
-        pdf.multi_cell(0, 10, txt=linha)
-
     # Exporta para BytesIO com a codificação correta
     buffer = BytesIO()
     pdf_output = pdf.output(dest='S').encode('latin1')
