@@ -95,9 +95,7 @@ def gerar_pdf(df_lipidica, sensorial_txt):
 # === Blend Lipídico ===
 with tabs[1]:
     st.header("🧪 Montagem do Blend LG")
-    st.sidebar.title("🔬 Configurações")
-    linha = st.sidebar.selectbox("Linha de Produto:", ["Vitalis", "Essentia", "Ardor", "Lúmina"])
-    ocasião = st.sidebar.selectbox("Ocasião de Uso:", ["Banho", "Rosto", "Corpo", "Cabelos"])
+    st.sidebar.title("🔬 Monte seu Blend")
 
     oil_keys = list(FATTY_ACID_PROFILES.keys())
     oil_percentages = {oil: st.sidebar.slider(f"{oil} (%)", 0, 100, 0, 1) for oil in oil_keys}
