@@ -251,21 +251,76 @@ with tabs[4]:
 with tabs[5]:
     st.header("📄 Exportar Relatório PDF")
 
+    # Copiar perfis e referências para dentro desta aba
+    perfils_volateis = {
+        "Palm Oil": {
+            "2,2,6-Trimethylcyclohexanone": ("Palmeira", 35),
+            "3,3,5-Trimethylcyclohex-2-enone": ("Palmeira", 25),
+            "Nonanone": ("Doce", 15),
+            "Nonanal": ("Doce", 15),
+            "Linalol": ("Floral", 5),
+            "Trans-allo-ocimene": ("Fresca", 3),
+            "β-Cyclocitral": ("Cítrica", 2),
+            "Ionol": ("Floral", 5),
+        },
+        "Palm Olein": {
+            "Heptanal": ("Fresca, frutada", 30),
+            "Trans-2-heptenal": ("Verde", 20),
+            "Decanal": ("Doce", 25),
+            "Trans-2-undecenal": ("Doce", 25),
+        },
+        "Palm Stearin": {
+            "Ácido acético": ("Azeda", 30),
+            "Ácido butanoico": ("Láctea", 25),
+            "1-Hexanol": ("Verde", 20),
+            "Metilcetona": ("Frutada", 25),
+        },
+        "Palm Kernel Oil": {
+            "2-Nonanona": ("Doce", 40),
+            "Ácido octanoico": ("Gordurosa", 20),
+            "Metil octanoato": ("Doce", 20),
+            "Pirazinas": ("Tostadas, amadeiradas", 10),
+            "Maltol": ("Doce", 5),
+        },
+        "Palm Kernel Olein": {
+            "2-Nonanona": ("Doce", 40),
+            "Ácido octanoico": ("Gordurosa", 20),
+            "Metil octanoato": ("Doce", 20),
+            "Pirazinas": ("Tostadas, amadeiradas", 10),
+            "Maltol": ("Doce", 5),
+        },
+        "Palm Kernel Stearin": {
+            "Pirazinas": ("Tostadas, amadeiradas", 40),
+            "Maltol": ("Doce", 30),
+            "Ácido benzoico etil éster": ("Doce", 20),
+            "Ácido octanoico": ("Gordurosa", 10),
+        },
+    }
+
+    referencias = {
+        "Palm Oil": "Kuntum et al. (1989), *Journal of Oil Palm Research*.",
+        "Palm Olein": "Omar et al. (2007), *Pakistan Journal of Biological Sciences*.",
+        "Palm Stearin": "Omar et al. (2007), *Pakistan Journal of Biological Sciences*.",
+        "Palm Kernel Oil": "Zhang et al. (2016), *Food Research International*.",
+        "Palm Kernel Olein": "Zhang et al. (2016), *Food Research International*.",
+        "Palm Kernel Stearin": "Zhang et al. (2016), *Food Research International*.",
+    }
+
     if total_pct > 0:
         sensorial_txt = "Compostos Voláteis Identificados:\n"
-    for oleo in oil_percentages:
-        if oil_percentages[oleo] > 0:
-            sensorial_txt += f"\n{oleo}:\n"
-            for composto, (nota, pct) in perfils_volateis.get(oleo, {}).items():
-                sensorial_txt += f" - {composto}: {nota} — {pct}%\n"
+        for oleo in oil_percentages:
+            if oil_percentages[oleo] > 0:
+                sensorial_txt += f"\n{oleo}:\n"
+                for composto, (nota, pct) in perfils_volateis.get(oleo, {}).items():
+                    sensorial_txt += f" - {composto}: {nota} — {pct}%\n"
 
-    sensorial_txt += "\nReferências Científicas:\n"
-    for oleo in oil_percentages:
-        if oil_percentages[oleo] > 0:
-            ref = referencias.get(oleo)
-            if ref:
-                sensorial_txt += f" - {oleo}: {ref}\n"
-            
+        sensorial_txt += "\nReferências Científicas:\n"
+        for oleo in oil_percentages:
+            if oil_percentages[oleo] > 0:
+                ref = referencias.get(oleo)
+                if ref:
+                    sensorial_txt += f" - {oleo}: {ref}\n"
+
         pdf_buffer = gerar_pdf(df_lipidico, sensorial_txt)
         st.download_button(
             label="📥 Baixar Relatório PDF",
