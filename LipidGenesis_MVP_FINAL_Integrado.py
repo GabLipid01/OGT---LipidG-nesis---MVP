@@ -246,37 +246,22 @@ Este módulo representa o potencial técnico da produção de blends lipídicos 
 
 # === ESG e Ambiental ===
 with tabs[4]:
-    st.header("🌎 Análise ESG e Ambiental")
+    st.header("🌱 Sustentabilidade Industrial")
 
-    benchmark_co2 = {
-        "Natura": 1.25,
-        "Unilever": 1.20,
-        "Johnson & Johnson": 1.15,
-        "LipidGenesis": 0.98
-    }
+    st.markdown("""
+### Indicadores de Sustentabilidade da Síntese Enzimática
 
-    for company, value in benchmark_co2.items():
-        delta = (value - benchmark_co2["LipidGenesis"]) / value * 100
-        st.metric(f"Emissão de CO₂ eq/kg ({company})", f"{value:.2f}", delta=f"{delta:.1f}%", delta_color="inverse" if delta > 0 else "normal")
+**Dados estimados por modelagem digital e literatura científica sobre processos de esterificação catalisados por lipase.**
 
-    impacto_ambiental = {
-        "Água Consumida (L/kg)": {
-            "LipidGenesis": 5.0,
-            "Natura": 6.5,
-            "Unilever": 7.0,
-            "Johnson & Johnson": 5.5
-        },
-        "Uso de Energia (kWh/kg)": {
-            "LipidGenesis": 0.25,
-            "Natura": 0.30,
-            "Unilever": 0.28,
-            "Johnson & Johnson": 0.35
-        }
-    }
+- **Consumo energético da síntese:** 0.18 kWh por kg de blend
+- **Uso de solvente (biocompatível):** ≤ 5% (ex: etanol técnico)
+- **Recuperação da enzima catalítica:** 85–95% (uso em múltiplos ciclos)
+- **Reutilização do meio reacional:** até 3 ciclos consecutivos sem perda significativa de rendimento
+- **Resíduo gerado por kg:** ≤ 0.05 kg (compostos orgânicos não tóxicos)
 
-    for indicador, dados in impacto_ambiental.items():
-        st.subheader(f"{indicador}")
-        st.dataframe(pd.DataFrame.from_dict(dados, orient='index', columns=[indicador]))
+> *Os valores são referenciais e baseados em condições laboratoriais simuladas. A validação industrial requer ensaio piloto.*
+
+""")
 
 # === Rastreabilidade (Placeholder) ===
 with tabs[5]:
