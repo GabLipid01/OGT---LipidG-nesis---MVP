@@ -129,7 +129,7 @@ else:
     df_lipidico = gerar_receita_lipidica(blend_lg)
     st.dataframe(df_lipidico)
 
-        st.subheader("📊 Perfil de Ácidos Graxos")
+    st.subheader("📊 Perfil de Ácidos Graxos")
         fig = px.bar(df_lipidico, x='Nome Completo', y='%', template="plotly_dark")
         st.plotly_chart(fig, use_container_width=True)
 
