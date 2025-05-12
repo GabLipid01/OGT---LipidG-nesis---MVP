@@ -116,9 +116,10 @@ with tabs[1]:
 
     blend_lg = {}  # Inicializa fora para ficar acessível globalmente
 
-if total_pct == 0:
-    st.warning("Defina pelo menos um óleo com percentual maior que 0.")
-else:
+with tabs[1]:
+    if total_pct == 0:
+        st.warning("Defina pelo menos um óleo com percentual maior que 0.")
+    else:
     normalized = {k: v / total_pct for k, v in oil_percentages.items()}
     all_fatty_acids = set().union(*FATTY_ACID_PROFILES.values())
     blend_lg = {
