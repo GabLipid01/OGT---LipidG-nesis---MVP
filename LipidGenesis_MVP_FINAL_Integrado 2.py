@@ -329,7 +329,7 @@ with tabs[4]:
     st.subheader("📉 Comparativo Técnico: Blend vs Éster")
     df_comp = pd.DataFrame({
         "Parâmetro": ["Índice de Iodo", "Índice de Saponificação", "Ponto de Fusão Est.", "Massa Molecular Média"],
-        "Blend Lipídico": [indice_iodo, indice_saponificação, ponto_fusao, 270],
+        "Blend Lipídico": [indice_iodo, indice_saponificacao, ponto_fusao, 270],
         "Produto Esterificado": [ii * 0.95, isap * 1.1, pfusao - 5, 270 + alcoois[alcool]['massa_molar']]
     })
     st.dataframe(df_comp.style.format({"Blend Lipídico": "{:.2f}", "Produto Esterificado": "{:.2f}"}))
