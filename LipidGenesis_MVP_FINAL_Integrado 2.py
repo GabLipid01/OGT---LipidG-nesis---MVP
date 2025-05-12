@@ -332,9 +332,9 @@ with tabs[4]:
     st.subheader("📉 Comparativo Técnico: Blend vs Éster")
 
     if all(k in st.session_state for k in ['indice_iodo', 'indice_saponificacao', 'ponto_fusao']):
-    df_comp = pd.DataFrame({
-        "Parâmetro": ["Índice de Iodo", "Índice de Saponificação", "Ponto de Fusão Est.", "Massa Molecular Média"],
-        "Blend Lipídico": [
+        df_comp = pd.DataFrame({
+            "Parâmetro": ["Índice de Iodo", "Índice de Saponificação", "Ponto de Fusão Est.", "Massa Molecular Média"],
+            "Blend Lipídico": [
             st.session_state['indice_iodo'],
             st.session_state['indice_saponificacao'],
             st.session_state['ponto_fusao'],
