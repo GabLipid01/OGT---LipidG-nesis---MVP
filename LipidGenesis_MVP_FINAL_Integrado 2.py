@@ -352,7 +352,7 @@ with tabs[4]:
 else:
     st.warning("Os parâmetros do blend lipídico ainda não foram definidos. Gere o blend na aba anterior antes de simular o comparativo.")
 
-    st.info("Os valores apresentados são estimativas para simulação e estudo técnico.")
+st.info("Os valores apresentados são estimativas para simulação e estudo técnico.")
 
 
 
