@@ -27,7 +27,6 @@ tabs = st.tabs([
 
 # === Home ===
 with tabs[0]:
-    st.header("🏭 Proposta Industrial")
     st.markdown("""
 ### Viabilidade de Óleos sem Planta por Esterificação Enzimática
 
