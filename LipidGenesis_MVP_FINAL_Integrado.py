@@ -110,7 +110,6 @@ def gerar_pdf(df_lipidica, sensorial_txt):
 with tabs[1]:
     st.header("🧪 Montagem do Blend LG")
     st.sidebar.title("🔬 Monte seu Blend")
-
     oil_keys = list(FATTY_ACID_PROFILES.keys())
     oil_percentages = {oil: st.sidebar.slider(f"{oil} (%)", 0, 100, 0, 1) for oil in oil_keys}
     total_pct = sum(oil_percentages.values())
