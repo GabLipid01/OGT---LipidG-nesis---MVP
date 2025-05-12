@@ -241,7 +241,7 @@ Este comparativo resume os principais fatores que impactam o custo e a escalabil
 | **Rendimento médio**              | 85–95%                                   | 18–22% de óleo por fruto fresco     |
 """)
 
-    st.markdown("""
+st.markdown("""
 **Síntese simulada por esterificação enzimática**
 
 Este módulo representa o potencial técnico da produção de blends lipídicos por via enzimática com base em dados da literatura científica.
