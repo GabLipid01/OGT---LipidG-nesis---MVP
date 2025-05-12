@@ -300,7 +300,7 @@ with tabs[4]:
         custo_alcool = alcool['custo'] * qtd_blend
         custo_total = (custo_enzima + custo_alcool) / (rendimento / 100)
     
-    return custo_total
+        return custo_total
 
 
     st.subheader("🔍 Parâmetros da Reação")
