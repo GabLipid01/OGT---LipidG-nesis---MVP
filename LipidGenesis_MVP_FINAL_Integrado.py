@@ -19,10 +19,11 @@ tabs = st.tabs([
     "🏭 Proposta Industrial",      # tabs[0]
     "🧪 Blend Lipídico",           # tabs[1]
     "👃 Assinatura Sensorial",     # tabs[2]
-    "📊 Viabilidade Técnica",      # tabs[3]   
-    "🌱 ESG e Ambiental",          # tabs[4]
-    "📍 Rastreabilidade",          # tabs[5]
-    "📄 Exportação PDF"            # tabs[6]
+    "📊 Viabilidade Técnica",      # tabs[3]
+    "📊 Protocolo de Produção",    # tabs[4]
+    "🌱 ESG e Ambiental",          # tabs[5]
+    "📍 Rastreabilidade",          # tabs[6]
+    "📄 Exportação PDF"            # tabs[7]
 ])
 
 # === Home ===
@@ -263,8 +264,71 @@ Este módulo representa o potencial técnico da produção de blends lipídicos 
 > Dados demonstrativos. Para viabilidade real, consulte ensaios piloto.
 """)
 
-# === ESG e Ambiental ===
+# === 📊 PROTOCOLO DE PRODUÇÃO ===
 with tabs[4]:
+    st.header("📊 Protocolo de Produção: Esterificação Enzimática")
+
+    st.markdown("""
+    Este módulo permite simular uma síntese enzimática a partir do blend lipídico definido, incluindo seleção de álcool, enzima, condições ideais de reação, rendimento estimado e custo por lote.
+    """)
+
+    # Estrutura de dados para álcoois, enzimas e parâmetros
+    alcoois = {
+        "Etanol": {"massa_molar": 46.07, "custo_kg": 3.2},
+        "Metanol": {"massa_molar": 32.04, "custo_kg": 2.5},
+        "Isopropanol": {"massa_molar": 60.1, "custo_kg": 4.0}
+    }
+
+    enzimas = {
+        "Lipase de Candida antarctica (CALB)": {"ph": "6.5 - 7.5", "temp": "35–45 °C", "ciclos": 80, "custo_g": 0.50},
+        "Lipase de Rhizomucor miehei": {"ph": "6.0 - 7.0", "temp": "40–50 °C", "ciclos": 60, "custo_g": 0.35},
+        "Lipase de Thermomyces lanuginosus": {"ph": "7.0 - 8.0", "temp": "45–55 °C", "ciclos": 50, "custo_g": 0.28}
+    }
+
+    # Funções auxiliares
+    def calcular_rendimento_teorico(perf_oleo, tipo_alcool):
+        saturados = sum([v for k, v in perf_oleo.items() if k in ["C12:0", "C14:0", "C16:0", "C18:0"]])
+        fator = {"Etanol": 0.90, "Metanol": 0.85, "Isopropanol": 0.80}.get(tipo_alcool, 0.85)
+        return round(saturados * fator, 2)
+
+    def calcular_custo_lote(qtd_blend_kg, enzima, alcool, rendimento, enzima_g_por_kg=2):
+        custo_enzima = enzimas[enzima]["custo_g"] * enzima_g_por_kg * qtd_blend_kg
+        custo_alcool = alcoois[alcool]["custo_kg"] * qtd_blend_kg * 0.1
+        custo_total = (custo_enzima + custo_alcool) / (rendimento / 100)
+        return round(custo_total, 2)
+
+    st.subheader("🔍 Parâmetros da Reação")
+    alcool = st.selectbox("Escolha o tipo de álcool", list(alcoois.keys()))
+    enzima = st.selectbox("Escolha a enzima", list(enzimas.keys()))
+
+    st.markdown(f"""
+    **Condições Recomendadas:**
+    - pH ideal: `{enzimas[enzima]['ph']}`
+    - Temperatura: `{enzimas[enzima]['temp']}`
+    - Reutilização média: `{enzimas[enzima]['ciclos']} ciclos`
+    """)
+
+    st.subheader("⚗️ Simulação de Produção")
+    qtd_blend = st.number_input("Quantidade do blend (kg)", min_value=1.0, max_value=1000.0, value=10.0, step=0.5)
+    rendimento = calcular_rendimento_teorico(blend_lg, alcool)
+    custo_estimado = calcular_custo_lote(qtd_blend, enzima, alcool, rendimento)
+
+    st.metric("Rendimento Teórico Estimado", f"{rendimento:.2f}%")
+    st.metric("Custo Estimado por Lote", f"R$ {custo_estimado:.2f}")
+
+    st.subheader("📉 Comparativo Técnico: Blend vs Éster")
+    df_comp = pd.DataFrame({
+        "Parâmetro": ["Índice de Iodo", "Índice de Saponificação", "Ponto de Fusão Est.", "Massa Molecular Média"],
+        "Blend Lipídico": [ii, isap, pfusao, 270],
+        "Produto Esterificado": [ii * 0.95, isap * 1.1, pfusao - 5, 270 + alcoois[alcool]['massa_molar']]
+    })
+    st.dataframe(df_comp.style.format({"Blend Lipídico": "{:.2f}", "Produto Esterificado": "{:.2f}"}))
+
+    st.info("Os valores apresentados são estimativas para simulação e estudo técnico.")
+
+
+# === ESG e Ambiental ===
+with tabs[5]:
     st.header("🌱 Sustentabilidade Industrial")
 
     st.markdown("""
@@ -283,12 +347,12 @@ with tabs[4]:
 """)
 
 # === Rastreabilidade (Placeholder) ===
-with tabs[5]:
+with tabs[6]:
     st.header("📍 Rastreabilidade do Blend")
     st.info("Esta seção será dedicada à origem dos ingredientes, lotes e fornecedores — em breve.")
 
 # === Exportação PDF ===
-with tabs[6]:
+with tabs[7]:
     st.header("📄 Exportar Relatório PDF")
 
     # Copiar perfis e referências para dentro desta aba
