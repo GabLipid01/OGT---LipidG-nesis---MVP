@@ -145,9 +145,9 @@ with tabs[1]:
         st.metric("Ponto de Fusão Estimado", f"{pfusao:.2f} °C")
 
 
-# === Receita Sensorial ===
+# === Assinatura Sensorial ===
 with tabs[2]:
-    st.header("👃 Receita Sensorial")
+    st.header("👃")
 
     if total_pct == 0:
         st.warning("Monte seu blend com ao menos um óleo na aba '🧪 Blend Lipídico'.")
@@ -246,7 +246,7 @@ Este módulo representa o potencial técnico da produção de blends lipídicos 
 """)
 
 # === ESG e Ambiental ===
-with tabs[3]:
+with tabs[4]:
     st.header("🌎 Análise ESG e Ambiental")
 
     benchmark_co2 = {
@@ -280,12 +280,12 @@ with tabs[3]:
         st.dataframe(pd.DataFrame.from_dict(dados, orient='index', columns=[indicador]))
 
 # === Rastreabilidade (Placeholder) ===
-with tabs[4]:
+with tabs[5]:
     st.header("📍 Rastreabilidade do Blend")
     st.info("Esta seção será dedicada à origem dos ingredientes, lotes e fornecedores — em breve.")
 
 # === Exportação PDF ===
-with tabs[5]:
+with tabs[6]:
     st.header("📄 Exportar Relatório PDF")
 
     # Copiar perfis e referências para dentro desta aba
