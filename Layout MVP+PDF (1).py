@@ -135,7 +135,7 @@ with tabs[2]:
 
 # Perfis de compostos voláteis para os óleos selecionados
 perfils_volateis = {
-    "Óleo de Palma": {
+    "Palm Oil": {
         "2,2,6-Trimethylcyclohexanone": ("Palmeira", 35),
         "3,3,5-Trimethylcyclohex-2-enone": ("Palmeira", 25),
         "Nonanone": ("Doce", 15),
@@ -145,33 +145,33 @@ perfils_volateis = {
         "β-Cyclocitral": ("Cítrica", 2),
         "Ionol": ("Floral", 5),
     },
-    "Oleína de Palma": {
+    "Palm Olein": {
         "Heptanal": ("Fresca, frutada", 30),
         "Trans-2-heptenal": ("Verde", 20),
         "Decanal": ("Doce", 25),
         "Trans-2-undecenal": ("Doce", 25),
     },
-    "Estearina de Palma": {
+    "Palm Stearin": {
         "Ácido acético": ("Azeda", 30),
         "Ácido butanoico": ("Láctea", 25),
         "1-Hexanol": ("Verde", 20),
         "Metilcetona": ("Frutada", 25),
     },
-    "Óleo de Palmiste": {
+    "Palm Kernel Oil": {
         "2-Nonanona": ("Doce", 40),
         "Ácido octanoico": ("Gordurosa", 20),
         "Metil octanoato": ("Doce", 20),
         "Pirazinas": ("Tostadas, amadeiradas", 10),
         "Maltol": ("Doce", 5),
     },
-    "Oleína de Palmiste": {
+    "Palm Kernel Olein": {
         "2-Nonanona": ("Doce", 40),
         "Ácido octanoico": ("Gordurosa", 20),
         "Metil octanoato": ("Doce", 20),
         "Pirazinas": ("Tostadas, amadeiradas", 10),
         "Maltol": ("Doce", 5),
     },
-    "Estearina de Palmiste": {
+    "Palm Kernel Stearin": {
         "Pirazinas": ("Tostadas, amadeiradas", 40),
         "Maltol": ("Doce", 30),
         "Ácido benzoico etil éster": ("Doce", 20),
