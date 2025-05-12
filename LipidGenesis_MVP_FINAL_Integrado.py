@@ -147,7 +147,6 @@ with tabs[1]:
 
 # === Assinatura Sensorial ===
 with tabs[2]:
-    st.header("👃")
 
     if total_pct == 0:
         st.warning("Monte seu blend com ao menos um óleo na aba '🧪 Blend Lipídico'.")
