@@ -292,11 +292,16 @@ with tabs[4]:
         fator = {"Etanol": 0.90, "Metanol": 0.85, "Isopropanol": 0.80}.get(tipo_alcool, 0.85)
         return round(saturados * fator, 2)
 
-    def calcular_custo_lote(qtd_blend_kg, enzima, alcool, rendimento, enzima_g_por_kg=2):
-        custo_enzima = enzimas[enzima]["custo_g"] * enzima_g_por_kg * qtd_blend_kg
-        custo_alcool = alcoois[alcool]["custo_kg"] * qtd_blend_kg * 0.1
+    def calcular_custo_lote(qtd_blend, enzima, alcool, rendimento):
+        if rendimento == 0:
+            return "Erro: Rendimento não pode ser zero."
+    
+        custo_enzima = enzima['custo'] * qtd_blend
+        custo_alcool = alcool['custo'] * qtd_blend
         custo_total = (custo_enzima + custo_alcool) / (rendimento / 100)
-        return round(custo_total, 2)
+    
+    return custo_total
+
 
     st.subheader("🔍 Parâmetros da Reação")
     alcool = st.selectbox("Escolha o tipo de álcool", list(alcoois.keys()))
