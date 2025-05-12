@@ -221,27 +221,29 @@ with tabs[2]:
             if ref:
                 st.markdown(f"**{oleo}:** {ref}")
 
+# === Viabilidade Técnica ===
 with tabs[3]:
-    st.header("📊 Viabilidade Técnica")
+    st.header("🔬 Viabilidade Técnica")
 
-    st.subheader("📉 Comparativo Econômico: LipidGenesis vs. Modelo Tradicional")
+    st.markdown("""
+    O modelo LipidGenesis permite a criação de óleos estruturados por meio da esterificação enzimática de ácidos graxos,
+    oferecendo uma alternativa viável ao refino tradicional de óleos vegetais.
 
-st.markdown("""
-Este comparativo resume os principais fatores que impactam o custo e a escalabilidade de produção de óleo pelo modelo LipidGenesis (via esterificação enzimática) em relação ao método tradicional de extração e refino do óleo de palma.
+    ### 📉 Comparativo Econômico: LipidGenesis vs. Modelo Tradicional
 
-| Critério                           | LipidGenesis (Esterificação Enzimática) | Extração e Refino Tradicional      |
-|-----------------------------------|------------------------------------------|-------------------------------------|
-| **Matéria-prima**                 | Ácidos graxos puros / álcoois            | Frutos frescos de palma             |
-| **Investimento inicial (CAPEX)** | Médio-alto (reatores + controle fino)    | Muito alto (plantio + usinas)       |
-| **Custo operacional (OPEX)**      | Moderado (energia, enzima, reagentes)    | Alto (logística + manutenção rural) |
-| **Consistência do produto**       | Alta (ajustável digitalmente)            | Média (depende da safra e clima)    |
-| **Escalabilidade**                | Alta em módulos industriais              | Alta, mas intensiva em terra        |
-| **Sustentabilidade**              | Muito alta (sem uso de solo)             | Baixa (impacto ambiental elevado)   |
-| **Custo estimado por kg**         | US$ 1,00–1,50                            | US$ 0,70–1,00                       |
-| **Rendimento médio**              | 85–95%                                   | 18–22% de óleo por fruto fresco     |
-""")
+    | Critério                           | LipidGenesis (Esterificação Enzimática) | Extração e Refino Tradicional      |
+    |-----------------------------------|------------------------------------------|-------------------------------------|
+    | **Matéria-prima**                 | Ácidos graxos puros / álcoois            | Frutos frescos de palma             |
+    | **Investimento inicial (CAPEX)** | Médio-alto (reatores + controle fino)    | Muito alto (plantio + usinas)       |
+    | **Custo operacional (OPEX)**      | Moderado (energia, enzima, reagentes)    | Alto (logística + manutenção rural) |
+    | **Consistência do produto**       | Alta (ajustável digitalmente)            | Média (depende da safra e clima)    |
+    | **Escalabilidade**                | Alta em módulos industriais              | Alta, mas intensiva em terra        |
+    | **Sustentabilidade**              | Muito alta (sem uso de solo)             | Baixa (impacto ambiental elevado)   |
+    | **Custo estimado por kg**         | US$ 1,00–1,50                            | US$ 0,70–1,00                       |
+    | **Rendimento médio**              | 85–95%                                   | 18–22% de óleo por fruto fresco     |
+    """)
 
-st.markdown("""
+    st.markdown("""
 **Síntese simulada por esterificação enzimática**
 
 Este módulo representa o potencial técnico da produção de blends lipídicos por via enzimática com base em dados da literatura científica.
