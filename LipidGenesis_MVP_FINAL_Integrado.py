@@ -12,7 +12,7 @@ st.set_page_config(
 )
 
 # === Título e Slogan (fora das abas) ===
-st.title("🌿 LipidGenesis - Bioengenharia Lipídica Aplicada à Indústrias de Óleos Vegetais")
+st.title("🌿 LipidGenesis - Bioengenharia Lipídica Aplicada à Indústria de Óleo de Palma")
 
 # === Interface em Abas (logo abaixo do slogan) ===
 tabs = st.tabs([
