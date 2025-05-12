@@ -26,8 +26,23 @@ tabs = st.tabs([
 
 # === Home ===
 with tabs[0]:
-    st.header("🏠 Visão Geral")
-    st.markdown("Explore os recursos desta plataforma inovadora para bioengenharia sensorial e funcional.")
+    st.header("🏭 Proposta Industrial")
+    st.markdown("""
+### Viabilidade de Óleos sem Planta por Esterificação Enzimática
+
+Este MVP demonstra a viabilidade de criar óleos estruturados por via enzimática — sem planta, sem cultivo, com base em blends graxos modelados tecnicamente.
+
+**Aplicações potenciais:**
+- Substitutos de óleos tropicais em cosméticos e alimentos
+- Lubrificantes verdes e ingredientes bioativos personalizados
+
+**Diferenciais:**
+- Modelagem digital de perfis graxos
+- Assinatura sensorial automática com compostos voláteis
+- Exportação em PDF técnico para validação industrial
+
+> **LipidGenesis é bioengenharia lipídica como plataforma para uma indústria regenerativa.**
+""")
 
 # === Dados fixos ===
 
