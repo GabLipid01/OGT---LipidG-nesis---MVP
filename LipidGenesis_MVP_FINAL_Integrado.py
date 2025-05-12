@@ -223,7 +223,6 @@ with tabs[2]:
 
 # === Viabilidade Técnica ===
 with tabs[3]:
-    st.header("🔬 Viabilidade Técnica")
 
     st.markdown("""
     O modelo LipidGenesis permite a criação de óleos estruturados por meio da esterificação enzimática de ácidos graxos,
