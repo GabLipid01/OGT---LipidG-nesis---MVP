@@ -150,7 +150,10 @@ with tabs[1]:
         st.metric("Índice de Saponificação", f"{isap:.2f} mg KOH/g")
         st.metric("Ponto de Fusão Estimado", f"{pfusao:.2f} °C")
 
-
+    # Salva no session_state
+    st.session_state['indice_iodo'] = ii
+    st.session_state['indice_saponificacao'] = isap
+    st.session_state['ponto_fusao'] = pfusao
 
 # === Assinatura Sensorial ===
 with tabs[2]:
@@ -328,21 +331,26 @@ with tabs[4]:
 
     st.subheader("📉 Comparativo Técnico: Blend vs Éster")
 
-    if 'indice_iodo' in locals() and 'indice_saponificacao' in locals() and 'ponto_fusao' in locals():
-        df_comp = pd.DataFrame({
-            "Parâmetro": ["Índice de Iodo", "Índice de Saponificação", "Ponto de Fusão Est.", "Massa Molecular Média"],
-            "Blend Lipídico": [indice_iodo, indice_saponificacao, ponto_fusao, 270],
-            "Produto Esterificado": [
-                indice_iodo * 0.95,
-                indice_saponificacao * 1.1,
-                ponto_fusao - 5,
-                270 + alcoois[alcool]['massa_molar']
-            ]
-        })
+    if all(k in st.session_state for k in ['indice_iodo', 'indice_saponificacao', 'ponto_fusao']):
+    df_comp = pd.DataFrame({
+        "Parâmetro": ["Índice de Iodo", "Índice de Saponificação", "Ponto de Fusão Est.", "Massa Molecular Média"],
+        "Blend Lipídico": [
+            st.session_state['indice_iodo'],
+            st.session_state['indice_saponificacao'],
+            st.session_state['ponto_fusao'],
+            270
+        ],
+        "Produto Esterificado": [
+            st.session_state['indice_iodo'] * 0.95,
+            st.session_state['indice_saponificacao'] * 1.1,
+            st.session_state['ponto_fusao'] - 5,
+            270 + alcoois[alcool]['massa_molar']
+        ]
+    })
 
-        st.dataframe(df_comp.style.format({"Blend Lipídico": "{:.2f}", "Produto Esterificado": "{:.2f}"}))
-    else:
-        st.warning("Os parâmetros do blend lipídico ainda não foram definidos. Gere o blend na aba anterior antes de simular o comparativo.")
+    st.dataframe(df_comp.style.format({"Blend Lipídico": "{:.2f}", "Produto Esterificado": "{:.2f}"}))
+else:
+    st.warning("Os parâmetros do blend lipídico ainda não foram definidos. Gere o blend na aba anterior antes de simular o comparativo.")
 
     st.info("Os valores apresentados são estimativas para simulação e estudo técnico.")
 
