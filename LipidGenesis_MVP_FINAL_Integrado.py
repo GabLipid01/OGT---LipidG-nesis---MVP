@@ -252,12 +252,19 @@ with tabs[5]:
     st.header("📄 Exportar Relatório PDF")
 
     if total_pct > 0:
-        sensorial_txt = f"""
-Ingrediente-chave: {sensorial_data['ingrediente']}
-Notas olfativas: {sensorial_data['notas']}
-Emoções evocadas: {sensorial_data['emoções']}
-Etiqueta sensorial: {sensorial_data['etiqueta']}
-"""
+sensorial_txt = "Compostos Voláteis Identificados:\n"
+for oleo in oil_percentages:
+    if oil_percentages[oleo] > 0:
+        sensorial_txt += f"\n{oleo}:\n"
+        for composto, (nota, pct) in perfils_volateis.get(oleo, {}).items():
+            sensorial_txt += f" - {composto}: {nota} — {pct}%\n"
+
+sensorial_txt += "\nReferências Científicas:\n"
+for oleo in oil_percentages:
+    if oil_percentages[oleo] > 0:
+        ref = referencias.get(oleo)
+        if ref:
+            sensorial_txt += f" - {oleo}: {ref}\n"
         pdf_buffer = gerar_pdf(df_lipidico, sensorial_txt)
         st.download_button(
             label="📥 Baixar Relatório PDF",
