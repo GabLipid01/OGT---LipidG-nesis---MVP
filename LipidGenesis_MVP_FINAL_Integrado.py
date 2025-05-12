@@ -252,7 +252,7 @@ with tabs[5]:
     st.header("📄 Exportar Relatório PDF")
 
     if total_pct > 0:
-    sensorial_txt = "Compostos Voláteis Identificados:\n"
+        sensorial_txt = "Compostos Voláteis Identificados:\n"
     for oleo in oil_percentages:
         if oil_percentages[oleo] > 0:
             sensorial_txt += f"\n{oleo}:\n"
