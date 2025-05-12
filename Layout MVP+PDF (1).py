@@ -48,8 +48,6 @@ nomes_acidos = {
     "C20:1": "Ácido Gadoleico"
 }
 
-# === Receita Sensorial ===
-
 
 # === Funções auxiliares ===
 def gerar_receita_lipidica(blend):
