@@ -115,15 +115,17 @@ with tabs[1]:
     oil_percentages = {oil: st.sidebar.slider(f"{oil} (%)", 0, 100, 0, 1) for oil in oil_keys}
     total_pct = sum(oil_percentages.values())
 
-    if total_pct == 0:
-        st.warning("Defina pelo menos um óleo com percentual maior que 0.")
-    else:
-        normalized = {k: v / total_pct for k, v in oil_percentages.items()}
-        all_fatty_acids = set().union(*FATTY_ACID_PROFILES.values())
-        blend_lg = {
-            fa: sum(normalized[oil] * FATTY_ACID_PROFILES[oil].get(fa, 0) for oil in oil_keys)
-            for fa in all_fatty_acids
-        }
+    blend_lg = {}  # Inicializa fora para ficar acessível globalmente
+
+if total_pct == 0:
+    st.warning("Defina pelo menos um óleo com percentual maior que 0.")
+else:
+    normalized = {k: v / total_pct for k, v in oil_percentages.items()}
+    all_fatty_acids = set().union(*FATTY_ACID_PROFILES.values())
+    blend_lg = {
+        fa: sum(normalized[oil] * FATTY_ACID_PROFILES[oil].get(fa, 0) for oil in oil_keys)
+        for fa in all_fatty_acids
+    }
 
         df_lipidico = gerar_receita_lipidica(blend_lg)
         st.dataframe(df_lipidico)
