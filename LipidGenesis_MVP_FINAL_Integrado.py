@@ -293,10 +293,13 @@ with tabs[4]:
         return round(saturados * fator, 2)
 
     def calcular_custo_lote(qtd_blend_kg, enzima, alcool, rendimento, enzima_g_por_kg=2):
-        custo_enzima = enzimas[enzima]["custo_g"] * enzima_g_por_kg * qtd_blend_kg
-        custo_alcool = alcoois[alcool]["custo_kg"] * qtd_blend_kg * 0.1
-        custo_total = (custo_enzima + custo_alcool) / (rendimento / 100)
-        return round(custo_total, 2)
+    if rendimento is None or rendimento == 0:
+        return float("inf")  # Ou uma mensagem como: return "Erro: rendimento = 0"
+
+    custo_enzima = enzimas[enzima]["custo_g"] * enzima_g_por_kg * qtd_blend_kg
+    custo_alcool = alcoois[alcool]["custo_kg"] * qtd_blend_kg * 0.1
+    custo_total = (custo_enzima + custo_alcool) / (rendimento / 100)
+    return round(custo_total, 2)
 
     st.subheader("🔍 Parâmetros da Reação")
     alcool = st.selectbox("Escolha o tipo de álcool", list(alcoois.keys()))
@@ -315,6 +318,11 @@ with tabs[4]:
     custo_estimado = calcular_custo_lote(qtd_blend, enzima, alcool, rendimento)
 
     st.metric("Rendimento Teórico Estimado", f"{rendimento:.2f}%")
+
+if rendimento == 0:
+    st.error("Erro: O rendimento estimado foi zero. Ajuste os parâmetros da reação.")
+else:
+    custo_estimado = calcular_custo_lote(qtd_blend, enzima, alcool, rendimento)
     st.metric("Custo Estimado por Lote", f"R$ {custo_estimado:.2f}")
 
     st.subheader("📉 Comparativo Técnico: Blend vs Éster")
