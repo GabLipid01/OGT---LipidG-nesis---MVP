@@ -293,7 +293,7 @@ with tabs[4]:
         return round(saturados * fator, 2)
 
     def calcular_custo_lote(qtd_blend_kg, enzima, alcool, rendimento, enzima_g_por_kg=2):
-    if rendimento is None or rendimento == 0:
+if rendimento is None or rendimento == 0:
         return float("inf")  # Ou uma mensagem como: return "Erro: rendimento = 0"
 
     custo_enzima = enzimas[enzima]["custo_g"] * enzima_g_por_kg * qtd_blend_kg
