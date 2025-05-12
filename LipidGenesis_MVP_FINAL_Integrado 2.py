@@ -348,9 +348,9 @@ with tabs[4]:
         ]
     })
 
-    st.dataframe(df_comp.style.format({"Blend Lipídico": "{:.2f}", "Produto Esterificado": "{:.2f}"}))
-else:
-    st.warning("Os parâmetros do blend lipídico ainda não foram definidos. Gere o blend na aba anterior antes de simular o comparativo.")
+        st.dataframe(df_comp.style.format({"Blend Lipídico": "{:.2f}", "Produto Esterificado": "{:.2f}"}))
+    else:
+        st.warning("Os parâmetros do blend lipídico ainda não foram definidos. Gere o blend na aba anterior antes de simular o comparativo.")
 
 st.info("Os valores apresentados são estimativas para simulação e estudo técnico.")
 
