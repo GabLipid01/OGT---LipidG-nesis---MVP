@@ -319,7 +319,7 @@ with tabs[4]:
     rendimento = calcular_rendimento_teorico(blend_lg, alcool)
     custo_estimado = calcular_custo_lote(qtd_blend, enzima, alcool, rendimento)
 
-    if isinstance(custo_estimado, (int, float)):
+        if isinstance(custo_estimado, (int, float)):
     st.metric("Custo Estimado por Lote", f"R$ {custo_estimado:.2f}")
     else:
     st.metric("Custo Estimado por Lote", "Erro no cálculo")
