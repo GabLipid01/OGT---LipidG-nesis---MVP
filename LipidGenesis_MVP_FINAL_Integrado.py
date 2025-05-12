@@ -222,6 +222,28 @@ with tabs[2]:
             if ref:
                 st.markdown(f"**{oleo}:** {ref}")
 
+with tabs[3]:
+    st.header("📊 Viabilidade Técnica")
+    st.markdown("""
+**Síntese simulada por esterificação enzimática**
+
+Este módulo representa o potencial técnico da produção de blends lipídicos por via enzimática com base em dados da literatura científica.
+
+**Parâmetros da reação estimados:**
+- Temperatura: 50–60 °C
+- Tempo de reação: 4–8 horas
+- Catalisador: Lipase imobilizada (*ex: Candida antarctica*)
+- Rendimento estimado: 85–95%
+
+**Estimativa de custo por kg (com base teórica):**
+- Matéria-prima graxa: US$ 0,80–1,20
+- Enzima (amortizada): US$ 0,05–0,10
+- Energia e processo: US$ 0,10–0,20
+
+**Custo estimado final: US$ 1,00–1,50/kg**
+
+> Dados demonstrativos. Para viabilidade real, consulte ensaios piloto.
+""")
 
 # === ESG e Ambiental ===
 with tabs[3]:
