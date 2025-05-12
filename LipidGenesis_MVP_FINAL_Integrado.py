@@ -130,8 +130,8 @@ else:
     st.dataframe(df_lipidico)
 
     st.subheader("📊 Perfil de Ácidos Graxos")
-        fig = px.bar(df_lipidico, x='Nome Completo', y='%', template="plotly_dark")
-        st.plotly_chart(fig, use_container_width=True)
+    fig = px.bar(df_lipidico, x='Nome Completo', y='%', template="plotly_dark")
+    st.plotly_chart(fig, use_container_width=True)
 
         # Parâmetros físico-químicos
         valores_iodo = {'C18:1': 86, 'C18:2': 173, 'C18:3': 260}
