@@ -107,9 +107,6 @@ with tabs[2]:
         "Palm Kernel Stearin": "Zhang, Y., et al. (2016). Changes in volatiles of palm kernel oil before and after kernel roasting. *Food Research International*.",
     }
 
-    # Detectar óleos com % > 0 no blend
-    oleos_utilizados = [oleo for oleo, pct in oil_percentages.items() if pct > 0 and oleo in perfils_volateis]
-
     def gerar_receita_sensoria(oleos_selecionados):
         receita = []
         for oleo in oleos_selecionados:
