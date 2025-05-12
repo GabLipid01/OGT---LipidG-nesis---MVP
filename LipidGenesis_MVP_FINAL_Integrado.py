@@ -126,7 +126,7 @@ else:
         for fa in all_fatty_acids
     }
 
-        df_lipidico = gerar_receita_lipidica(blend_lg)
+    df_lipidico = gerar_receita_lipidica(blend_lg)
         st.dataframe(df_lipidico)
 
         st.subheader("📊 Perfil de Ácidos Graxos")
