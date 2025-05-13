@@ -304,6 +304,10 @@ with tabs[4]:
     - Reutilização média: `{enzimas[enzima]['ciclos']} ciclos`
     """)
 
+# Novo parâmetro: dosagem de enzima (% m/m)
+dosagem_enzima = st.slider("Dosagem de enzima (% m/m)", 0.1, 10.0, 2.0, step=0.1)
+
+
     # Entrada de quantidade de blend
     st.subheader("⚗️ Simulação de Produção")
     qtd_blend = st.number_input("Quantidade do blend (kg)", min_value=1.0, max_value=1000.0, value=10.0, step=0.5)
@@ -324,17 +328,22 @@ with tabs[4]:
         fator = 0.85
         return round(saturados * fator, 2)
 
-    def calcular_custo_lote(qtd_blend, enzima_info, alcool_info, rendimento):
+    def calcular_custo_lote(qtd_blend, enzima_info, alcool_info, rendimento, dosagem_percentual):
         if rendimento == 0:
             return "Erro: Rendimento não pode ser zero."
-        custo_enzima = enzima_info['custo_g'] * qtd_blend * 1000
+    
+        # Enzima em gramas por kg de blend
+        enzima_g = (dosagem_percentual / 100) * qtd_blend * 1000
+        custo_enzima = enzima_info['custo_g'] * enzima_g
+    
         custo_alcool = alcool_info['custo_kg'] * qtd_blend
         custo_total = (custo_enzima + custo_alcool) / (rendimento / 100)
+    
         return custo_total
 
     # Cálculo de rendimento e custo
     rendimento = calcular_rendimento_teorico(blend_lg, alcool)
-    custo_estimado = calcular_custo_lote(qtd_blend, enzimas[enzima], glicerol, rendimento)
+    custo_estimado = calcular_custo_lote(qtd_blend, enzimas[enzima], glicerol, rendimento, dosagem_enzima)
 
     # Exibição do custo
     st.metric("Custo Estimado por Lote", f"R$ {custo_estimado:.2f}" if isinstance(custo_estimado, (int, float)) else "Erro no cálculo")
