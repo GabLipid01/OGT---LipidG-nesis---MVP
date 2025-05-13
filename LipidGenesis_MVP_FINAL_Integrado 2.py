@@ -274,94 +274,89 @@ Este módulo representa o potencial técnico da produção de blends lipídicos 
 
 # === 📊 PROTOCOLO DE PRODUÇÃO ===
 with tabs[4]:
-
     st.markdown("""
-Este módulo simula a **síntese enzimática** de **blends lipídicos** por **esterificação enzimática**, utilizando **glicerol** como álcool para gerar **triglicerídeos** semelhantes aos óleos naturais, como o **óleo de palma**.
-A produção considera a escolha da **enzima**, as **condições ideais** de reação (temperatura, pH, tempo) e o **custo estimado** do processo.
-""")
+    Este módulo simula a **síntese enzimática** de **blends lipídicos** por **esterificação enzimática**, utilizando **glicerol** como álcool para gerar **triglicerídeos** semelhantes aos óleos naturais, como o **óleo de palma**.  
+    A produção considera a escolha da **enzima**, as **condições ideais** de reação (temperatura, pH, tempo) e o **custo estimado** do processo.
+    """)
 
-# Estrutura de dados para os componentes
-glicerol = {"massa_molar": 92.09, "custo_kg": 4.5}  # Glicerol como álcool
-enzimas = {
-    "Lipase de Candida antarctica (CALB)": {"ph": "6.5 - 7.5", "temp": "35–45 °C", "ciclos": 80, "custo_g": 0.50},
-    "Lipase de Rhizomucor miehei": {"ph": "6.0 - 7.0", "temp": "40–50 °C", "ciclos": 60, "custo_g": 0.35},
-    "Lipase de Thermomyces lanuginosus": {"ph": "7.0 - 8.0", "temp": "45–55 °C", "ciclos": 50, "custo_g": 0.28}
-}
+    # Dados de referência
+    glicerol = {"massa_molar": 92.09, "custo_kg": 4.5}
+    enzimas = {
+        "Lipase de Candida antarctica (CALB)": {"ph": "6.5 - 7.5", "temp": "35–45 °C", "ciclos": 80, "custo_g": 0.50},
+        "Lipase de Rhizomucor miehei": {"ph": "6.0 - 7.0", "temp": "40–50 °C", "ciclos": 60, "custo_g": 0.35},
+        "Lipase de Thermomyces lanuginosus": {"ph": "7.0 - 8.0", "temp": "45–55 °C", "ciclos": 50, "custo_g": 0.28}
+    }
 
-# Funções para cálculos de rendimento e custo
-def calcular_rendimento_teorico(perf_oleo, tipo_alcool):
-    saturados = sum([v for k, v in perf_oleo.items() if k in ["C12:0", "C14:0", "C16:0", "C18:0"]])
-    fator = 0.85  # Fator padrão para o glicerol
-    return round(saturados * fator, 2)
+    # Entradas de parâmetros da reação
+    st.subheader("🔬 Parâmetros de Reação Personalizados")
+    temperatura = st.slider("Temperatura (°C)", 25, 80, 45)
+    tempo_reacao = st.slider("Tempo de reação (horas)", 0, 48, 12)
+    ph_reacao = st.slider("pH da reação", 4.0, 9.0, 7.0, step=0.1)
 
-def calcular_custo_lote(qtd_blend, enzima_info, alcool_info, rendimento):
-    if rendimento == 0:
-        return "Erro: Rendimento não pode ser zero."
-    custo_enzima = enzima_info['custo_g'] * qtd_blend * 1000  # g por kg
-    custo_alcool = alcool_info['custo_kg'] * qtd_blend
-    custo_total = (custo_enzima + custo_alcool) / (rendimento / 100)
-    return custo_total
+    st.subheader("🧪 Seleção de Enzima")
+    alcool = "Glicerol"
+    enzima = st.selectbox("Escolha a enzima", list(enzimas.keys()))
 
-# Selecção da enzima
-st.subheader("🔍 Parâmetros da Reação")
-alcool = "Glicerol"  # Glicerol como único álcool
-enzima = st.selectbox("Escolha a enzima", list(enzimas.keys()))
+    st.markdown(f"""
+    **Condições Recomendadas para a Enzima Selecionada:**
+    - pH ideal: `{enzimas[enzima]['ph']}`
+    - Temperatura: `{enzimas[enzima]['temp']}`
+    - Reutilização média: `{enzimas[enzima]['ciclos']} ciclos`
+    """)
 
-# Exibição das condições ideais da enzima selecionada
-st.markdown(f"""
-**Condições Recomendadas:**
-- pH ideal: `{enzimas[enzima]['ph']}`
-- Temperatura: `{enzimas[enzima]['temp']}`
-- Reutilização média: `{enzimas[enzima]['ciclos']} ciclos`
-""")
+    # Entrada de quantidade de blend
+    st.subheader("⚗️ Simulação de Produção")
+    qtd_blend = st.number_input("Quantidade do blend (kg)", min_value=1.0, max_value=1000.0, value=10.0, step=0.5)
 
-# Input para quantidade de blend
-st.subheader("⚗️ Simulação de Produção")
-qtd_blend = st.number_input("Quantidade do blend (kg)", min_value=1.0, max_value=1000.0, value=10.0, step=0.5)
+    # Composição simulada de um blend lipídico (exemplo: óleo de palma)
+    blend_lg = {
+        "C12:0": 0.02,
+        "C14:0": 0.05,
+        "C16:0": 0.40,
+        "C18:0": 0.10,
+        "C18:1": 0.25,
+        "C18:2": 0.18
+    }
 
-# A variável `blend_lg` representa a composição do blend lipídico
-# Suponha que o blend lipídico tenha sido gerado em outra parte do código (na aba anterior)
-# Exemplo de composição de óleo de palma para testar a função
-blend_lg = {
-    "C12:0": 0.02,  # Exemplo de composição (com uma estimativa de ácidos graxos)
-    "C14:0": 0.05,
-    "C16:0": 0.40,
-    "C18:0": 0.10,
-    "C18:1": 0.25,
-    "C18:2": 0.18
-}
+    # Funções de cálculo
+    def calcular_rendimento_teorico(perf_oleo, tipo_alcool):
+        saturados = sum([v for k, v in perf_oleo.items() if k in ["C12:0", "C14:0", "C16:0", "C18:0"]])
+        fator = 0.85
+        return round(saturados * fator, 2)
 
-# Calcular o rendimento teórico do blend
-rendimento = calcular_rendimento_teorico(blend_lg, alcool)
-custo_estimado = calcular_custo_lote(qtd_blend, enzimas[enzima], glicerol, rendimento)
+    def calcular_custo_lote(qtd_blend, enzima_info, alcool_info, rendimento):
+        if rendimento == 0:
+            return "Erro: Rendimento não pode ser zero."
+        custo_enzima = enzima_info['custo_g'] * qtd_blend * 1000
+        custo_alcool = alcool_info['custo_kg'] * qtd_blend
+        custo_total = (custo_enzima + custo_alcool) / (rendimento / 100)
+        return custo_total
 
-if isinstance(custo_estimado, (int, float)):
-    st.metric("Custo Estimado por Lote", f"R$ {custo_estimado:.2f}")
-else:
-    st.metric("Custo Estimado por Lote", "Erro no cálculo")
+    # Cálculo de rendimento e custo
+    rendimento = calcular_rendimento_teorico(blend_lg, alcool)
+    custo_estimado = calcular_custo_lote(qtd_blend, enzimas[enzima], glicerol, rendimento)
 
-# Comparativo técnico: Blend lipídico vs Éster
-st.subheader("📉 Comparativo Técnico: Blend vs Éster")
-if 'indice_iodo' in st.session_state and 'indice_saponificacao' in st.session_state and 'ponto_fusao' in st.session_state:
-    df_comp = pd.DataFrame({
-        "Parâmetro": ["Índice de Iodo", "Índice de Saponificação", "Ponto de Fusão Est.", "Massa Molecular Média"],
-        "Blend Lipídico": [st.session_state['indice_iodo'], st.session_state['indice_saponificacao'], st.session_state['ponto_fusao'], 270],
-        "Produto Esterificado": [
-            st.session_state['indice_iodo'] * 0.95,
-            st.session_state['indice_saponificacao'] * 1.1,
-            st.session_state['ponto_fusao'] - 5,
-            270 + glicerol['massa_molar']
-        ]
-    })
+    # Exibição do custo
+    st.metric("Custo Estimado por Lote", f"R$ {custo_estimado:.2f}" if isinstance(custo_estimado, (int, float)) else "Erro no cálculo")
 
-    st.dataframe(df_comp.style.format({"Blend Lipídico": "{:.2f}", "Produto Esterificado": "{:.2f}"}))
-else:
-    st.warning("Os parâmetros do blend lipídico ainda não foram definidos. Gere o blend na aba anterior antes de simular o comparativo.")
+    # Comparativo técnico
+    st.subheader("📉 Comparativo Técnico: Blend vs Éster")
+    if 'indice_iodo' in st.session_state and 'indice_saponificacao' in st.session_state and 'ponto_fusao' in st.session_state:
+        df_comp = pd.DataFrame({
+            "Parâmetro": ["Índice de Iodo", "Índice de Saponificação", "Ponto de Fusão Est.", "Massa Molecular Média"],
+            "Blend Lipídico": [st.session_state['indice_iodo'], st.session_state['indice_saponificacao'], st.session_state['ponto_fusao'], 270],
+            "Produto Esterificado": [
+                st.session_state['indice_iodo'] * 0.95,
+                st.session_state['indice_saponificacao'] * 1.1,
+                st.session_state['ponto_fusao'] - 5,
+                270 + glicerol['massa_molar']
+            ]
+        })
+        st.dataframe(df_comp.style.format({"Blend Lipídico": "{:.2f}", "Produto Esterificado": "{:.2f}"}))
+    else:
+        st.warning("Os parâmetros do blend lipídico ainda não foram definidos. Gere o blend na aba anterior antes de simular o comparativo.")
 
-# Informações complementares
-st.info("Os valores apresentados são estimativas para simulação e estudo técnico.")
-
-
+    st.info("Os valores apresentados são estimativas para simulação e estudo técnico.")
 
 # === ESG e Ambiental ===
 with tabs[5]:
