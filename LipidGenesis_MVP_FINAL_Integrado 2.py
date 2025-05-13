@@ -291,98 +291,63 @@ Este módulo representa o potencial técnico da produção de blends lipídicos 
 
 # === 📊 PROTOCOLO DE PRODUÇÃO ===
 with tabs[4]:
-    st.markdown("""
-    Este módulo simula a **síntese enzimática** de **blends lipídicos** por **esterificação enzimática**, utilizando **glicerol** como álcool para gerar **triglicerídeos** semelhantes aos óleos naturais, como o **óleo de palma**.  
-    A produção considera a escolha da **enzima**, as **condições ideais** de reação (temperatura, pH, tempo) e o **custo estimado** do processo.
-    """)
+    st.header("📊 Protocolo de Produção - Esterificação Enzimática")
 
-    # Dados de referência
-    glicerol = {"massa_molar": 92.09, "custo_kg": 4.5}
-    enzimas = {
-        "Lipase de Candida antarctica (CALB)": {"ph": "6.5 - 7.5", "temp": "35–45 °C", "ciclos": 80, "custo_g": 0.50},
-        "Lipase de Rhizomucor miehei": {"ph": "6.0 - 7.0", "temp": "40–50 °C", "ciclos": 60, "custo_g": 0.35},
-        "Lipase de Thermomyces lanuginosus": {"ph": "7.0 - 8.0", "temp": "45–55 °C", "ciclos": 50, "custo_g": 0.28}
-    }
-
-    # Entradas de parâmetros da reação
-    st.subheader("🔬 Parâmetros de Reação Personalizados")
-    temperatura = st.slider("Temperatura (°C)", 25, 80, 45)
-    tempo_reacao = st.slider("Tempo de reação (horas)", 0, 48, 12)
-    ph_reacao = st.slider("pH da reação", 4.0, 9.0, 7.0, step=0.1)
-
-    st.subheader("🧪 Seleção de Enzima")
-    alcool = "Glicerol"
-    enzima = st.selectbox("Escolha a enzima", list(enzimas.keys()))
-
-    st.markdown(f"""
-    **Condições Recomendadas para a Enzima Selecionada:**
-    - pH ideal: `{enzimas[enzima]['ph']}`
-    - Temperatura: `{enzimas[enzima]['temp']}`
-    - Reutilização média: `{enzimas[enzima]['ciclos']} ciclos`
-    """)
-
-    # Novo parâmetro: dosagem de enzima (% m/m)
-    dosagem_enzima = st.slider("Dosagem de enzima (% m/m)", 0.1, 10.0, 2.0, step=0.1)
-
-
-    # Entrada de quantidade de blend
-    st.subheader("⚗️ Simulação de Produção")
-    qtd_blend = st.number_input("Quantidade do blend (kg)", min_value=1.0, max_value=1000.0, value=10.0, step=0.5)
-
-    # Composição simulada de um blend lipídico (exemplo: óleo de palma)
-    blend_lg = {
-        "C12:0": 0.02,
-        "C14:0": 0.05,
-        "C16:0": 0.40,
-        "C18:0": 0.10,
-        "C18:1": 0.25,
-        "C18:2": 0.18
-    }
-
-    # Funções de cálculo
-    def calcular_rendimento_teorico(perf_oleo, tipo_alcool):
-        saturados = sum([v for k, v in perf_oleo.items() if k in ["C12:0", "C14:0", "C16:0", "C18:0"]])
-        fator = 0.85
-        return round(saturados * fator, 2)
-
-    def calcular_custo_lote(qtd_blend, enzima_info, alcool_info, rendimento, dosagem_percentual):
-        if rendimento == 0:
-            return "Erro: Rendimento não pode ser zero."
-    
-        # Enzima em gramas por kg de blend
-        enzima_g = (dosagem_percentual / 100) * qtd_blend * 1000
-        custo_enzima = enzima_info['custo_g'] * enzima_g
-    
-        custo_alcool = alcool_info['custo_kg'] * qtd_blend
-        custo_total = (custo_enzima + custo_alcool) / (rendimento / 100)
-    
-        return custo_total
-
-    # Cálculo de rendimento e custo
-    rendimento = calcular_rendimento_teorico(blend_lg, alcool)
-    custo_estimado = calcular_custo_lote(qtd_blend, enzimas[enzima], glicerol, rendimento, dosagem_enzima)
-
-    # Exibição do custo
-    st.metric("Custo Estimado por Lote", f"R$ {custo_estimado:.2f}" if isinstance(custo_estimado, (int, float)) else "Erro no cálculo")
-
-    # Comparativo técnico
-    st.subheader("📉 Comparativo Técnico: Blend vs Éster")
-    if 'indice_iodo' in st.session_state and 'indice_saponificacao' in st.session_state and 'ponto_fusao' in st.session_state:
-        df_comp = pd.DataFrame({
-            "Parâmetro": ["Índice de Iodo", "Índice de Saponificação", "Ponto de Fusão Est.", "Massa Molecular Média"],
-            "Blend Lipídico": [st.session_state['indice_iodo'], st.session_state['indice_saponificacao'], st.session_state['ponto_fusao'], 270],
-            "Produto Esterificado": [
-                st.session_state['indice_iodo'] * 0.95,
-                st.session_state['indice_saponificacao'] * 1.1,
-                st.session_state['ponto_fusao'] - 5,
-                270 + glicerol['massa_molar']
-            ]
-        })
-        st.dataframe(df_comp.style.format({"Blend Lipídico": "{:.2f}", "Produto Esterificado": "{:.2f}"}))
+    if "blend_result" not in st.session_state:
+        st.warning("Por favor, gere um blend lipídico na aba '🧪 Blend Lipídico' antes de prosseguir.")
     else:
-        st.warning("Os parâmetros do blend lipídico ainda não foram definidos. Gere o blend na aba anterior antes de simular o comparativo.")
+        blend = st.session_state["blend_result"]
+        st.subheader("Composição Inicial do Blend (Ácidos Graxos)")
+        st.dataframe(pd.DataFrame.from_dict(blend, orient="index", columns=["%"]).style.format("{:.2f}"))
 
-    st.info("Os valores apresentados são estimativas para simulação e estudo técnico.")
+        st.markdown("---")
+        st.subheader("Parâmetros da Esterificação")
+
+        col1, col2, col3 = st.columns(3)
+        with col1:
+            rendimento = st.slider("Rendimento da Reação (%)", 50, 100, 90)
+        with col2:
+            enzima_custo = st.number_input("Custo por kg de enzima imobilizada (R$/kg)", value=3000.0)
+        with col3:
+            ciclos_enzima = st.number_input("Número de usos da enzima", min_value=1, value=10)
+
+        col4, col5, col6 = st.columns(3)
+        with col4:
+            enzima_pct = st.slider("% Enzima no processo (m/m)", 1, 10, 5)
+        with col5:
+            glicerol_pct = st.slider("% Glicerol no processo (m/m)", 5, 50, 15)
+        with col6:
+            custo_glicerol = st.number_input("Custo do glicerol (R$/kg)", value=5.0)
+
+        st.markdown("---")
+        st.subheader("Simulação de Produção")
+
+        massa_blend_kg = 1.0
+        massa_glicerol = glicerol_pct / 100 * massa_blend_kg
+        massa_enzima = enzima_pct / 100 * massa_blend_kg
+        custo_enzima = (massa_enzima * enzima_custo) / ciclos_enzima
+        custo_glicerol_total = massa_glicerol * custo_glicerol
+
+        custo_mat_prima = custo_glicerol_total + custo_enzima
+        custo_total = custo_mat_prima
+        massa_final = massa_blend_kg * (rendimento / 100)
+
+        custo_por_kg = custo_total / massa_final
+
+        st.metric("Massa Final (kg)", f"{massa_final:.2f}")
+        st.metric("Custo Total (R$)", f"{custo_total:.2f}")
+        st.metric("Custo por kg (R$)", f"{custo_por_kg:.2f}")
+
+        st.markdown("---")
+        st.subheader("Comparativo da Composição")
+
+        df_blend = pd.DataFrame.from_dict(blend, orient="index", columns=["Blend Original (%)"])
+        df_blend["Esterificado (%)"] = df_blend["Blend Original (%)"] * (rendimento / 100)
+        st.dataframe(df_blend.style.format("{:.2f}"))
+
+        fig = px.bar(df_blend.reset_index(), x="index", y=["Blend Original (%)", "Esterificado (%)"],
+                     barmode="group", labels={"index": "Ácido Graxo"}, title="Comparação: Antes e Depois da Esterificação")
+        st.plotly_chart(fig, use_container_width=True)
 
 # === ESG e Ambiental ===
 with tabs[5]:
