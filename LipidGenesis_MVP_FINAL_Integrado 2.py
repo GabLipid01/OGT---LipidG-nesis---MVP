@@ -304,8 +304,8 @@ with tabs[4]:
     - Reutilização média: `{enzimas[enzima]['ciclos']} ciclos`
     """)
 
-# Novo parâmetro: dosagem de enzima (% m/m)
-dosagem_enzima = st.slider("Dosagem de enzima (% m/m)", 0.1, 10.0, 2.0, step=0.1)
+    # Novo parâmetro: dosagem de enzima (% m/m)
+    dosagem_enzima = st.slider("Dosagem de enzima (% m/m)", 0.1, 10.0, 2.0, step=0.1)
 
 
     # Entrada de quantidade de blend
