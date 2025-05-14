@@ -28,7 +28,7 @@ tabs = st.tabs([
 ])
 
 # === Home ===
-with tabs[0]:
+with tabs[1]:
     st.markdown("""
 ### Viabilidade de Óleos sem Planta por Esterificação Enzimática
 
@@ -108,7 +108,7 @@ def gerar_pdf(df_lipidica, sensorial_txt):
     return buffer
 
 # === Blend Lipídico ===
-with tabs[1]:
+with tabs[2]:
     st.header("🧪 Montagem do Blend LG")
     st.sidebar.title("🔬 Monte seu Blend")
 
@@ -174,7 +174,7 @@ with tabs[1]:
 
 
 # === Assinatura Sensorial ===
-with tabs[2]:
+with tabs[3]:
 
     if total_pct == 0:
         st.warning("Monte seu blend com ao menos um óleo na aba '🧪 Blend Lipídico'.")
@@ -250,7 +250,7 @@ with tabs[2]:
                 st.markdown(f"**{oleo}:** {ref}")
 
 # === Viabilidade Técnica ===
-with tabs[3]:
+with tabs[4]:
 
     st.markdown("""
     O modelo LipidGenesis permite a criação de óleos estruturados por meio da esterificação enzimática de ácidos graxos,
@@ -292,7 +292,7 @@ Este módulo representa o potencial técnico da produção de blends lipídicos 
 """)
 
 # === 📊 PROTOCOLO DE PRODUÇÃO ===
-with tabs[4]:
+with tabs[5]:
     st.header("📊 Protocolo de Produção - Esterificação Enzimática")
 
     if "blend_result" not in st.session_state:
@@ -352,7 +352,7 @@ with tabs[4]:
         st.plotly_chart(fig, use_container_width=True)
 
 # === ESG e Ambiental ===
-with tabs[5]:
+with tabs[6]:
     st.header("🌱 Sustentabilidade Industrial")
 
     st.markdown("""
@@ -371,12 +371,12 @@ with tabs[5]:
 """)
 
 # === Rastreabilidade (Placeholder) ===
-with tabs[6]:
+with tabs[7]:
     st.header("📍 Rastreabilidade do Blend")
     st.info("Esta seção será dedicada à origem dos ingredientes, lotes e fornecedores — em breve.")
 
 # === Exportação PDF ===
-with tabs[7]:
+with tabs[8]:
     st.header("📄 Exportar Relatório PDF")
 
     # Copiar perfis e referências para dentro desta aba
