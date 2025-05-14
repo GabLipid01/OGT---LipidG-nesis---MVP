@@ -16,14 +16,15 @@ st.title("🌿 LipidGenesis - Bioengenharia Lipídica Aplicada à Indústria de 
 
 # === Interface em Abas (logo abaixo do slogan) ===
 tabs = st.tabs([
-    "🏭 Proposta Industrial",      # tabs[0]
-    "🧪 Blend Lipídico",           # tabs[1]
-    "👃 Assinatura Sensorial",     # tabs[2]
-    "📊 Viabilidade Técnica",      # tabs[3]
-    "📊 Protocolo de Produção",    # tabs[4]
-    "🌱 ESG e Ambiental",          # tabs[5]
-    "📍 Rastreabilidade",          # tabs[6]
-    "📄 Exportação PDF"            # tabs[7]
+    "🧭 Home"                      # tabs[0]
+    "🏭 Proposta Industrial",      # tabs[1]
+    "🧪 Blend Lipídico",           # tabs[2]
+    "👃 Assinatura Sensorial",     # tabs[3]
+    "📊 Viabilidade Técnica",      # tabs[4]
+    "📊 Protocolo de Produção",    # tabs[5]
+    "🌱 ESG e Ambiental",          # tabs[6]
+    "📍 Rastreabilidade",          # tabs[7]
+    "📄 Exportação PDF"            # tabs[8]
 ])
 
 # === Home ===
