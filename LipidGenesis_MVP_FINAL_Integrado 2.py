@@ -27,7 +27,21 @@ tabs = st.tabs([
     "📄 Exportação PDF"            # tabs[8]
 ])
 
-# === Home ===
+with tabs[0]:
+    st.title("LipidGenesis - Blend LG")
+    st.subheader("Ciência Aplicada à Criação de Blends Lipídicos")
+
+    st.markdown("""
+    Bem-vindo ao **LipidGenesis**, um app interativo para formulação e simulação de blends lipídicos com foco na cadeia do óleo de palma.
+
+    Para começar:
+    1. Acesse a aba **"Blend Lipídico"** e monte sua formulação com os ingredientes disponíveis.
+    2. Explore as demais abas para entender o perfil físico-químico, sensorial, ambiental e produtivo do seu blend.
+
+    ---
+    Este MVP é voltado para inovação sustentável em P&D, com foco em alternativas à refinação tradicional.
+    """)
+
 with tabs[1]:
     st.markdown("""
 ### Viabilidade de Óleos sem Planta por Esterificação Enzimática
