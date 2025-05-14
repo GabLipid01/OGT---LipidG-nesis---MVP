@@ -28,7 +28,7 @@ tabs = st.tabs([
 ])
 
 with tabs[0]:
-    st.title("LipidGenesis - Blend LG")
+    st.title("LipidGenesis")
     st.subheader("Ciência Aplicada à Criação de Blends Lipídicos")
 
     st.markdown("""
@@ -39,7 +39,7 @@ with tabs[0]:
     2. Explore as demais abas para entender o perfil físico-químico, sensorial, ambiental e produtivo do seu blend.
 
     ---
-    Este MVP é voltado para inovação sustentável em P&D, com foco em alternativas à refinação tradicional.
+    Este MVP é voltado para inovação sustentável em P&D, com foco em alternativas ao refino tradicional.
     """)
 
 with tabs[1]:
