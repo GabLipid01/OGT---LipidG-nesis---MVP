@@ -44,21 +44,25 @@ with tabs[0]:
 
 with tabs[1]:
     st.markdown("""
-### Viabilidade de Óleos sem Planta por Esterificação Enzimática
+    O **LipidGenesis** propõe uma abordagem alternativa à produção tradicional de óleos estruturados,
+    utilizando **esterificação enzimática com glicerol** para gerar triglicerídeos com perfis sob medida.
 
-Este MVP demonstra a viabilidade de criar óleos estruturados por via enzimática — sem planta, sem cultivo, com base em blends graxos modelados tecnicamente.
+    ---
+    ### **Categorias de ingredientes disponíveis**
+    - **Ácidos Graxos Puros:** fornecem controle técnico preciso da composição.
+    - **Insumos Industriais (ex: PFAD, soapstock):** alternativas econômicas e sustentáveis provenientes de etapas do refino.
 
-**Aplicações potenciais:**
-- Substitutos de óleos tropicais em cosméticos e alimentos
-- Lubrificantes verdes e ingredientes bioativos personalizados
+    ---
+    ### **Vantagens estratégicas**
+    - **Customização de blends** com perfis semelhantes a óleos vegetais reais.
+    - **Valorização de subprodutos industriais**, reduzindo custos e impactos ambientais.
+    - **Flexibilidade para P&D** em aplicações cosméticas, alimentares ou industriais.
 
-**Diferenciais:**
-- Modelagem digital de perfis graxos
-- Assinatura sensorial automática com compostos voláteis
-- Exportação em PDF técnico para validação industrial
-
-> **LipidGenesis é bioengenharia lipídica como plataforma para uma indústria regenerativa.**
-""")
+    ---
+    ### **Objetivo do MVP**
+    Demonstrar a viabilidade técnica e econômica de produzir óleos estruturados por rota enzimática
+    a partir de misturas controladas de insumos industriais e ácidos graxos puros, promovendo inovação e circularidade na cadeia do óleo de palma.
+    """)
 
 # === Dados fixos ===
 
