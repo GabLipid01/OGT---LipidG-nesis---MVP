@@ -138,28 +138,52 @@ with tabs[2]:
     st.header("🧪 Montagem do Blend LG")
     st.sidebar.title("🔬 Monte seu Blend")
 
-    oil_keys = list(FATTY_ACID_PROFILES.keys())
-    oil_percentages = {
-        oil: st.sidebar.slider(f"{oil} (%)", 0, 100, 0, 1) for oil in oil_keys
+    grouped_profiles = {
+        "Óleos Refinados": list(FATTY_ACID_PROFILES["Óleos Refinados"].keys()),
+        "Insumos Industriais": list(FATTY_ACID_PROFILES["Insumos Industriais"].keys())
     }
-    total_pct = sum(oil_percentages.values())
 
+    # Lista de ingredientes disponíveis (sem os separadores)
+    all_ingredients = []
+    for group, oils in grouped_profiles.items():
+        all_ingredients.extend(oils)
+
+    # Criação de sliders com agrupamento visual
+    st.sidebar.markdown("### 🧴 Óleos Refinados")
+    oil_percentages = {}
+    for oil in grouped_profiles["Óleos Refinados"]:
+        oil_percentages[oil] = st.sidebar.slider(f"{oil} (%)", 0, 100, 0, 1)
+
+    st.sidebar.markdown("### 🧪 Insumos Industriais")
+    for oil in grouped_profiles["Insumos Industriais"]:
+        oil_percentages[oil] = st.sidebar.slider(f"{oil} (%)", 0, 100, 0, 1)
+
+    total_pct = sum(oil_percentages.values())
     blend_lg = {}  # Inicializa fora para uso global
 
     if total_pct == 0:
         st.warning("Defina pelo menos um óleo com percentual maior que 0.")
     else:
-        normalized = {k: v / total_pct for k, v in oil_percentages.items()}
-        all_fatty_acids = set().union(*FATTY_ACID_PROFILES.values())
+        normalized = {k: v / total_pct for k, v in oil_percentages.items() if v > 0}
+        all_fatty_acids = set().union(*[
+            FATTY_ACID_PROFILES["Óleos Refinados"].get(k, {})
+            if k in FATTY_ACID_PROFILES["Óleos Refinados"]
+            else FATTY_ACID_PROFILES["Insumos Industriais"].get(k, {})
+            for k in normalized.keys()
+        ])
+
         blend_lg = {
             fa: sum(
-                normalized[oil] * FATTY_ACID_PROFILES[oil].get(fa, 0)
-                for oil in oil_keys
+                normalized[oil] * (
+                    FATTY_ACID_PROFILES["Óleos Refinados"].get(oil, {}).get(fa, 0) +
+                    FATTY_ACID_PROFILES["Insumos Industriais"].get(oil, {}).get(fa, 0)
+                )
+                for oil in normalized.keys()
             )
             for fa in all_fatty_acids
         }
 
-                # 💾 Salva o perfil de blend no session_state para uso em outras abas
+        # 💾 Salva o perfil de blend no session_state para uso em outras abas
         st.session_state["blend_lipidico"] = blend_lg
         st.session_state["blend_result"] = blend_lg  # Necessário para a aba de produção
 
@@ -196,6 +220,7 @@ with tabs[2]:
         st.metric("Índice de Iodo", f"{ii:.2f}")
         st.metric("Índice de Saponificação", f"{isap:.2f} mg KOH/g")
         st.metric("Ponto de Fusão Estimado", f"{pfusao:.2f} °C")
+
 
 
 
