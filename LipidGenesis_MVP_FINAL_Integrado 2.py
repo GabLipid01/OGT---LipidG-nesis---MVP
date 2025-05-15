@@ -6,64 +6,6 @@ from datetime import datetime
 from io import BytesIO
 from blend_calculator import BlendCalculator
 
-st.set_page_config(
-    page_title="LipidGenesis - Blend LG",
-    layout="wide"
-)
-
-# === Título e Slogan (fora das abas) ===
-st.title("🌿 LipidGenesis - Bioengenharia Lipídica Aplicada à Indústria de Óleo de Palma")
-
-# === Interface em Abas (logo abaixo do slogan) ===
-tabs = st.tabs([
-    "🧭 Home",                     # tabs[0]
-    "🏭 Proposta Industrial",      # tabs[1]
-    "🧪 Blend Lipídico",           # tabs[2]
-    "👃 Assinatura Sensorial",     # tabs[3]
-    "📊 Viabilidade Técnica",      # tabs[4]
-    "📊 Protocolo de Produção",    # tabs[5]
-    "🌱 ESG e Ambiental",          # tabs[6]
-    "📍 Rastreabilidade",          # tabs[7]
-    "📄 Exportação PDF"            # tabs[8]
-])
-
-with tabs[0]:
-    st.title("LipidGenesis")
-    st.subheader("Ciência Aplicada à Criação de Blends Lipídicos")
-
-    st.markdown("""
-    Bem-vindo ao **LipidGenesis**, um app interativo para formulação e simulação de blends lipídicos com foco na cadeia do óleo de palma.
-
-    Para começar:
-    1. Acesse a aba **"Blend Lipídico"** e monte sua formulação com os ingredientes disponíveis.
-    2. Explore as demais abas para entender o perfil físico-químico, sensorial, ambiental e produtivo do seu blend.
-
-    ---
-    Este MVP é voltado para inovação sustentável em P&D, com foco em alternativas ao refino tradicional.
-    """)
-
-with tabs[1]:
-    st.markdown("""
-    O **LipidGenesis** propõe uma abordagem alternativa à produção tradicional de óleos estruturados,
-    utilizando **esterificação enzimática com glicerol** para gerar triglicerídeos com perfis sob medida.
-
-    ---
-    ### **Categorias de ingredientes disponíveis**
-    - **Ácidos Graxos Puros:** fornecem controle técnico preciso da composição.
-    - **Insumos Industriais (ex: PFAD, soapstock):** alternativas econômicas e sustentáveis provenientes de etapas do refino.
-
-    ---
-    ### **Vantagens estratégicas**
-    - **Customização de blends** com perfis semelhantes a óleos vegetais reais.
-    - **Valorização de subprodutos industriais**, reduzindo custos e impactos ambientais.
-    - **Flexibilidade para P&D** em aplicações cosméticas, alimentares ou industriais.
-
-    ---
-    ### **Objetivo do MVP**
-    Demonstrar a viabilidade técnica e econômica de produzir óleos estruturados por rota enzimática
-    a partir de misturas controladas de insumos industriais e ácidos graxos puros, promovendo inovação e circularidade na cadeia do óleo de palma.
-    """)
-
 # === Dados fixos ===
 
 FATTY_ACID_PROFILES = {
@@ -124,6 +66,66 @@ def gerar_pdf(df_lipidica, sensorial_txt):
     buffer.write(pdf_output)
     buffer.seek(0)
     return buffer
+
+st.set_page_config(
+    page_title="LipidGenesis - Blend LG",
+    layout="wide"
+)
+
+# === Título e Slogan (fora das abas) ===
+st.title("🌿 LipidGenesis - Bioengenharia Lipídica Aplicada à Indústria de Óleo de Palma")
+
+# === Interface em Abas (logo abaixo do slogan) ===
+tabs = st.tabs([
+    "🧭 Home",                     # tabs[0]
+    "🏭 Proposta Industrial",      # tabs[1]
+    "🧪 Blend Lipídico",           # tabs[2]
+    "👃 Assinatura Sensorial",     # tabs[3]
+    "📊 Viabilidade Técnica",      # tabs[4]
+    "📊 Protocolo de Produção",    # tabs[5]
+    "🌱 ESG e Ambiental",          # tabs[6]
+    "📍 Rastreabilidade",          # tabs[7]
+    "📄 Exportação PDF"            # tabs[8]
+])
+
+with tabs[0]:
+    st.title("LipidGenesis")
+    st.subheader("Ciência Aplicada à Criação de Blends Lipídicos")
+
+    st.markdown("""
+    Bem-vindo ao **LipidGenesis**, um app interativo para formulação e simulação de blends lipídicos com foco na cadeia do óleo de palma.
+
+    Para começar:
+    1. Acesse a aba **"Blend Lipídico"** e monte sua formulação com os ingredientes disponíveis.
+    2. Explore as demais abas para entender o perfil físico-químico, sensorial, ambiental e produtivo do seu blend.
+
+    ---
+    Este MVP é voltado para inovação sustentável em P&D, com foco em alternativas ao refino tradicional.
+    """)
+
+with tabs[1]:
+    st.markdown("""
+    O **LipidGenesis** propõe uma abordagem alternativa à produção tradicional de óleos estruturados,
+    utilizando **esterificação enzimática com glicerol** para gerar triglicerídeos com perfis sob medida.
+
+    ---
+    ### **Categorias de ingredientes disponíveis**
+    - **Ácidos Graxos Puros:** fornecem controle técnico preciso da composição.
+    - **Insumos Industriais (ex: PFAD, soapstock):** alternativas econômicas e sustentáveis provenientes de etapas do refino.
+
+    ---
+    ### **Vantagens estratégicas**
+    - **Customização de blends** com perfis semelhantes a óleos vegetais reais.
+    - **Valorização de subprodutos industriais**, reduzindo custos e impactos ambientais.
+    - **Flexibilidade para P&D** em aplicações cosméticas, alimentares ou industriais.
+
+    ---
+    ### **Objetivo do MVP**
+    Demonstrar a viabilidade técnica e econômica de produzir óleos estruturados por rota enzimática
+    a partir de misturas controladas de insumos industriais e ácidos graxos puros, promovendo inovação e circularidade na cadeia do óleo de palma.
+    """)
+
+
 
 # === Blend Lipídico ===
 with tabs[2]:
