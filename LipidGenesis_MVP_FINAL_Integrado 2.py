@@ -157,6 +157,8 @@ with tabs[2]:
     st.sidebar.markdown("### 🧪 Insumos Industriais")
     for oil in grouped_profiles["Insumos Industriais"]:
         oil_percentages[oil] = st.sidebar.slider(f"{oil} (%)", 0, 100, 0, 1)
+        st.session_state["oil_percentages"] = oil_percentages
+
 
     total_pct = sum(oil_percentages.values())
     blend_lg = {}  # Inicializa fora para uso global
@@ -226,6 +228,8 @@ with tabs[2]:
 
 # === Assinatura Sensorial ===
 with tabs[3]:
+oil_percentages = st.session_state.get("oil_percentages", {})
+oleos_utilizados = [oil for oil, pct in oil_percentages.items() if pct > 0]
 
     if total_pct == 0:
         st.warning("Monte seu blend com ao menos um óleo na aba '🧪 Blend Lipídico'.")
