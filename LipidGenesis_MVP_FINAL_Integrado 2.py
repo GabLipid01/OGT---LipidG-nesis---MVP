@@ -228,8 +228,8 @@ with tabs[2]:
 
 # === Assinatura Sensorial ===
 with tabs[3]:
-oil_percentages = st.session_state.get("oil_percentages", {})
-oleos_utilizados = [oil for oil, pct in oil_percentages.items() if pct > 0]
+    oil_percentages = st.session_state.get("oil_percentages", {})
+    oleos_utilizados = [oil for oil, pct in oil_percentages.items() if pct > 0]
 
     if total_pct == 0:
         st.warning("Monte seu blend com ao menos um óleo na aba '🧪 Blend Lipídico'.")
