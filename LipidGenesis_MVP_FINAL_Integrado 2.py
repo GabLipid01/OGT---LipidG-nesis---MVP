@@ -275,6 +275,25 @@ with tabs[3]:
                 "Ácido benzoico etil éster": ("Doce", 20),
                 "Ácido octanoico": ("Gordurosa", 10),
             },
+            # Novos insumos industriais:
+            "PFAD": {
+                "Ácido palmítico": ("Gorduroso, ceroso", 35),
+                "Ácido oleico": ("Oleoso, suave", 20),
+                "Ácido linoleico": ("Leve amendoado", 12),
+                "Hexanal": ("Notas verdes, herbais", 8),
+                "Acetona": ("Notas químicas, solvente", 8),
+                "Compostos sulfurados": ("Pungente, característico", 5),
+                "Ácido láurico": ("Levemente doce", 5),
+            },
+            "Soapstock": {
+                "Ácido palmítico": ("Oleoso, gorduroso", 23),
+                "Ácido oleico": ("Suave, oleoso", 18),
+                "Sabões de potássio/sódio": ("Sabão, alcalino", 15),
+                "Fosfolipídios oxidados": ("Mineral, rancidez leve", 12),
+                "Ácido linoleico": ("Verde, vegetal", 7),
+                "Compostos fenólicos": ("Amargo, terroso", 5),
+                "Água e traços orgânicos": ("Neutro", 5),
+            },
         }
 
         referencias = {
@@ -284,6 +303,8 @@ with tabs[3]:
             "Palm Kernel Oil": "Zhang et al. (2016), *Food Research International*.",
             "Palm Kernel Olein": "Zhang et al. (2016), *Food Research International*.",
             "Palm Kernel Stearin": "Zhang et al. (2016), *Food Research International*.",
+            "PFAD": "Tan et al. (2018), *Journal of Lipid Science & Technology*.",
+            "Soapstock": "Lim et al. (2019), *Industrial Crops and Products*.",
         }
 
         st.subheader("🔬 Compostos Voláteis Identificados")
@@ -299,6 +320,7 @@ with tabs[3]:
             ref = referencias.get(oleo)
             if ref:
                 st.markdown(f"**{oleo}:** {ref}")
+
 
 # === Viabilidade Técnica ===
 with tabs[4]:
