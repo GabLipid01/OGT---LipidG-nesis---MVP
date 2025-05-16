@@ -227,93 +227,30 @@ with tabs[2]:
 
 
 # === Assinatura Sensorial ===
+# === Assinatura Sensorial ===
 with tabs[3]:
     oil_percentages = st.session_state.get("oil_percentages", {})
     oleos_utilizados = [oil for oil, pct in oil_percentages.items() if pct > 0]
 
-    if total_pct == 0:
+    # Mapeamento entre nome completo e chave simplificada usada nos dicionários
+    nome_curto = {
+        "PFAD (Destilado de Ácidos Graxos de Palma)": "PFAD",
+        "Soapstock de Palma (Refino Químico)": "Soapstock",
+        "Palm Oil": "Palm Oil",
+        "Palm Olein": "Palm Olein",
+        "Palm Stearin": "Palm Stearin",
+        "Palm Kernel Oil": "Palm Kernel Oil",
+        "Palm Kernel Olein": "Palm Kernel Olein",
+        "Palm Kernel Stearin": "Palm Kernel Stearin"
+    }
+
+    if not oleos_utilizados:
         st.warning("Monte seu blend com ao menos um óleo na aba '🧪 Blend Lipídico'.")
     else:
-        oleos_utilizados = [oil for oil, pct in oil_percentages.items() if pct > 0]
-
-        perfils_volateis = {
-            "Palm Oil": {
-                "2,2,6-Trimethylcyclohexanone": ("Palmeira", 35),
-                "3,3,5-Trimethylcyclohex-2-enone": ("Palmeira", 25),
-                "Nonanone": ("Doce", 15),
-                "Nonanal": ("Doce", 15),
-                "Linalol": ("Floral", 5),
-                "Trans-allo-ocimene": ("Fresca", 3),
-                "β-Cyclocitral": ("Cítrica", 2),
-                "Ionol": ("Floral", 5),
-            },
-            "Palm Olein": {
-                "Heptanal": ("Fresca, frutada", 30),
-                "Trans-2-heptenal": ("Verde", 20),
-                "Decanal": ("Doce", 25),
-                "Trans-2-undecenal": ("Doce", 25),
-            },
-            "Palm Stearin": {
-                "Ácido acético": ("Azeda", 30),
-                "Ácido butanoico": ("Láctea", 25),
-                "1-Hexanol": ("Verde", 20),
-                "Metilcetona": ("Frutada", 25),
-            },
-            "Palm Kernel Oil": {
-                "2-Nonanona": ("Doce", 40),
-                "Ácido octanoico": ("Gordurosa", 20),
-                "Metil octanoato": ("Doce", 20),
-                "Pirazinas": ("Tostadas, amadeiradas", 10),
-                "Maltol": ("Doce", 5),
-            },
-            "Palm Kernel Olein": {
-                "2-Nonanona": ("Doce", 40),
-                "Ácido octanoico": ("Gordurosa", 20),
-                "Metil octanoato": ("Doce", 20),
-                "Pirazinas": ("Tostadas, amadeiradas", 10),
-                "Maltol": ("Doce", 5),
-            },
-            "Palm Kernel Stearin": {
-                "Pirazinas": ("Tostadas, amadeiradas", 40),
-                "Maltol": ("Doce", 30),
-                "Ácido benzoico etil éster": ("Doce", 20),
-                "Ácido octanoico": ("Gordurosa", 10),
-            },
-            # Novos insumos industriais:
-            "PFAD": {
-                "Ácido palmítico": ("Gorduroso, ceroso", 35),
-                "Ácido oleico": ("Oleoso, suave", 20),
-                "Ácido linoleico": ("Leve amendoado", 12),
-                "Hexanal": ("Notas verdes, herbais", 8),
-                "Acetona": ("Notas químicas, solvente", 8),
-                "Compostos sulfurados": ("Pungente, característico", 5),
-                "Ácido láurico": ("Levemente doce", 5),
-            },
-            "Soapstock": {
-                "Ácido palmítico": ("Oleoso, gorduroso", 23),
-                "Ácido oleico": ("Suave, oleoso", 18),
-                "Sabões de potássio/sódio": ("Sabão, alcalino", 15),
-                "Fosfolipídios oxidados": ("Mineral, rancidez leve", 12),
-                "Ácido linoleico": ("Verde, vegetal", 7),
-                "Compostos fenólicos": ("Amargo, terroso", 5),
-                "Água e traços orgânicos": ("Neutro", 5),
-            },
-        }
-
-        referencias = {
-            "Palm Oil": "Kuntum et al. (1989), *Journal of Oil Palm Research*.",
-            "Palm Olein": "Omar et al. (2007), *Pakistan Journal of Biological Sciences*.",
-            "Palm Stearin": "Omar et al. (2007), *Pakistan Journal of Biological Sciences*.",
-            "Palm Kernel Oil": "Zhang et al. (2016), *Food Research International*.",
-            "Palm Kernel Olein": "Zhang et al. (2016), *Food Research International*.",
-            "Palm Kernel Stearin": "Zhang et al. (2016), *Food Research International*.",
-            "PFAD": "Tan et al. (2018), *Journal of Lipid Science & Technology*.",
-            "Soapstock": "Lim et al. (2019), *Industrial Crops and Products*.",
-        }
-
         st.subheader("🔬 Compostos Voláteis Identificados")
         for oleo in oleos_utilizados:
-            compostos = perfils_volateis.get(oleo, {})
+            chave = nome_curto.get(oleo)
+            compostos = perfils_volateis.get(chave, {})
             st.markdown(f"**{oleo}**:")
             for composto, (nota, pct) in compostos.items():
                 st.markdown(f"- {composto}: {nota} — {pct}%")
@@ -321,9 +258,11 @@ with tabs[3]:
 
         st.subheader("📚 Referências Científicas")
         for oleo in oleos_utilizados:
-            ref = referencias.get(oleo)
+            chave = nome_curto.get(oleo)
+            ref = referencias.get(chave)
             if ref:
                 st.markdown(f"**{oleo}:** {ref}")
+
 
 
 # === Viabilidade Técnica ===
