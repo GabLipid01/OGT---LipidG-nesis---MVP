@@ -270,9 +270,6 @@ def get_fatty_profile(oil):
             return FATTY_ACID_PROFILES[category][oil]
     return {}
 
-# União dos ácidos graxos presentes nos ingredientes usados
-all_fatty_acids = set().union(*[get_fatty_profile(oil) for oil in normalized.keys()])
-
 # Geração do blend
 blend_lg = {
     fa: sum(
@@ -319,6 +316,9 @@ st.session_state["ponto_fusao"] = pfusao
 st.metric("Índice de Iodo", f"{ii:.2f}")
 st.metric("Índice de Saponificação", f"{isap:.2f} mg KOH/g")
 st.metric("Ponto de Fusão Estimado", f"{pfusao:.2f} °C")
+
+# União dos ácidos graxos presentes nos ingredientes usados
+all_fatty_acids = set().union(*[get_fatty_profile(oil) for oil in normalized.keys()])
 
 
 # === Assinatura Sensorial ===
