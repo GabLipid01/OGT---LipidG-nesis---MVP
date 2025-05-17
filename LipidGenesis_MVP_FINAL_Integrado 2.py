@@ -263,9 +263,6 @@ def get_fatty_profile(oil):
             return FATTY_ACID_PROFILES[category][oil]
     return {}
 
-# União dos ácidos graxos presentes nos ingredientes usados
-all_fatty_acids = set().union(*[get_fatty_profile(oil) for oil in normalized.keys()])
-
 # Função para buscar o perfil de um ingrediente em qualquer categoria
 def get_fatty_profile(oil):
     for category in FATTY_ACID_PROFILES:
