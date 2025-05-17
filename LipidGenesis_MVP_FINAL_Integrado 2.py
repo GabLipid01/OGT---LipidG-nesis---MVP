@@ -266,6 +266,16 @@ def get_fatty_profile(oil):
 # União dos ácidos graxos presentes nos ingredientes usados
 all_fatty_acids = set().union(*[get_fatty_profile(oil) for oil in normalized.keys()])
 
+# Função para buscar o perfil de um ingrediente em qualquer categoria
+def get_fatty_profile(oil):
+    for category in FATTY_ACID_PROFILES:
+        if oil in FATTY_ACID_PROFILES[category]:
+            return FATTY_ACID_PROFILES[category][oil]
+    return {}
+
+# União dos ácidos graxos presentes nos ingredientes usados
+all_fatty_acids = set().union(*[get_fatty_profile(oil) for oil in normalized.keys()])
+
 # Geração do blend
 blend_lg = {
     fa: sum(
@@ -274,17 +284,6 @@ blend_lg = {
     )
     for fa in all_fatty_acids
 }
-
-        blend_lg = {
-            fa: sum(
-                normalized[oil] * (
-                    FATTY_ACID_PROFILES["Óleos Refinados"].get(oil, {}).get(fa, 0) +
-                    FATTY_ACID_PROFILES["Insumos Industriais"].get(oil, {}).get(fa, 0)
-                )
-                for oil in normalized.keys()
-            )
-            for fa in all_fatty_acids
-        }
 
         # 💾 Salva o perfil de blend no session_state para uso em outras abas
         st.session_state["blend_lipidico"] = blend_lg
