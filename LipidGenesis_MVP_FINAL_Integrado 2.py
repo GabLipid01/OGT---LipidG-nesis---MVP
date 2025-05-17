@@ -17,6 +17,17 @@ FATTY_ACID_PROFILES = {
         "Palm Kernel Olein": {"C6:0": 0.3, "C8:0": 4.0, "C10:0": 3.7, "C12:0": 49.5, "C14:0": 15.7, "C16:0": 8.0, "C16:1": 0.1, "C18:0": 1.9, "C18:1": 14.5, "C18:2": 2.1, "C18:3": 0.1, "C20:0": 0.1},
         "Palm Kernel Stearin": {"C8:0": 3.0, "C10:0": 3.0, "C12:0": 47.0, "C14:0": 17.5, "C16:0": 9.5, "C16:1": 0.1, "C18:0": 2.5, "C18:1": 14.0, "C18:2": 2.0, "C18:3": 0.1, "C20:0": 0.1}
     },
+
+    "Ácidos Graxos Puros": {
+        "Ácido Láurico (C12:0)": {"C12:0": 100.0},
+        "Ácido Mirístico (C14:0)": {"C14:0": 100.0},
+        "Ácido Palmítico (C16:0)": {"C16:0": 100.0},
+        "Ácido Esteárico (C18:0)": {"C18:0": 100.0},
+        "Ácido Oleico (C18:1)": {"C18:1": 100.0},
+        "Ácido Linoleico (C18:2)": {"C18:2": 100.0},
+        "Ácido Linolênico (C18:3)": {"C18:3": 100.0}
+    },
+    
     "Insumos Industriais": {
         "PFAD (Destilado de Ácidos Graxos de Palma)": {"C16:0": 52.0, "C18:0": 5.0, "C18:1": 34.0, "C18:2": 8.0, "C20:0": 1.0},
         "Soapstock de Palma (Refino Químico)": {"C16:0": 38.0, "C18:0": 3.5, "C18:1": 45.0, "C18:2": 11.0, "C18:3": 1.0}
@@ -212,9 +223,10 @@ with tabs[2]:
     st.sidebar.title("🔬 Monte seu Blend")
 
     grouped_profiles = {
-        "Óleos Refinados": list(FATTY_ACID_PROFILES["Óleos Refinados"].keys()),
-        "Insumos Industriais": list(FATTY_ACID_PROFILES["Insumos Industriais"].keys())
-    }
+    "Óleos Refinados": list(FATTY_ACID_PROFILES["Óleos Refinados"].keys()),
+    "Ácidos Graxos Puros": list(FATTY_ACID_PROFILES["Ácidos Graxos Puros"].keys()),
+    "Insumos Industriais": list(FATTY_ACID_PROFILES["Insumos Industriais"].keys())
+}
 
     # Lista de ingredientes disponíveis (sem os separadores)
     all_ingredients = []
@@ -226,6 +238,10 @@ with tabs[2]:
     oil_percentages = {}
     for oil in grouped_profiles["Óleos Refinados"]:
         oil_percentages[oil] = st.sidebar.slider(f"{oil} (%)", 0, 100, 0, 1)
+
+    st.sidebar.markdown("### 🧬 Ácidos Graxos Puros")
+    for oil in grouped_profiles["Ácidos Graxos Puros"]:
+    oil_percentages[oil] = st.sidebar.slider(f"{oil} (%)", 0, 100, 0, 1)
 
     st.sidebar.markdown("### 🧪 Insumos Industriais")
     for oil in grouped_profiles["Insumos Industriais"]:
