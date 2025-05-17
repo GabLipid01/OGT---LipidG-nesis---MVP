@@ -256,12 +256,24 @@ with tabs[2]:
         st.warning("Defina pelo menos um óleo com percentual maior que 0.")
     else:
         normalized = {k: v / total_pct for k, v in oil_percentages.items() if v > 0}
-        all_fatty_acids = set().union(*[
-            FATTY_ACID_PROFILES["Óleos Refinados"].get(k, {})
-            if k in FATTY_ACID_PROFILES["Óleos Refinados"]
-            else FATTY_ACID_PROFILES["Insumos Industriais"].get(k, {})
-            for k in normalized.keys()
-        ])
+        # Busca dinâmica do perfil do ingrediente, independente da categoria
+def get_fatty_profile(oil):
+    for category in FATTY_ACID_PROFILES:
+        if oil in FATTY_ACID_PROFILES[category]:
+            return FATTY_ACID_PROFILES[category][oil]
+    return {}
+
+# União dos ácidos graxos presentes nos ingredientes usados
+all_fatty_acids = set().union(*[get_fatty_profile(oil) for oil in normalized.keys()])
+
+# Geração do blend
+blend_lg = {
+    fa: sum(
+        normalized[oil] * get_fatty_profile(oil).get(fa, 0)
+        for oil in normalized.keys()
+    )
+    for fa in all_fatty_acids
+}
 
         blend_lg = {
             fa: sum(
