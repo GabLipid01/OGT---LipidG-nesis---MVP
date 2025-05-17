@@ -241,7 +241,7 @@ with tabs[2]:
 
     st.sidebar.markdown("### 🧬 Ácidos Graxos Puros")
     for oil in grouped_profiles["Ácidos Graxos Puros"]:
-    oil_percentages[oil] = st.sidebar.slider(f"{oil} (%)", 0, 100, 0, 1)
+        oil_percentages[oil] = st.sidebar.slider(f"{oil} (%)", 0, 100, 0, 1)
 
     st.sidebar.markdown("### 🧪 Insumos Industriais")
     for oil in grouped_profiles["Insumos Industriais"]:
