@@ -256,6 +256,10 @@ with tabs[2]:
         st.warning("Defina pelo menos um óleo com percentual maior que 0.")
     else:
         normalized = {k: v / total_pct for k, v in oil_percentages.items() if v > 0}
+        
+        # União dos ácidos graxos presentes nos ingredientes usados
+all_fatty_acids = set().union(*[get_fatty_profile(oil) for oil in normalized.keys()])
+
         # Busca dinâmica do perfil do ingrediente, independente da categoria
 def get_fatty_profile(oil):
     for category in FATTY_ACID_PROFILES:
@@ -316,9 +320,6 @@ st.session_state["ponto_fusao"] = pfusao
 st.metric("Índice de Iodo", f"{ii:.2f}")
 st.metric("Índice de Saponificação", f"{isap:.2f} mg KOH/g")
 st.metric("Ponto de Fusão Estimado", f"{pfusao:.2f} °C")
-
-# União dos ácidos graxos presentes nos ingredientes usados
-all_fatty_acids = set().union(*[get_fatty_profile(oil) for oil in normalized.keys()])
 
 
 # === Assinatura Sensorial ===
