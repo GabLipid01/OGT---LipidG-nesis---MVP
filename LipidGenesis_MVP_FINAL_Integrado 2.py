@@ -222,20 +222,17 @@ with tabs[2]:
     st.header("🧪 Montagem do Blend LG")
     st.sidebar.title("🔬 Monte seu Blend")
 
+    # Agrupamento visual dos ingredientes
     grouped_profiles = {
-    "Óleos Refinados": list(FATTY_ACID_PROFILES["Óleos Refinados"].keys()),
-    "Ácidos Graxos Puros": list(FATTY_ACID_PROFILES["Ácidos Graxos Puros"].keys()),
-    "Insumos Industriais": list(FATTY_ACID_PROFILES["Insumos Industriais"].keys())
-}
+        "Óleos Refinados": list(FATTY_ACID_PROFILES["Óleos Refinados"].keys()),
+        "Ácidos Graxos Puros": list(FATTY_ACID_PROFILES["Ácidos Graxos Puros"].keys()),
+        "Insumos Industriais": list(FATTY_ACID_PROFILES["Insumos Industriais"].keys())
+    }
 
-    # Lista de ingredientes disponíveis (sem os separadores)
-    all_ingredients = []
-    for group, oils in grouped_profiles.items():
-        all_ingredients.extend(oils)
-
-    # Criação de sliders com agrupamento visual
-    st.sidebar.markdown("### 🧴 Óleos Refinados")
+    # Sliders para cada categoria
     oil_percentages = {}
+
+    st.sidebar.markdown("### 🧴 Óleos Refinados")
     for oil in grouped_profiles["Óleos Refinados"]:
         oil_percentages[oil] = st.sidebar.slider(f"{oil} (%)", 0, 100, 0, 1)
 
@@ -246,81 +243,81 @@ with tabs[2]:
     st.sidebar.markdown("### 🧪 Insumos Industriais")
     for oil in grouped_profiles["Insumos Industriais"]:
         oil_percentages[oil] = st.sidebar.slider(f"{oil} (%)", 0, 100, 0, 1)
-        st.session_state["oil_percentages"] = oil_percentages
 
+    # Salva os percentuais brutos no session_state
+    st.session_state["oil_percentages"] = oil_percentages
 
     total_pct = sum(oil_percentages.values())
-    blend_lg = {}  # Inicializa fora para uso global
 
     if total_pct == 0:
         st.warning("Defina pelo menos um óleo com percentual maior que 0.")
     else:
-        normalized = {k: v / total_pct for k, v in oil_percentages.items() if v > 0}
-        
-        # União dos ácidos graxos presentes nos ingredientes usados
-all_fatty_acids = set().union(*[get_fatty_profile(oil) for oil in normalized.keys()])
+        # Normalização
+        normalized = {
+            oil: pct / total_pct
+            for oil, pct in oil_percentages.items()
+            if pct > 0
+        }
 
-        # Busca dinâmica do perfil do ingrediente, independente da categoria
-def get_fatty_profile(oil):
-    for category in FATTY_ACID_PROFILES:
-        if oil in FATTY_ACID_PROFILES[category]:
-            return FATTY_ACID_PROFILES[category][oil]
-    return {}
+        # Função para buscar perfil do óleo em qualquer categoria
+        def get_fatty_profile(oil):
+            for category in FATTY_ACID_PROFILES:
+                if oil in FATTY_ACID_PROFILES[category]:
+                    return FATTY_ACID_PROFILES[category][oil]
+            return {}
 
-# Função para buscar o perfil de um ingrediente em qualquer categoria
-def get_fatty_profile(oil):
-    for category in FATTY_ACID_PROFILES:
-        if oil in FATTY_ACID_PROFILES[category]:
-            return FATTY_ACID_PROFILES[category][oil]
-    return {}
+        # União de todos os ácidos graxos presentes
+        all_fatty_acids = set().union(
+            *[get_fatty_profile(oil) for oil in normalized.keys()]
+        )
 
-# Geração do blend
-blend_lg = {
-    fa: sum(
-        normalized[oil] * get_fatty_profile(oil).get(fa, 0)
-        for oil in normalized.keys()
-    )
-    for fa in all_fatty_acids
-}
+        # Geração do blend lipídico
+        blend_lg = {
+            fa: sum(
+                normalized[oil] * get_fatty_profile(oil).get(fa, 0)
+                for oil in normalized
+            )
+            for fa in all_fatty_acids
+        }
 
-# 💾 Salva o perfil de blend no session_state para uso em outras abas
-st.session_state["blend_lipidico"] = blend_lg
-st.session_state["blend_result"] = blend_lg  # Necessário para a aba de produção
+        # Salva no session_state
+        st.session_state["blend_lipidico"] = blend_lg
+        st.session_state["blend_result"] = blend_lg  # Necessário para produção
 
-# Visualização
-df_lipidico = gerar_receita_lipidica(blend_lg)
-st.dataframe(df_lipidico)
+        # Visualização em tabela
+        df_lipidico = gerar_receita_lipidica(blend_lg)
+        st.dataframe(df_lipidico)
 
-st.subheader("📊 Perfil de Ácidos Graxos")
-fig = px.bar(df_lipidico, x="Nome Completo", y="%", template="plotly_dark")
-st.plotly_chart(fig, use_container_width=True)
+        # Gráfico de barras
+        st.subheader("📊 Perfil de Ácidos Graxos")
+        fig = px.bar(df_lipidico, x="Nome Completo", y="%", template="plotly_dark")
+        st.plotly_chart(fig, use_container_width=True)
 
-# Parâmetros físico-químicos
-valores_iodo = {"C18:1": 86, "C18:2": 173, "C18:3": 260}
-valores_saponificacao = {
-    "C6:0": 325, "C8:0": 305, "C10:0": 295, "C12:0": 276, "C14:0": 255,
-    "C16:0": 241, "C18:0": 222, "C18:1": 198, "C18:2": 195, "C18:3": 190
-}
-valores_ponto_fusao = {
-    "C6:0": -3, "C8:0": 16, "C10:0": 31, "C12:0": 44, "C14:0": 53,
-    "C16:0": 63, "C18:0": 70, "C18:1": 13, "C18:2": -5, "C18:3": -11
-}
+        # Parâmetros físico-químicos
+        valores_iodo = {"C18:1": 86, "C18:2": 173, "C18:3": 260}
+        valores_saponificacao = {
+            "C6:0": 325, "C8:0": 305, "C10:0": 295, "C12:0": 276, "C14:0": 255,
+            "C16:0": 241, "C18:0": 222, "C18:1": 198, "C18:2": 195, "C18:3": 190
+        }
+        valores_ponto_fusao = {
+            "C6:0": -3, "C8:0": 16, "C10:0": 31, "C12:0": 44, "C14:0": 53,
+            "C16:0": 63, "C18:0": 70, "C18:1": 13, "C18:2": -5, "C18:3": -11
+        }
 
-# Cálculos dos índices
-ii = sum(blend_lg.get(fa, 0) * valores_iodo.get(fa, 0) / 100 for fa in blend_lg)
-isap = sum(blend_lg.get(fa, 0) * valores_saponificacao.get(fa, 0) / 100 for fa in blend_lg)
-pfusao = sum(blend_lg.get(fa, 0) * valores_ponto_fusao.get(fa, 0) / 100 for fa in blend_lg)
+        # Cálculos
+        ii = sum(blend_lg.get(fa, 0) * valores_iodo.get(fa, 0) / 100 for fa in blend_lg)
+        isap = sum(blend_lg.get(fa, 0) * valores_saponificacao.get(fa, 0) / 100 for fa in blend_lg)
+        pfusao = sum(blend_lg.get(fa, 0) * valores_ponto_fusao.get(fa, 0) / 100 for fa in blend_lg)
 
-# Salva os parâmetros físico-químicos no session_state
-st.session_state["indice_iodo"] = ii
-st.session_state["indice_saponificacao"] = isap
-st.session_state["ponto_fusao"] = pfusao
+        # Armazenamento no estado
+        st.session_state["indice_iodo"] = ii
+        st.session_state["indice_saponificacao"] = isap
+        st.session_state["ponto_fusao"] = pfusao
 
-# Exibição dos resultados
-st.metric("Índice de Iodo", f"{ii:.2f}")
-st.metric("Índice de Saponificação", f"{isap:.2f} mg KOH/g")
-st.metric("Ponto de Fusão Estimado", f"{pfusao:.2f} °C")
-
+        # Exibição
+        st.metric("Índice de Iodo", f"{ii:.2f}")
+        st.metric("Índice de Saponificação", f"{isap:.2f} mg KOH/g")
+        st.metric("Ponto de Fusão Estimado", f"{pfusao:.2f} °C")
 
 # === Assinatura Sensorial ===
 with tabs[3]:
