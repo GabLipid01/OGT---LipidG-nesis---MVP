@@ -285,9 +285,9 @@ blend_lg = {
     for fa in all_fatty_acids
 }
 
-        # 💾 Salva o perfil de blend no session_state para uso em outras abas
-        st.session_state["blend_lipidico"] = blend_lg
-        st.session_state["blend_result"] = blend_lg  # Necessário para a aba de produção
+# 💾 Salva o perfil de blend no session_state para uso em outras abas
+st.session_state["blend_lipidico"] = blend_lg
+st.session_state["blend_result"] = blend_lg  # Necessário para a aba de produção
 
         # Visualização
         df_lipidico = gerar_receita_lipidica(blend_lg)
