@@ -369,7 +369,7 @@ with tabs[4]:
 
     | Critério                           | LipidGenesis (Esterificação Enzimática) | Extração e Refino Tradicional      |
     |-----------------------------------|------------------------------------------|-------------------------------------|
-    | **Matéria-prima**                 | Ácidos graxos puros / álcoois            | Frutos frescos de palma             |
+    | **Matéria-prima**                 | Ácidos graxos puros + álcoois            | Frutos frescos de palma             |
     | **Investimento inicial (CAPEX)** | Médio-alto (reatores + controle fino)    | Muito alto (plantio + usinas)       |
     | **Custo operacional (OPEX)**      | Moderado (energia, enzima, reagentes)    | Alto (logística + manutenção rural) |
     | **Consistência do produto**       | Alta (ajustável digitalmente)            | Média (depende da safra e clima)    |
@@ -378,27 +378,6 @@ with tabs[4]:
     | **Custo estimado por kg**         | US$ 1,00–1,50                            | US$ 0,70–1,00                       |
     | **Rendimento médio**              | 85–95%                                   | 18–22% de óleo por fruto fresco     |
     """)
-
-    st.markdown("""
-**Síntese simulada por esterificação enzimática**
-
-Este módulo representa o potencial técnico da produção de blends lipídicos por via enzimática com base em dados da literatura científica.
-
-**Parâmetros da reação estimados:**
-- Temperatura: 50–60 °C
-- Tempo de reação: 4–8 horas
-- Catalisador: Lipase imobilizada (*ex: Candida antarctica*)
-- Rendimento estimado: 85–95%
-
-**Estimativa de custo por kg (com base teórica):**
-- Matéria-prima graxa: US$ 0,80–1,20
-- Enzima (amortizada): US$ 0,05–0,10
-- Energia e processo: US$ 0,10–0,20
-
-**Custo estimado final: US$ 1,00–1,50/kg**
-
-> Dados demonstrativos. Para viabilidade real, consulte ensaios piloto.
-""")
 
 # === 📊 PROTOCOLO DE PRODUÇÃO ===
 with tabs[5]:
