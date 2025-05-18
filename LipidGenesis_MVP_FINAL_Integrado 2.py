@@ -200,6 +200,7 @@ with tabs[1]:
 
     ---
     ### **Categorias de ingredientes disponíveis**
+    - **Óleos Refinados:** produtos oriundos do refino tradicional.
     - **Ácidos Graxos Puros:** fornecem controle técnico preciso da composição.
     - **Insumos Industriais (ex: PFAD, soapstock):** alternativas econômicas e sustentáveis provenientes de etapas do refino.
 
