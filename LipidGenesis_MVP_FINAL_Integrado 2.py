@@ -114,6 +114,14 @@ referencias = {
     "Palm Kernel Stearin": "Zhang et al. (2016), *Food Research International*.",
     "PFAD": "Tan et al. (2018), *Journal of Lipid Science & Technology*.",
     "Soapstock": "Lim et al. (2019), *Industrial Crops and Products*.",
+    "Ácido Oleico": "Yang et al. (2020), *Molecules*.",
+    "Ácido Linoleico": "Delgado et al. (2015), *Food Chemistry*.",
+    "Ácido Palmítico": "López-López et al. (2010), *Journal of the American Oil Chemists’ Society*.",
+    "Ácido Esteárico": "Zhang et al. (2021), *Food Science & Nutrition*.",
+    "Ácido Láurico": "Grosch et al. (1981), *Journal of the American Oil Chemists’ Society*.",
+    "Ácido Mirístico": "Reineccius (2006), *Flavor Chemistry and Technology*.",
+    "Ácido Capróico": "Van Gemert (2011), *Compilations of Odour Threshold Values*.",
+    "Ácido Caprílico": "Van Gemert (2011), *Compilations of Odour Threshold Values*."
 }
 
 # === Funções auxiliares ===
