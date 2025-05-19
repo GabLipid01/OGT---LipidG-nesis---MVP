@@ -213,7 +213,7 @@ with tabs[1]:
     ---
     ### **Objetivo do MVP**
     Demonstrar a viabilidade técnica e econômica de produzir óleos estruturados por rota enzimática
-    a partir de misturas controladas de insumos industriais e ácidos graxos puros, promovendo inovação e circularidade na cadeia do óleo de palma.
+    a partir de misturas controladas de óleos refinados, insumos industriais e ácidos graxos puros, promovendo inovação e circularidade na cadeia do óleo de palma.
     """)
 
 
