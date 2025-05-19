@@ -102,6 +102,57 @@ perfils_volateis = {
         "Ácido linoleico": ("Verde, vegetal", 7),
         "Compostos fenólicos": ("Amargo, terroso", 5),
         "Água e traços orgânicos": ("Neutro", 5),
+    },
+    "Ácido Oleico": {
+        "Octanal": ("Cítrico, doce", 30),
+        "Nonanal": ("Floral, ceroso", 25),
+        "Decanal": ("Alaranjado, doce", 20),
+        "Ácido hexanoico": ("Gorduroso, rançoso", 15),
+        "1-Octeno-3-ol": ("Terroso, cogumelo", 10),
+    },
+    "Ácido Linoleico": {
+        "Hexanal": ("Verde, herbáceo", 35),
+        "2-Pentilfurano": ("Amendoado, torrado", 25),
+        "1-Octeno-3-ol": ("Terroso", 15),
+        "Nonanal": ("Floral, gorduroso", 15),
+        "Ácido 2,4-decadienoico": ("Rancidez característica", 10),
+    },
+    "Ácido Palmítico": {
+        "Ácido hexanoico": ("Gorduroso", 40),
+        "Nonanal": ("Cítrico, ceroso", 30),
+        "Octanal": ("Cítrico", 20),
+        "Compostos alifáticos": ("Neutro", 10),
+    },
+    "Ácido Esteárico": {
+        "Nonanal": ("Ceroso", 35),
+        "Octanal": ("Cítrico", 25),
+        "Decanal": ("Doce, frutado", 20),
+        "Ácido butanoico": ("Lácteo", 10),
+        "Ácido hexanoico": ("Rancidez leve", 10),
+    },
+    "Ácido Láurico": {
+        "Ácido butanoico": ("Lácteo", 30),
+        "Decanal": ("Doce", 25),
+        "Dodecanol": ("Gorduroso", 25),
+        "Octanal": ("Fresco, cítrico", 20),
+    },
+    "Ácido Mirístico": {
+        "Tetradecanol": ("Gorduroso", 35),
+        "Nonanal": ("Ceroso", 30),
+        "Octanal": ("Cítrico", 20),
+        "Ácido hexanoico": ("Rancidez leve", 15),
+    },
+    "Ácido Capróico": {
+        "Ácido hexanoico": ("Gorduroso, rançoso", 40),
+        "Butirato de etila": ("Frutado", 30),
+        "Hexanoato de etila": ("Frutado, doce", 20),
+        "Butanoato de metila": ("Frutado", 10),
+    },
+    "Ácido Caprílico": {
+        "Ácido octanoico": ("Gorduroso, rançoso", 40),
+        "Octanol": ("Fresco, verde", 30),
+        "Octanal": ("Cítrico", 20),
+        "Compostos lácteos": ("Lácteo", 10),
     }
 }
 
