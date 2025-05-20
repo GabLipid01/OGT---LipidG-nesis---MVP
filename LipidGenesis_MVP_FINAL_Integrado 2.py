@@ -175,8 +175,6 @@ referencias = {
     "Ácido Caprílico": "Van Gemert (2011), *Compilations of Odour Threshold Values*."
 }
 
-perfils_volateis.update(perfils_volateis_acidos_graxos_puros)
-
 # === Funções auxiliares ===
 def gerar_receita_lipidica(blend):
     df = pd.DataFrame.from_dict(blend, orient='index', columns=['%'])
