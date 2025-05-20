@@ -156,8 +156,6 @@ perfils_volateis = {
     }
 }
 
-perfils_volateis.update(perfils_volateis_acidos_graxos_puros)
-
 referencias = {
     "Palm Oil": "Kuntum et al. (1989), *Journal of Oil Palm Research*.",
     "Palm Olein": "Omar et al. (2007), *Pakistan Journal of Biological Sciences*.",
@@ -176,6 +174,8 @@ referencias = {
     "Ácido Capróico": "Van Gemert (2011), *Compilations of Odour Threshold Values*.",
     "Ácido Caprílico": "Van Gemert (2011), *Compilations of Odour Threshold Values*."
 }
+
+perfils_volateis.update(perfils_volateis_acidos_graxos_puros)
 
 # === Funções auxiliares ===
 def gerar_receita_lipidica(blend):
