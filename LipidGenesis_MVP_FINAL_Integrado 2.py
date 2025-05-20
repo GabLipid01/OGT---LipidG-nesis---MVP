@@ -386,15 +386,23 @@ with tabs[3]:
 
     # Mapeamento entre nome completo e chave simplificada usada nos dicionários
     nome_curto = {
-        "PFAD (Destilado de Ácidos Graxos de Palma)": "PFAD",
-        "Soapstock de Palma (Refino Químico)": "Soapstock",
-        "Palm Oil": "Palm Oil",
-        "Palm Olein": "Palm Olein",
-        "Palm Stearin": "Palm Stearin",
-        "Palm Kernel Oil": "Palm Kernel Oil",
-        "Palm Kernel Olein": "Palm Kernel Olein",
-        "Palm Kernel Stearin": "Palm Kernel Stearin"
-    }
+    "PFAD (Destilado de Ácidos Graxos de Palma)": "PFAD",
+    "Soapstock de Palma (Refino Químico)": "Soapstock",
+    "Palm Oil": "Palm Oil",
+    "Palm Olein": "Palm Olein",
+    "Palm Stearin": "Palm Stearin",
+    "Palm Kernel Oil": "Palm Kernel Oil",
+    "Palm Kernel Olein": "Palm Kernel Olein",
+    "Palm Kernel Stearin": "Palm Kernel Stearin",
+    "Ácido Oleico (C18:1)": "Ácido Oleico",
+    "Ácido Linoleico (C18:2)": "Ácido Linoleico",
+    "Ácido Palmítico (C16:0)": "Ácido Palmítico",
+    "Ácido Esteárico (C18:0)": "Ácido Esteárico",
+    "Ácido Láurico (C12:0)": "Ácido Láurico",
+    "Ácido Mirístico (C14:0)": "Ácido Mirístico",
+    "Ácido Capróico (C6:0)": "Ácido Capróico",
+    "Ácido Caprílico (C8:0)": "Ácido Caprílico"
+}
 
     if not oleos_utilizados:
         st.warning("Monte seu blend com ao menos um óleo na aba '🧪 Blend Lipídico'.")
