@@ -508,7 +508,6 @@ with tabs[5]:
 
 # === ESG e Ambiental ===
 with tabs[6]: 
-    st.header("🌱 ESG e Impacto Ambiental")
 
     st.markdown("""
     Esta seção avalia o impacto ambiental e social do blend produzido via **esterificação enzimática**, com base nos ingredientes selecionados na aba '🧪 Blend Lipídico' e nos parâmetros definidos na aba '📊 Protocolo de Produção'.
