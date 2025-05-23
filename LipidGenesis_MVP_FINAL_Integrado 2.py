@@ -528,16 +528,17 @@ with tabs[6]:
         st.subheader("♻️ Avaliação de Sustentabilidade")
 
         def impacto_individual(nome):
-            if "Soapstock" in nome or "PFAD" in nome:
-                return "♻️ Subproduto reaproveitado — impacto positivo"
-            elif "Palm" in nome and "Kernel" not in nome:
-                return "🌿 Fonte de palma convencional — moderado"
-            elif "Kernel" in nome:
-                return "🌴 Derivado do palmiste — atenção à rastreabilidade"
-            elif "Ácido" in nome:
-                return "⚗️ Ácido graxo puro — depende da origem"
-            else:
-                return "🧪 Insumo genérico — verificar fonte"
+    nome = nome.lower()
+    if "soapstock" in nome or "pfad" in nome:
+        return "♻️ Subproduto reaproveitado — impacto positivo"
+    elif "ácido" in nome:
+        return "⚗️ Ácido graxo puro — impacto neutro (verificar origem)"
+    elif "palm kernel" in nome or "kernel" in nome:
+        return "🌴 Derivado do palmiste — atenção à rastreabilidade"
+    elif "palm" in nome:
+        return "🌿 Fonte de palma convencional — moderado"
+    else:
+        return "🧪 Insumo genérico — verificar fonte"
 
         for ingr in ingredientes_utilizados:
             st.markdown(f"- **{ingr}**: {impacto_individual(ingr)}")
