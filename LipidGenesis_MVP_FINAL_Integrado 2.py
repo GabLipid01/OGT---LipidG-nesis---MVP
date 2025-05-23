@@ -507,23 +507,72 @@ with tabs[5]:
         st.plotly_chart(fig, use_container_width=True)
 
 # === ESG e Ambiental ===
-with tabs[6]:
-    st.header("🌱 Sustentabilidade Industrial")
+with tabs[6]: 
+    st.header("🌱 ESG e Impacto Ambiental")
 
     st.markdown("""
-### Indicadores de Sustentabilidade da Síntese Enzimática
+    Esta seção avalia o impacto ambiental e social do blend produzido via **esterificação enzimática**, com base nos ingredientes selecionados na aba '🧪 Blend Lipídico' e nos parâmetros definidos na aba '📊 Protocolo de Produção'.
+    """)
 
-**Dados estimados por modelagem digital e literatura científica sobre processos de esterificação catalisados por lipase.**
+    oil_percentages = st.session_state.get("oil_percentages", {})
+    ingredientes_utilizados = {k: v for k, v in oil_percentages.items() if v > 0}
 
-- **Consumo energético da síntese:** 0.18 kWh por kg de blend
-- **Uso de solvente (biocompatível):** ≤ 5% (ex: etanol técnico)
-- **Recuperação da enzima catalítica:** 85–95% (uso em múltiplos ciclos)
-- **Reutilização do meio reacional:** até 3 ciclos consecutivos sem perda significativa de rendimento
-- **Resíduo gerado por kg:** ≤ 0.05 kg (compostos orgânicos não tóxicos)
+    if not ingredientes_utilizados:
+        st.warning("Monte seu blend com ao menos um ingrediente na aba '🧪 Blend Lipídico'.")
+    else:
+        st.subheader("📌 Ingredientes Utilizados")
+        for ingrediente, pct in ingredientes_utilizados.items():
+            st.markdown(f"- **{ingrediente}**: {pct:.1f}%")
 
-> *Os valores são referenciais e baseados em condições laboratoriais simuladas. A validação industrial requer ensaio piloto.*
+        st.divider()
 
-""")
+        st.subheader("♻️ Avaliação de Sustentabilidade")
+
+        def impacto_individual(nome):
+            if "Soapstock" in nome or "PFAD" in nome:
+                return "♻️ Subproduto reaproveitado — impacto positivo"
+            elif "Palm" in nome and "Kernel" not in nome:
+                return "🌿 Fonte de palma convencional — moderado"
+            elif "Kernel" in nome:
+                return "🌴 Derivado do palmiste — atenção à rastreabilidade"
+            elif "Ácido" in nome:
+                return "⚗️ Ácido graxo puro — depende da origem"
+            else:
+                return "🧪 Insumo genérico — verificar fonte"
+
+        for ingr in ingredientes_utilizados:
+            st.markdown(f"- **{ingr}**: {impacto_individual(ingr)}")
+
+        st.divider()
+
+        st.subheader("🌍 Benefícios Ambientais Estimados")
+
+        total = sum(ingredientes_utilizados.values())
+        reaproveitados = sum(v for k, v in ingredientes_utilizados.items() if "Soapstock" in k or "PFAD" in k)
+        reaproveitamento_pct = (reaproveitados / total) * 100
+
+        col1, col2 = st.columns(2)
+        col1.metric("📉 Redução de Resíduo Industrial", f"{reaproveitamento_pct:.1f}%")
+        col2.metric("⚙️ Processo de Baixo Impacto", "Esterificação Enzimática")
+
+        st.markdown(f"""
+        A utilização de subprodutos como **PFAD** e **soapstock** permite reduzir significativamente o descarte e aumentar a circularidade da cadeia de produção.
+
+        A síntese enzimática ocorre a baixa temperatura, **reduzindo consumo energético e emissões de CO₂** comparado à hidrogenação ou transesterificação química.
+        """)
+
+        st.divider()
+        st.subheader("📘 Narrativa ESG para Indústria")
+
+        st.markdown("""
+        > **Este blend foi desenvolvido com foco em economia circular e impacto positivo.**  
+        > A substituição de matérias-primas tradicionais por subprodutos valorizados e a aplicação de enzimas como catalisadores verdes demonstram o compromisso da OGT com soluções sustentáveis de alta performance.
+        """)
+
+        st.success("✅ Pronto para exportar este conteúdo em PDF ou apresentar à diretoria de ESG.")
+
+        if st.button("📄 Gerar Relatório ESG"):
+            st.info("🚧 Em desenvolvimento: funcionalidade de exportação em PDF com logotipo, blend utilizado e descrição do impacto.")
 
 # === Rastreabilidade (Placeholder) ===
 with tabs[7]:
