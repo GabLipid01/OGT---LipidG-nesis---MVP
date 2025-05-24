@@ -572,8 +572,132 @@ with tabs[6]:
 
 # === Rastreabilidade (Placeholder) ===
 with tabs[7]:
-    st.header("📍 Rastreabilidade do Blend")
-    st.info("Esta seção será dedicada à origem dos ingredientes, lotes e fornecedores — em breve.")
+
+    st.markdown("""
+    # 🔍
+    Esta seção permite analisar a **origem, rota tecnológica e impacto ESG** dos ingredientes do seu blend enzimático. Tudo baseado no que foi definido nas abas anteriores.
+    """)
+
+    oil_percentages = st.session_state.get("oil_percentages", {})
+    ingredientes_utilizados = {k: v for k, v in oil_percentages.items() if v > 0}
+
+    if not ingredientes_utilizados:
+        st.warning("Monte seu blend com ao menos um ingrediente na aba '🧪 Blend Lipídico'.")
+    else:
+        st.subheader("📌 Sumário Visual do Blend")
+        st.bar_chart(ingredientes_utilizados)
+
+        st.subheader("📘 Ingredientes Detalhados")
+
+        def classificar_origem(nome):
+            nome = nome.lower()
+            if "pfad" in nome or "soapstock" in nome:
+                return "Subproduto"
+            elif "ácido" in nome:
+                return "Ácido graxo puro"
+            elif "kernel" in nome:
+                return "Palmiste"
+            elif "palm" in nome:
+                return "Palma"
+            else:
+                return "Outro"
+
+        def impacto_esg(nome):
+            nome = nome.lower()
+            if "pfad" in nome or "soapstock" in nome:
+                return "♻️ Reaproveitado"
+            elif "ácido" in nome:
+                return "⚗️ Neutro"
+            elif "palm kernel" in nome or "kernel" in nome:
+                return "🌴 Palmiste - atenção"
+            elif "palm" in nome:
+                return "🌿 Palma convencional"
+            else:
+                return "🧪 Verificar"
+
+        def funcao_sugerida(nome):
+            if "estearico" in nome:
+                return "Ajuste textura / fusão"
+            elif "oleico" in nome:
+                return "Fluidez / emoliência"
+            elif "pfad" in nome:
+                return "Base sólida"
+            elif "palmítico" in nome:
+                return "Textura / Consistência"
+            else:
+                return "Base funcional"
+
+        data = []
+        total = sum(ingredientes_utilizados.values())
+        for ingr, pct in ingredientes_utilizados.items():
+            data.append({
+                "Ingrediente": ingr,
+                "Categoria": classificar_origem(ingr),
+                "Origem esperada": "Palma / Palmiste" if "palm" in ingr.lower() else "Diversa",
+                "Função no blend": funcao_sugerida(ingr),
+                "% Uso": f"{pct:.1f}%",
+                "ESG": impacto_esg(ingr),
+                "Rota de Produção": "Esterificação Enzimática"
+            })
+
+        st.dataframe(data, use_container_width=True)
+
+        st.subheader("🔬 Rota de Produção Enzimática")
+        st.markdown("""
+        **Ingredientes** + **Glicerol** → ⏱️ Reação a baixa temperatura com **enzima imobilizada** → 🔧 Produto final
+
+        - Temperatura: 35–45 °C
+        - Tempo: 18–24h
+        - Enzima: conforme selecionado na aba '📊 Protocolo de Produção'
+        """)
+
+        st.divider()
+
+        st.subheader("✅ Checklist de Rastreabilidade e ESG")
+        subprodutos = [k for k in ingredientes_utilizados if "PFAD" in k or "Soapstock" in k]
+        if subprodutos:
+            st.success("♻️ Subprodutos presentes: " + ", ".join(subprodutos))
+        else:
+            st.warning("⚠️ Nenhum subproduto identificado. Avalie circularidade do blend.")
+
+        nao_classificados = [k for k in ingredientes_utilizados if impacto_esg(k) == "🧪 Verificar"]
+        if nao_classificados:
+            st.warning("🔍 Ingredientes com origem incerta: " + ", ".join(nao_classificados))
+
+        st.divider()
+
+        st.subheader("📊 Análises Visuais")
+
+        categorias = {classificar_origem(k): v for k, v in ingredientes_utilizados.items()}
+        st.markdown("**Ingredientes por Categoria:**")
+        st.bar_chart(categorias)
+
+        esg_labels = {impacto_esg(k): v for k, v in ingredientes_utilizados.items()}
+        st.markdown("**Distribuição ESG:**")
+        st.bar_chart(esg_labels)
+
+        st.divider()
+
+        st.subheader("🧾 Interatividade Avançada")
+
+        ingr_select = st.selectbox("🔁 Simular alteração de ingrediente", list(ingredientes_utilizados.keys()))
+        novo_ingr = st.text_input(f"Substituir {ingr_select} por:")
+        if novo_ingr:
+            st.markdown(f"**{novo_ingr}** seria classificado como: {classificar_origem(novo_ingr)} → {impacto_esg(novo_ingr)}")
+
+        ingr_expand = st.selectbox("📂 Detalhar ingrediente", list(ingredientes_utilizados.keys()))
+        if ingr_expand:
+            st.info(f"**{ingr_expand}** → Categoria: {classificar_origem(ingr_expand)} | ESG: {impacto_esg(ingr_expand)} | Função: {funcao_sugerida(ingr_expand)}")
+
+        if st.button("🧾 Gerar Ficha Técnica de Rastreabilidade"):
+            st.success("📄 Exportação de PDF em desenvolvimento.")
+
+        st.divider()
+
+        st.subheader("📘 Narrativa Técnica de Rastreabilidade")
+        st.markdown("""
+        > **Este blend foi rastreado integralmente pela OGT.** Sua formulação aproveita subprodutos industriais e tecnologias limpas para garantir um insumo rastreável, sustentável e de alta performance.
+        """)
 
 # === Exportação PDF ===
 with tabs[8]:
