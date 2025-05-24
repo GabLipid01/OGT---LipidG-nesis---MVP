@@ -567,8 +567,6 @@ with tabs[6]:
         > A substituição de matérias-primas tradicionais por subprodutos valorizados e a aplicação de enzimas como catalisadores verdes demonstram o compromisso com soluções sustentáveis de alta performance.
         """)
 
-        st.success("✅ Pronto para exportar este conteúdo em PDF ou apresentar à diretoria de ESG.")
-
         if st.button("📄 Gerar Relatório ESG"):
             st.info("🚧 Em desenvolvimento: funcionalidade de exportação em PDF com logotipo, blend utilizado e descrição do impacto.")
 
