@@ -275,8 +275,6 @@ with tabs[1]:
     a partir de misturas controladas de óleos refinados, insumos industriais e ácidos graxos puros, promovendo inovação e circularidade na cadeia do óleo de palma.
     """)
 
-
-
 # === Blend Lipídico ===
 with tabs[2]:
     st.header("🧪 Montagem do Blend LG")
@@ -574,7 +572,6 @@ with tabs[6]:
 with tabs[7]:
 
     st.markdown("""
-    # 🔍
     Esta seção permite analisar a **origem, rota tecnológica e impacto ESG** dos ingredientes do seu blend enzimático. Tudo baseado no que foi definido nas abas anteriores.
     """)
 
