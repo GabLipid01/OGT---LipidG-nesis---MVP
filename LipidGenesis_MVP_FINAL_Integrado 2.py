@@ -507,7 +507,7 @@ with tabs[5]:
         st.plotly_chart(fig, use_container_width=True)
 
 # === ESG e Ambiental ===
-with tabs[6]: 
+with tabs[6]:
 
     st.markdown("""
     Esta seção avalia o impacto ambiental e social do blend produzido via **esterificação enzimática**, com base nos ingredientes selecionados na aba '🧪 Blend Lipídico' e nos parâmetros definidos na aba '📊 Protocolo de Produção'.
@@ -524,27 +524,25 @@ with tabs[6]:
             st.markdown(f"- **{ingrediente}**: {pct:.1f}%")
 
         st.divider()
-
         st.subheader("♻️ Avaliação de Sustentabilidade")
 
-def impacto_individual(nome):
-    nome = nome.lower()
-    if "soapstock" in nome or "pfad" in nome:
-        return "♻️ Subproduto reaproveitado — impacto positivo"
-    elif "ácido" in nome:
-        return "⚗️ Ácido graxo puro — impacto neutro (verificar origem)"
-    elif "palm kernel" in nome or "kernel" in nome:
-        return "🌴 Derivado do palmiste — atenção à rastreabilidade"
-    elif "palm" in nome:
-        return "🌿 Fonte de palma convencional — moderado"
-    else:
-        return "🧪 Insumo genérico — verificar fonte"
+        def impacto_individual(nome):
+            nome = nome.lower()
+            if "soapstock" in nome or "pfad" in nome:
+                return "♻️ Subproduto reaproveitado — impacto positivo"
+            elif "ácido" in nome:
+                return "⚗️ Ácido graxo puro — impacto neutro (verificar origem)"
+            elif "palm kernel" in nome or "kernel" in nome:
+                return "🌴 Derivado do palmiste — atenção à rastreabilidade"
+            elif "palm" in nome:
+                return "🌿 Fonte de palma convencional — moderado"
+            else:
+                return "🧪 Insumo genérico — verificar fonte"
 
         for ingr in ingredientes_utilizados:
             st.markdown(f"- **{ingr}**: {impacto_individual(ingr)}")
 
         st.divider()
-
         st.subheader("🌍 Benefícios Ambientais Estimados")
 
         total = sum(ingredientes_utilizados.values())
