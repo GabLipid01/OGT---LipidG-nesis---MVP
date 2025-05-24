@@ -527,7 +527,7 @@ with tabs[6]:
 
         st.subheader("♻️ Avaliação de Sustentabilidade")
 
-        def impacto_individual(nome):
+def impacto_individual(nome):
     nome = nome.lower()
     if "soapstock" in nome or "pfad" in nome:
         return "♻️ Subproduto reaproveitado — impacto positivo"
