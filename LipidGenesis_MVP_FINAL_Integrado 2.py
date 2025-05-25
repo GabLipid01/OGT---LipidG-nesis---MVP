@@ -243,7 +243,7 @@ with tabs[0]:
     **Apresenta:** 
     ### 🌴 LipidPalma™
     
-    ("Ciência Aplicada à Criação de Blends Lipídicos")
+    "Ciência Aplicada à Criação de Blends Lipídicos"
 
     Bem-vindo ao **LipidPalma**, um app interativo para formulação e simulação de blends lipídicos com foco na cadeia do óleo de palma.
 
@@ -260,7 +260,7 @@ with tabs[0]:
 
 with tabs[1]:
     st.markdown("""
-    O **LipidGenesis** propõe uma abordagem alternativa à produção tradicional de óleos estruturados,
+    O **LipidPalma** propõe uma abordagem alternativa à produção tradicional de óleos estruturados,
     utilizando **esterificação enzimática com glicerol** para gerar triglicerídeos com perfis sob medida.
 
     ---
@@ -432,12 +432,12 @@ with tabs[3]:
 # === Viabilidade Técnica ===
 with tabs[4]:
     st.markdown("""
-O modelo LipidGenesis permite a criação de óleos estruturados por meio da esterificação enzimática de ácidos graxos,
+O modelo LipidPalma permite a criação de óleos estruturados por meio da esterificação enzimática de ácidos graxos,
 oferecendo uma alternativa viável ao refino tradicional de óleos vegetais.
 
-### 📉 Comparativo Econômico: LipidGenesis vs. Modelo Tradicional
+### 📉 Comparativo Econômico: LipidPalma vs. Modelo Tradicional
 
-| Critério                           | LipidGenesis (Esterificação Enzimática) | Extração e Refino Tradicional      |
+| Critério                           | LipidPalma (Esterificação Enzimática) | Extração e Refino Tradicional      |
 |-----------------------------------|------------------------------------------|-------------------------------------|
 | **Matéria-prima**                 | Ácidos graxos puros + álcoois            | Frutos frescos de palma             |
 | **Investimento inicial (CAPEX)** | Médio-alto (reatores + controle fino)    | Muito alto (plantio + usinas)       |
