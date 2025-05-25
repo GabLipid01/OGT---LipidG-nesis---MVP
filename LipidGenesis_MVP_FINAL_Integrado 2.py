@@ -242,8 +242,8 @@ with tabs[0]:
     ***OGT – The Future of Oil Disruption*** 
     **Apresenta:** 
     ### 🌴 LipidPalma™
-    
-    "Ciência Aplicada à Criação de Blends Lipídicos"
+
+    O **LipidPalma** faz parte da plataforma **LipidGenesis**, uma linha modular de soluções da **OGT** para impulsionar a inovação e a sustentabilidade em óleos vegetais como palma, soja e algodão.
 
     Bem-vindo ao **LipidPalma**, um app interativo para formulação e simulação de blends lipídicos com foco na cadeia do óleo de palma.
 
