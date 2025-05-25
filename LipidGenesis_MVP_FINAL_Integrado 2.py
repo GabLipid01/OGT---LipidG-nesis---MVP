@@ -566,7 +566,7 @@ with tabs[6]:
         st.subheader("📘 Narrativa ESG")
 
         st.markdown("""
-        > **Este blend foi desenvolvido com foco em economia circular e impacto positivo.**
+        > **Este blend foi desenvolvido com foco em economia circular e impacto positivo.**  
         > A substituição de matérias-primas tradicionais por subprodutos valorizados e a aplicação de enzimas como catalisadores verdes demonstram o compromisso com soluções sustentáveis de alta performance.
         """)
 
