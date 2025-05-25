@@ -560,7 +560,7 @@ with tabs[6]:
         st.markdown(f"""
         A utilização de subprodutos como **PFAD** e **soapstock** permite reduzir significativamente o descarte e aumentar a circularidade da cadeia de produção.
 
-        A síntese enzimática ocorre a baixa temperatura, **reduzindo consumo energético e emissões de CO₂** comparado à hidrogenação ou transesterificação química.
+        A síntese enzimática ocorre a baixa temperatura, **reduzindo consumo energético e emissões de CO2** comparado à hidrogenação ou transesterificação química.
         """)
 
         st.divider()
