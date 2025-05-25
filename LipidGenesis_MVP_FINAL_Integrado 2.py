@@ -222,7 +222,7 @@ st.set_page_config(
 )
 
 # === Título e Slogan (fora das abas) ===
-st.title("🌿 LipidGenesis - Bioengenharia Lipídica Aplicada à Indústria de Óleo de Palma")
+st.title("🌴 OGT LipidPalma - Bioengenharia Lipídica Aplicada à Indústria de Óleo de Palma")
 
 # === Interface em Abas (logo abaixo do slogan) ===
 tabs = st.tabs([
@@ -241,9 +241,9 @@ with tabs[0]:
     st.markdown("""
     **OGT – The Future of Oil Disruption**  
     *Apresenta:*  
-    ### 🧬 LipidGenesis™
+    ### 🌴 LipidPalma™
     
-    st.subheader("Ciência Aplicada à Criação de Blends Lipídicos")
+    ("Ciência Aplicada à Criação de Blends Lipídicos")
 
     Bem-vindo ao **LipidGenesis**, um app interativo para formulação e simulação de blends lipídicos com foco na cadeia do óleo de palma.
 
