@@ -566,12 +566,12 @@ with tabs[6]:
         st.divider()
         st.subheader("📘 Narrativa ESG")
 
-        st.markdown("""
+        st.markdown(f"""
         > **Este blend foi desenvolvido com foco em economia circular e impacto positivo.**  
         > A substituição de matérias-primas tradicionais por subprodutos valorizados e a aplicação de enzimas como catalisadores verdes demonstram o compromisso com soluções sustentáveis de alta performance.
         """)
 
-        if st.button("📄 Gerar Relatório ESG"):
+    if st.button("📄 Gerar Relatório ESG"):
             st.info("🚧 Em desenvolvimento: funcionalidade de exportação em PDF com logotipo, blend utilizado e descrição do impacto.")
 
 # === Rastreabilidade (Placeholder) ===
