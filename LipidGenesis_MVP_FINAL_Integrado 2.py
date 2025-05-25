@@ -661,3 +661,14 @@ with tabs[8]:
         )
     else:
         st.warning("Você precisa montar um blend com ao menos um óleo para gerar o relatório.")
+
+# === Rodapé ===
+st.markdown("---")
+st.markdown(
+    "<p style='text-align: center; font-size: 14px;'>"
+    "🌿 Desenvolvido por <b>OGT - The Future of Oil Disruption</b>. "
+    "Aplicação modular <b>LipidGenesis</b> com o módulo atual: <b>LipidPalma</b>. "
+    "<br>Versão MVP demonstrativa. &copy; 2025 OGT."
+    "</p>",
+    unsafe_allow_html=True
+)
