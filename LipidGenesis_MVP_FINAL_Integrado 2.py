@@ -567,7 +567,6 @@ with tabs[6]:
 
         st.markdown(f"""
         > **Este blend foi desenvolvido com foco em economia circular e impacto positivo.**
-        
         > A substituição de matérias-primas tradicionais por subprodutos valorizados e a aplicação de enzimas como catalisadores verdes demonstram o compromisso com soluções sustentáveis de alta performance.
         """)
 
@@ -577,7 +576,7 @@ with tabs[6]:
 # === Rastreabilidade (Placeholder) ===
 with tabs[7]:
 
-    st.markdown("Esta seção apresenta informações detalhadas sobre a origem, certificações e rastreabilidade dos ingredientes utilizados no blend final.")
+        st.markdown("Esta seção apresenta informações detalhadas sobre a origem, certificações e rastreabilidade dos ingredientes utilizados no blend final.")
 
     oil_percentages = st.session_state.get("oil_percentages", {})
     ingredientes_utilizados = {k: v for k, v in oil_percentages.items() if v > 0}
