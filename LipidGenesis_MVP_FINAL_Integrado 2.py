@@ -238,11 +238,17 @@ tabs = st.tabs([
 ])
 
 with tabs[0]:
-    st.title("LipidGenesis")
+    st.markdown("""
+    **OGT – The Future of Oil Disruption**  
+    *Apresenta:*  
+    ### 🧬 LipidGenesis™
+    """)
+    
     st.subheader("Ciência Aplicada à Criação de Blends Lipídicos")
 
     st.markdown("""
     Bem-vindo ao **LipidGenesis**, um app interativo para formulação e simulação de blends lipídicos com foco na cadeia do óleo de palma.
+    """)
 
     Para começar:
     1. Acesse a aba **"Blend Lipídico"** e monte sua formulação com os ingredientes disponíveis.
