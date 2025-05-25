@@ -566,7 +566,8 @@ with tabs[6]:
         st.subheader("📘 Narrativa ESG")
 
         st.markdown(f"""
-        > **Este blend foi desenvolvido com foco em economia circular e impacto positivo.**  
+        > **Este blend foi desenvolvido com foco em economia circular e impacto positivo.**
+        
         > A substituição de matérias-primas tradicionais por subprodutos valorizados e a aplicação de enzimas como catalisadores verdes demonstram o compromisso com soluções sustentáveis de alta performance.
         """)
 
@@ -630,8 +631,7 @@ with tabs[7]:
 # === Exportação PDF ===
 with tabs[8]:
     st.header("📄 Exportar Relatório PDF")
-
-
+    
     if total_pct > 0:
         sensorial_txt = "Compostos Voláteis Identificados:\n"
         for oleo in oil_percentages:
