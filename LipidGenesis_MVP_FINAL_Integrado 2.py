@@ -431,24 +431,23 @@ with tabs[3]:
 
 # === Viabilidade Técnica ===
 with tabs[4]:
-
     st.markdown("""
-    O modelo LipidGenesis permite a criação de óleos estruturados por meio da esterificação enzimática de ácidos graxos,
-    oferecendo uma alternativa viável ao refino tradicional de óleos vegetais.
+O modelo LipidGenesis permite a criação de óleos estruturados por meio da esterificação enzimática de ácidos graxos,
+oferecendo uma alternativa viável ao refino tradicional de óleos vegetais.
 
-    ### 📉 Comparativo Econômico: LipidGenesis vs. Modelo Tradicional
+### 📉 Comparativo Econômico: LipidGenesis vs. Modelo Tradicional
 
-    | Critério                           | LipidGenesis (Esterificação Enzimática) | Extração e Refino Tradicional      |
-    |-----------------------------------|------------------------------------------|-------------------------------------|
-    | **Matéria-prima**                 | Ácidos graxos puros + álcoois            | Frutos frescos de palma             |
-    | **Investimento inicial (CAPEX)** | Médio-alto (reatores + controle fino)    | Muito alto (plantio + usinas)       |
-    | **Custo operacional (OPEX)**      | Moderado (energia, enzima, reagentes)    | Alto (logística + manutenção rural) |
-    | **Consistência do produto**       | Alta (ajustável digitalmente)            | Média (depende da safra e clima)    |
-    | **Escalabilidade**                | Alta em módulos industriais              | Alta, mas intensiva em terra        |
-    | **Sustentabilidade**              | Muito alta (sem uso de solo)             | Baixa (impacto ambiental elevado)   |
-    | **Custo estimado por kg**         | US$ 1,00-1,50                            | US$ 0,70-1,00                       |
-    | **Rendimento médio**              | 85-95%                                   | 18-22% de óleo por fruto fresco     |
-    """)
+| Critério                           | LipidGenesis (Esterificação Enzimática) | Extração e Refino Tradicional      |
+|-----------------------------------|------------------------------------------|-------------------------------------|
+| **Matéria-prima**                 | Ácidos graxos puros + álcoois            | Frutos frescos de palma             |
+| **Investimento inicial (CAPEX)** | Médio-alto (reatores + controle fino)    | Muito alto (plantio + usinas)       |
+| **Custo operacional (OPEX)**      | Moderado (energia, enzima, reagentes)    | Alto (logística + manutenção rural) |
+| **Consistência do produto**       | Alta (ajustável digitalmente)            | Média (depende da safra e clima)    |
+| **Escalabilidade**                | Alta em módulos industriais              | Alta, mas intensiva em terra        |
+| **Sustentabilidade**              | Muito alta (sem uso de solo)             | Baixa (impacto ambiental elevado)   |
+| **Custo estimado por kg**         | US$ 1,00–1,50                            | US$ 0,70–1,00                       |
+| **Rendimento médio**              | 85-95%                                   | 18-22% de óleo por fruto fresco     |
+""")
 
 # === 📊 PROTOCOLO DE PRODUÇÃO ===
 with tabs[5]:
@@ -559,7 +558,7 @@ with tabs[6]:
 
         st.markdown(f"""
         A utilização de subprodutos como **PFAD** e **soapstock** permite reduzir significativamente o descarte e aumentar a circularidade da cadeia de produção.
-
+        
         A síntese enzimática ocorre a baixa temperatura, **reduzindo consumo energético e emissões de CO2** comparado à hidrogenação ou transesterificação química.
         """)
 
