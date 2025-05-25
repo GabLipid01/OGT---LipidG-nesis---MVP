@@ -558,7 +558,7 @@ with tabs[6]:
 
         st.markdown("""
         A utilização de subprodutos como **PFAD** e **soapstock** permite reduzir significativamente o descarte e aumentar a circularidade da cadeia de produção.
-        
+
         A síntese enzimática ocorre a baixa temperatura, **reduzindo consumo energético e emissões de CO2** comparado à hidrogenação ou transesterificação química.
         """)
 
@@ -566,8 +566,8 @@ with tabs[6]:
         st.subheader("📘 Narrativa ESG")
 
         st.markdown("""
-        > **Este blend foi desenvolvido com foco em economia circular e impacto positivo.**  
-        > A substituição de matérias-primas tradicionais por subprodutos valorizados e a aplicação de enzimas como catalisadores verdes demonstram o compromisso com soluções sustentáveis de alta performance.
+        >**Este blend foi desenvolvido com foco em economia circular e impacto positivo.**  
+        >A substituição de matérias-primas tradicionais por subprodutos valorizados e a aplicação de enzimas como catalisadores verdes demonstram o compromisso com soluções sustentáveis de alta performance.
         """)
         
         if st.button("📄 Gerar Relatório ESG"):
