@@ -239,13 +239,13 @@ tabs = st.tabs([
 
 with tabs[0]:
     st.markdown("""
-    **OGT – The Future of Oil Disruption**  
-    *Apresenta:*  
+    ***OGT – The Future of Oil Disruption*** 
+    **Apresenta:** 
     ### 🌴 LipidPalma™
     
     ("Ciência Aplicada à Criação de Blends Lipídicos")
 
-    Bem-vindo ao **LipidGenesis**, um app interativo para formulação e simulação de blends lipídicos com foco na cadeia do óleo de palma.
+    Bem-vindo ao **LipidPalma**, um app interativo para formulação e simulação de blends lipídicos com foco na cadeia do óleo de palma.
 
     ---
 
