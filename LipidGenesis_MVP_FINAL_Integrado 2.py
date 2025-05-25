@@ -242,19 +242,19 @@ with tabs[0]:
     **OGT – The Future of Oil Disruption**  
     *Apresenta:*  
     ### 🧬 LipidGenesis™
-    """)
     
     st.subheader("Ciência Aplicada à Criação de Blends Lipídicos")
 
-    st.markdown("""
     Bem-vindo ao **LipidGenesis**, um app interativo para formulação e simulação de blends lipídicos com foco na cadeia do óleo de palma.
-    """)
+
+    ---
 
     Para começar:
     1. Acesse a aba **"Blend Lipídico"** e monte sua formulação com os ingredientes disponíveis.
     2. Explore as demais abas para entender o perfil físico-químico, sensorial, ambiental e produtivo do seu blend.
 
     ---
+    
     Este MVP é voltado para inovação sustentável em P&D, com foco em alternativas ao refino tradicional.
     """)
 
