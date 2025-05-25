@@ -446,8 +446,8 @@ with tabs[4]:
     | **Consistência do produto**       | Alta (ajustável digitalmente)            | Média (depende da safra e clima)    |
     | **Escalabilidade**                | Alta em módulos industriais              | Alta, mas intensiva em terra        |
     | **Sustentabilidade**              | Muito alta (sem uso de solo)             | Baixa (impacto ambiental elevado)   |
-    | **Custo estimado por kg**         | US$ 1,00–1,50                            | US$ 0,70–1,00                       |
-    | **Rendimento médio**              | 85–95%                                   | 18–22% de óleo por fruto fresco     |
+    | **Custo estimado por kg**         | US$ 1,00-1,50                            | US$ 0,70-1,00                       |
+    | **Rendimento médio**              | 85-95%                                   | 18-22% de óleo por fruto fresco     |
     """)
 
 # === 📊 PROTOCOLO DE PRODUÇÃO ===
