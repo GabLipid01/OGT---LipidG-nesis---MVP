@@ -224,18 +224,22 @@ st.set_page_config(
 )
 
 # Carregar a logo e converter para base64
-logo_path = "Marca sem fundo.png"  # Altere para o nome correto
+logo_path = "Marca sem fundo.png"  # ajuste conforme o nome correto do arquivo
 logo_image = Image.open(logo_path)
 buffered = BytesIO()
 logo_image.save(buffered, format="PNG")
 logo_base64 = base64.b64encode(buffered.getvalue()).decode()
 
-# Logo + nome OGT lado a lado + slogan abaixo
+# HTML para exibir logo + OGT colorido e slogan
 st.markdown(f"""
 <div style='text-align: center;'>
-    <div style='display: inline-flex; align-items: center; gap: 10px;'>
+    <div style='display: inline-flex; align-items: center; gap: 4px;'>
         <img src='data:image/png;base64,{logo_base64}' style='width: 50px;'>
-        <span style='font-size: 24px; font-weight: bold;'>OGT</span>
+        <span style='font-size: 24px; font-weight: bold;'>
+            <span style='color: #f57c00;'>O</span> <!-- laranja -->
+            <span style='color: #4CAF50;'>G</span> <!-- verde -->
+            <span style='color: #2196F3;'>T</span> <!-- azul -->
+        </span>
     </div><br>
     <span style='font-size: 14px; color: #888;'>The Future of Oil Disruption, On Demand</span>
 </div>
