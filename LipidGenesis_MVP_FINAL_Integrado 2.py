@@ -5,6 +5,7 @@ from fpdf import FPDF
 from datetime import datetime
 from io import BytesIO
 from blend_calculator import BlendCalculator
+from PIL import Image
 
 # === Dados fixos ===
 
@@ -223,21 +224,16 @@ st.set_page_config(
 
 # === Título e Slogan (fora das abas) ===
 
-# === Topo com logomarca e slogan ===
-from PIL import Image
-
-# Carregar logo (ajuste o caminho se for necessário)
-logo = Image.open("caminho/para/seu/logo/OGT_logo.png")  # ajuste para o nome correto do arquivo
-
-# Mostra a logo
-st.image(logo, width=150)
-
-# Slogan atualizado
-st.markdown("<h5 style='text-align: center; color: gray;'>The Future Of Oil Disruption, On Demand</h5>", unsafe_allow_html=True)
-
-st.divider()
-
 st.title("🌴 LipidPalma - Bioengenharia Lipídica Aplicada à Indústria de Óleo de Palma")
+
+logo = Image.open("Marca sem fundo.png")
+st.image(logo, width=200)
+
+st.markdown("""
+<div style='text-align: center; font-size: 14px; color: #888'>
+<strong>The Future of Oil Disruption, On Demand</strong>
+</div>
+""", unsafe_allow_html=True)
 
 # === Interface em Abas (logo abaixo do slogan) ===
 tabs = st.tabs([
