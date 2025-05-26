@@ -222,18 +222,20 @@ st.set_page_config(
     layout="wide"
 )
 
-# === Título e Slogan (fora das abas) ===
-
-st.title("🌴 LipidPalma - Bioengenharia Lipídica Aplicada à Indústria de Óleo de Palma")
-
+# Exibe a logo
 logo = Image.open("Marca sem fundo.png")
-st.image(logo, width=200)
+st.image(logo, width=100)
 
+# Exibe o slogan
 st.markdown("""
 <div style='text-align: center; font-size: 14px; color: #888'>
 <strong>The Future of Oil Disruption, On Demand</strong>
 </div>
 """, unsafe_allow_html=True)
+
+# === Título e Slogan (fora das abas) ===
+
+st.title("🌴 LipidPalma - Bioengenharia Lipídica Aplicada à Indústria de Óleo de Palma")
 
 # === Interface em Abas (logo abaixo do slogan) ===
 tabs = st.tabs([
