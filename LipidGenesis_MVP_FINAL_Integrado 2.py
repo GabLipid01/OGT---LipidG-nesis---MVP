@@ -222,7 +222,22 @@ st.set_page_config(
 )
 
 # === Título e Slogan (fora das abas) ===
-st.title("🌴 OGT LipidPalma - Bioengenharia Lipídica Aplicada à Indústria de Óleo de Palma")
+
+# === Topo com logomarca e slogan ===
+from PIL import Image
+
+# Carregar logo (ajuste o caminho se for necessário)
+logo = Image.open("caminho/para/seu/logo/OGT_logo.png")  # ajuste para o nome correto do arquivo
+
+# Mostra a logo
+st.image(logo, width=150)
+
+# Slogan atualizado
+st.markdown("<h5 style='text-align: center; color: gray;'>The Future Of Oil Disruption, On Demand</h5>", unsafe_allow_html=True)
+
+st.divider()
+
+st.title("🌴 LipidPalma - Bioengenharia Lipídica Aplicada à Indústria de Óleo de Palma")
 
 # === Interface em Abas (logo abaixo do slogan) ===
 tabs = st.tabs([
