@@ -1,6 +1,7 @@
 import streamlit as st
 import pandas as pd
 import plotly.express as px
+import base64
 from fpdf import FPDF
 from datetime import datetime
 from io import BytesIO
@@ -222,14 +223,21 @@ st.set_page_config(
     layout="wide"
 )
 
-# Exibe a logo
-logo = Image.open("Marca sem fundo.png")
-st.image(logo, width=100)
+# Carregar a logo e converter para base64
+logo_path = "Marca sem fundo.png"  # Altere para o nome correto
+logo_image = Image.open(logo_path)
+buffered = BytesIO()
+logo_image.save(buffered, format="PNG")
+logo_base64 = base64.b64encode(buffered.getvalue()).decode()
 
-# Exibe o slogan
-st.markdown("""
-<div style='text-align: center; font-size: 14px; color: #888'>
-<strong>The Future of Oil Disruption, On Demand</strong>
+# Logo + nome OGT lado a lado + slogan abaixo
+st.markdown(f"""
+<div style='text-align: center;'>
+    <div style='display: inline-flex; align-items: center; gap: 10px;'>
+        <img src='data:image/png;base64,{logo_base64}' style='width: 50px;'>
+        <span style='font-size: 24px; font-weight: bold;'>OGT</span>
+    </div><br>
+    <span style='font-size: 14px; color: #888;'>The Future of Oil Disruption, On Demand</span>
 </div>
 """, unsafe_allow_html=True)
 
