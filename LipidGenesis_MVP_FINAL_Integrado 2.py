@@ -224,25 +224,25 @@ st.set_page_config(
 )
 
 # Carregar a logo e converter para base64
-logo_path = "Marca sem fundo.png"  # ajuste o caminho conforme necessário
+logo_path = "Marca sem fundo.png"  # ajuste conforme o nome correto do arquivo
 logo_image = Image.open(logo_path)
 buffered = BytesIO()
 logo_image.save(buffered, format="PNG")
 logo_base64 = base64.b64encode(buffered.getvalue()).decode()
 
-# HTML com as cores, fontes e centralização
+# HTML para exibir logo + OGT colados e slogan logo abaixo
 st.markdown(f"""
-<div style='text-align: center; display: flex; align-items: center; justify-content: center; flex-wrap: wrap; gap: 10px;'>
-    <img src='data:image/png;base64,{logo_base64}' style='width: 50px;'>
-    <div style='display: flex; flex-direction: column; align-items: center;'>
-        <div style='font-size: 24px; font-family: Century Gothic, sans-serif; font-weight: bold; line-height: 1;'>
-            <span style='color: rgb(255, 102, 0);'>O</span> <!-- laranja -->
-            <span style='color: rgb(12, 102, 33);'>G</span> <!-- verde -->
-            <span style='color: rgb(0, 0, 255);'>T</span> <!-- azul -->
-        </div>
-        <div style='font-size: 14px; font-family: Franklin Gothic Demi, sans-serif; color: #888; margin-top: 2px;'>
-            The Future of Oil Disruption, On Demand
-        </div>
+<div style='text-align: center;'>
+    <div style='display: inline-flex; align-items: center; gap: 0;'>
+        <img src='data:image/png;base64,{logo_base64}' style='width: 50px;'>
+        <span style='font-size: 24px; font-family: Century Gothic, sans-serif; font-weight: bold; line-height: 1;'>
+            <span style='color: rgb(255, 102, 0);'>O</span>
+            <span style='color: rgb(12, 102, 33);'>G</span>
+            <span style='color: rgb(0, 0, 255);'>T</span>
+        </span>
+    </div>
+    <div style='font-size: 14px; font-family: Franklin Gothic Demi, sans-serif; color: #888; margin-top: 4px;'>
+        The Future of Oil Disruption, On Demand
     </div>
 </div>
 """, unsafe_allow_html=True)
