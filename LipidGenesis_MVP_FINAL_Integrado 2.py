@@ -662,7 +662,7 @@ with tabs[7]:
         st.success("✅ Rastreabilidade registrada com sucesso! Pronta para exportação ou validação por auditoria externa.")
 
 # === Exportação PDF ===
-with tabs[8]
+with tabs[8]:
 
     # Verifica se há dados no estado da sessão
     if "blend_lipidico" not in st.session_state or "df_lipidico" not in st.session_state:
