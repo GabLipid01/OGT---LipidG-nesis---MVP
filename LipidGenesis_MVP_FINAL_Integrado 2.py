@@ -737,21 +737,27 @@ with tabs[8]:
             buffer.seek(0)
             return buffer
 
-        # Geração final
-        df_lipidico = st.session_state["df_lipidico"]
-        nome_projeto_clean = remover_unicode(nome_projeto)
-        autor_clean = remover_unicode(autor)
-        observacoes_clean = remover_unicode(observacoes)
-        sensorial_txt_clean = remover_unicode(sensorial_txt)
+            # Geração final
+            df_lipidico = st.session_state["df_lipidico"]
+            nome_projeto_clean = remover_unicode(nome_projeto)
+            autor_clean = remover_unicode(autor)
+            observacoes_clean = remover_unicode(observacoes)
+            sensorial_txt_clean = remover_unicode(sensorial_txt)
 
-pdf_buffer = gerar_pdf_melhorado(df_lipidico, sensorial_txt_clean, nome_projeto_clean, autor_clean, observacoes_clean)
+            pdf_buffer = gerar_pdf_melhorado(
+            df_lipidico,
+            sensorial_txt_clean,
+            nome_projeto_clean,
+            autor_clean,
+            observacoes_clean
+            )
 
-        st.download_button(
+            st.download_button(
             label="📥 Baixar Relatório PDF",
             data=pdf_buffer,
             file_name=f"relatorio_lipidgenesis_{datetime.now().strftime('%Y%m%d_%H%M%S')}.pdf",
             mime="application/pdf"
-        )
+            )
 
 # === Rodapé ===
 st.markdown("---")
