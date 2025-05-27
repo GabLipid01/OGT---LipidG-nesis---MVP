@@ -340,13 +340,13 @@ with tabs[2]:
     for oil in grouped_profiles["Insumos Industriais"]:
         oil_percentages[oil] = st.sidebar.slider(f"{oil} (%)", 0, 100, 0, 1)
 
+    total_pct = sum(oil_percentages.values())
+
     # Salva os percentuais brutos no session_state SOMENTE se houver percentual positivo
     if total_pct > 0:
         st.session_state["oil_percentages"] = {
             oil: pct for oil, pct in oil_percentages.items() if pct > 0
         }
-
-    total_pct = sum(oil_percentages.values())
 
     if total_pct == 0:
         st.warning("Defina pelo menos um óleo com percentual maior que 0.")
