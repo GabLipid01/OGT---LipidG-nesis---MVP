@@ -264,7 +264,7 @@ tabs = st.tabs([
 
 with tabs[0]:
     st.markdown("""
-    ***OGT – The Future of Oil Disruption*** 
+    ***OGT – The Future of Oil Disruption, On Demand*** 
     **Apresenta:** 
     
     ### 🌴 LipidPalma™
@@ -311,7 +311,7 @@ with tabs[1]:
 
 # === Blend Lipídico ===
 with tabs[2]:
-    st.header("🧪 Montagem do Blend LG")
+    st.header("🧪 Montagem do Blend")
     st.sidebar.title("🔬 Monte seu Blend")
 
     # Agrupamento visual dos ingredientes
@@ -454,8 +454,6 @@ with tabs[3]:
             ref = referencias.get(chave)
             if ref:
                 st.markdown(f"**{oleo}:** {ref}")
-
-
 
 # === Viabilidade Técnica ===
 with tabs[4]:
@@ -691,7 +689,7 @@ with tabs[8]:
 st.markdown("---")
 st.markdown(
     "<p style='text-align: center; font-size: 14px;'>"
-    "🌿 Desenvolvido por <b>OGT - The Future of Oil Disruption</b>. "
+    "🌿 Desenvolvido por <b>OGT - The Future of Oil Disruption, On Demand</b>. "
     "Aplicação modular <b>LipidGenesis</b> com o módulo atual: <b>LipidPalma</b>. "
     "<br>Versão MVP demonstrativa. &copy; 2025 OGT."
     "</p>",
