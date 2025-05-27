@@ -2,6 +2,7 @@ import streamlit as st
 import pandas as pd
 import plotly.express as px
 import base64
+import unicodedata
 from fpdf import FPDF
 from datetime import datetime
 from io import BytesIO
@@ -191,6 +192,9 @@ def gerar_pdf(df_lipidica, sensorial_txt):
     pdf.set_font("Arial", size=12)
     pdf.set_text_color(33, 37, 41)
 
+def remover_unicode(texto):
+    return unicodedata.normalize("NFKD", texto).encode("ASCII", "ignore").decode("ASCII")
+    
     # Título
     pdf.set_font("Arial", 'B', size=16)
     pdf.cell(200, 10, txt="Relatório LipidGenesis", ln=True, align='C')
@@ -735,7 +739,12 @@ with tabs[8]:
 
         # Geração final
         df_lipidico = st.session_state["df_lipidico"]
-        pdf_buffer = gerar_pdf_melhorado(df_lipidico, sensorial_txt, nome_projeto, autor, observacoes)
+        nome_projeto_clean = remover_unicode(nome_projeto)
+        autor_clean = remover_unicode(autor)
+        observacoes_clean = remover_unicode(observacoes)
+        sensorial_txt_clean = remover_unicode(sensorial_txt)
+
+pdf_buffer = gerar_pdf_melhorado(df_lipidico, sensorial_txt_clean, nome_projeto_clean, autor_clean, observacoes_clean)
 
         st.download_button(
             label="📥 Baixar Relatório PDF",
