@@ -670,7 +670,6 @@ with tabs[8]:
     if not all(k in st.session_state for k in ["blend_lipidico", "df_lipidico", "oil_percentages"]):
         st.warning("Você precisa montar um blend na aba '🧪 Blend Lipídico' antes de exportar o relatório.")
         st.stop()
-    else:
 
     # Verifica se há dados no estado da sessão
     if "blend_lipidico" not in st.session_state or "df_lipidico" not in st.session_state:
