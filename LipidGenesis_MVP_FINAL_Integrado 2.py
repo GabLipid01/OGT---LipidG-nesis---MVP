@@ -340,8 +340,11 @@ with tabs[2]:
     for oil in grouped_profiles["Insumos Industriais"]:
         oil_percentages[oil] = st.sidebar.slider(f"{oil} (%)", 0, 100, 0, 1)
 
-    # Salva os percentuais brutos no session_state
-    st.session_state["oil_percentages"] = oil_percentages
+    # Salva os percentuais brutos no session_state SOMENTE se houver percentual positivo
+    if total_pct > 0:
+        st.session_state["oil_percentages"] = {
+            oil: pct for oil, pct in oil_percentages.items() if pct > 0
+        }
 
     total_pct = sum(oil_percentages.values())
 
@@ -663,6 +666,11 @@ with tabs[7]:
 
 # === Exportação PDF ===
 with tabs[8]:
+
+    if not all(k in st.session_state for k in ["blend_lipidico", "df_lipidico", "oil_percentages"]):
+        st.warning("Você precisa montar um blend na aba '🧪 Blend Lipídico' antes de exportar o relatório.")
+        st.stop()
+    else:
 
     # Verifica se há dados no estado da sessão
     if "blend_lipidico" not in st.session_state or "df_lipidico" not in st.session_state:
