@@ -662,18 +662,18 @@ with tabs[7]:
         st.success("✅ Rastreabilidade registrada com sucesso! Pronta para exportação ou validação por auditoria externa.")
 
 # === Exportação PDF ===
-with tabs[8]:
-    st.header("📄 Exportar Relatório PDF")
+with tabs[8]
 
+    # Verifica se há dados no estado da sessão
     if "blend_lipidico" not in st.session_state or "df_lipidico" not in st.session_state:
         st.warning("Você precisa montar um blend na aba '🧪 Blend Lipídico' antes de exportar o relatório.")
-    else:
+        
         # Inputs personalizados
         nome_projeto = st.text_input("📌 Nome do Projeto", "LipidPalma - Simulação de Blend")
         autor = st.text_input("👤 Autor ou Responsável Técnico", "Equipe OGT")
         observacoes = st.text_area("📝 Observações Adicionais (opcional)", "", height=100)
 
-        # Composição sensorial
+        # Montagem do texto sensorial e referências
         oil_percentages = st.session_state["oil_percentages"]
         sensorial_txt = "Compostos Voláteis Identificados:\n"
         for oleo in oil_percentages:
@@ -689,25 +689,31 @@ with tabs[8]:
                 if ref:
                     sensorial_txt += f" - {oleo}: {ref}\n"
 
-        # PDF com logotipo e cabeçalho aprimorado
+        # Função para remover caracteres problemáticos para PDF
+        def remover_unicode(texto):
+            return texto.encode('latin-1', 'replace').decode('latin-1')
+
+        # Função para gerar o PDF
         def gerar_pdf_melhorado(df_lipidica, sensorial_txt, nome_projeto, autor, observacoes):
             pdf = FPDF()
             pdf.add_page()
             pdf.set_font("Arial", size=12)
 
-            # Logo da OGT (se desejar colocar no cabeçalho do PDF)
+            # Inserir logotipo
             try:
                 logo_path = "Marca sem fundo.png"
                 pdf.image(logo_path, x=10, y=8, w=20)
             except:
-                pass  # Evita erro se não encontrar
+                pass  # Continua se o logo não estiver presente
 
+            # Cabeçalho
             pdf.set_font("Arial", 'B', size=14)
             pdf.cell(0, 10, nome_projeto, ln=True, align='C')
             pdf.set_font("Arial", '', 12)
             pdf.cell(0, 10, f"Autor: {autor}", ln=True, align='C')
             pdf.cell(0, 10, txt="Data: " + datetime.now().strftime('%d/%m/%Y %H:%M'), ln=True, align='C')
 
+            # Receita Lipídica
             pdf.ln(10)
             pdf.set_font("Arial", 'B', 12)
             pdf.cell(0, 10, "Receita Lipídica", ln=True)
@@ -716,6 +722,7 @@ with tabs[8]:
                 nome = f"{row['Nome Completo']}"
                 pdf.cell(0, 8, f"{nome}: {row['%']:.2f}%", ln=True)
 
+            # Observações
             if observacoes.strip():
                 pdf.ln(10)
                 pdf.set_font("Arial", 'B', 12)
@@ -723,6 +730,7 @@ with tabs[8]:
                 pdf.set_font("Arial", '', 12)
                 pdf.multi_cell(0, 8, observacoes)
 
+            # Assinatura sensorial
             pdf.ln(10)
             pdf.set_font("Arial", 'B', 12)
             pdf.cell(0, 10, "Assinatura Sensorial e Referências", ln=True)
@@ -730,34 +738,36 @@ with tabs[8]:
             for linha in sensorial_txt.splitlines():
                 pdf.multi_cell(0, 7, linha)
 
-            # Exportar para buffer
+            # Gera buffer com conteúdo PDF
             buffer = BytesIO()
             pdf_output = pdf.output(dest='S').encode('latin-1', errors='replace')
             buffer.write(pdf_output)
             buffer.seek(0)
             return buffer
 
-            # Geração final
-            df_lipidico = st.session_state["df_lipidico"]
-            nome_projeto_clean = remover_unicode(nome_projeto)
-            autor_clean = remover_unicode(autor)
-            observacoes_clean = remover_unicode(observacoes)
-            sensorial_txt_clean = remover_unicode(sensorial_txt)
+        # Limpa caracteres e gera PDF
+        df_lipidico = st.session_state["df_lipidico"]
+        nome_projeto_clean = remover_unicode(nome_projeto)
+        autor_clean = remover_unicode(autor)
+        observacoes_clean = remover_unicode(observacoes)
+        sensorial_txt_clean = remover_unicode(sensorial_txt)
 
-            pdf_buffer = gerar_pdf_melhorado(
+        pdf_buffer = gerar_pdf_melhorado(
             df_lipidico,
             sensorial_txt_clean,
             nome_projeto_clean,
             autor_clean,
             observacoes_clean
-            )
+        )
 
-            st.download_button(
+        # Botão de download do PDF
+        st.download_button(
             label="📥 Baixar Relatório PDF",
             data=pdf_buffer,
             file_name=f"relatorio_lipidgenesis_{datetime.now().strftime('%Y%m%d_%H%M%S')}.pdf",
             mime="application/pdf"
-            )
+        )
+
 
 # === Rodapé ===
 st.markdown("---")
