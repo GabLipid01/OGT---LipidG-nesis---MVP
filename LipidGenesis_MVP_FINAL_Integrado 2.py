@@ -669,12 +669,7 @@ with tabs[8]:
 
     if not all(k in st.session_state for k in ["blend_lipidico", "df_lipidico", "oil_percentages"]):
         st.warning("Você precisa montar um blend na aba '🧪 Blend Lipídico' antes de exportar o relatório.")
-        st.stop()
-
-    # Verifica se há dados no estado da sessão
-    if "blend_lipidico" not in st.session_state or "df_lipidico" not in st.session_state:
-        st.warning("Você precisa montar um blend na aba '🧪 Blend Lipídico' antes de exportar o relatório.")
-        
+    else:
         # Inputs personalizados
         nome_projeto = st.text_input("📌 Nome do Projeto", "LipidPalma - Simulação de Blend")
         autor = st.text_input("👤 Autor ou Responsável Técnico", "Equipe OGT")
@@ -774,7 +769,6 @@ with tabs[8]:
             file_name=f"relatorio_lipidgenesis_{datetime.now().strftime('%Y%m%d_%H%M%S')}.pdf",
             mime="application/pdf"
         )
-
 
 # === Rodapé ===
 st.markdown("---")
