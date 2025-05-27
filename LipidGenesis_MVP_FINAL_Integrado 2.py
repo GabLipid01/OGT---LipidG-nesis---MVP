@@ -378,6 +378,7 @@ with tabs[2]:
 
         # Visualização em tabela
         df_lipidico = gerar_receita_lipidica(blend_lg)
+        st.session_state["df_lipidico"] = df_lipidico 
         st.dataframe(df_lipidico)
 
         # Gráfico de barras
@@ -659,8 +660,17 @@ with tabs[7]:
 # === Exportação PDF ===
 with tabs[8]:
     st.header("📄 Exportar Relatório PDF")
-    
-    if total_pct > 0:
+
+    if "blend_lipidico" not in st.session_state or "df_lipidico" not in st.session_state:
+        st.warning("Você precisa montar um blend na aba '🧪 Blend Lipídico' antes de exportar o relatório.")
+    else:
+        # Inputs personalizados
+        nome_projeto = st.text_input("📌 Nome do Projeto", "LipidPalma - Simulação de Blend")
+        autor = st.text_input("👤 Autor ou Responsável Técnico", "Equipe OGT")
+        observacoes = st.text_area("📝 Observações Adicionais (opcional)", "", height=100)
+
+        # Composição sensorial
+        oil_percentages = st.session_state["oil_percentages"]
         sensorial_txt = "Compostos Voláteis Identificados:\n"
         for oleo in oil_percentages:
             if oil_percentages[oleo] > 0:
@@ -675,15 +685,64 @@ with tabs[8]:
                 if ref:
                     sensorial_txt += f" - {oleo}: {ref}\n"
 
-        pdf_buffer = gerar_pdf(df_lipidico, sensorial_txt)
+        # PDF com logotipo e cabeçalho aprimorado
+        def gerar_pdf_melhorado(df_lipidica, sensorial_txt, nome_projeto, autor, observacoes):
+            pdf = FPDF()
+            pdf.add_page()
+            pdf.set_font("Arial", size=12)
+
+            # Logo da OGT (se desejar colocar no cabeçalho do PDF)
+            try:
+                logo_path = "Marca sem fundo.png"
+                pdf.image(logo_path, x=10, y=8, w=20)
+            except:
+                pass  # Evita erro se não encontrar
+
+            pdf.set_font("Arial", 'B', size=14)
+            pdf.cell(0, 10, nome_projeto, ln=True, align='C')
+            pdf.set_font("Arial", '', 12)
+            pdf.cell(0, 10, f"Autor: {autor}", ln=True, align='C')
+            pdf.cell(0, 10, txt="Data: " + datetime.now().strftime('%d/%m/%Y %H:%M'), ln=True, align='C')
+
+            pdf.ln(10)
+            pdf.set_font("Arial", 'B', 12)
+            pdf.cell(0, 10, "Receita Lipídica", ln=True)
+            pdf.set_font("Arial", '', 12)
+            for _, row in df_lipidica.iterrows():
+                nome = f"{row['Nome Completo']}"
+                pdf.cell(0, 8, f"{nome}: {row['%']:.2f}%", ln=True)
+
+            if observacoes.strip():
+                pdf.ln(10)
+                pdf.set_font("Arial", 'B', 12)
+                pdf.cell(0, 10, "Observações", ln=True)
+                pdf.set_font("Arial", '', 12)
+                pdf.multi_cell(0, 8, observacoes)
+
+            pdf.ln(10)
+            pdf.set_font("Arial", 'B', 12)
+            pdf.cell(0, 10, "Assinatura Sensorial e Referências", ln=True)
+            pdf.set_font("Arial", '', 11)
+            for linha in sensorial_txt.splitlines():
+                pdf.multi_cell(0, 7, linha)
+
+            # Exportar para buffer
+            buffer = BytesIO()
+            pdf_output = pdf.output(dest='S').encode('latin1')
+            buffer.write(pdf_output)
+            buffer.seek(0)
+            return buffer
+
+        # Geração final
+        df_lipidico = st.session_state["df_lipidico"]
+        pdf_buffer = gerar_pdf_melhorado(df_lipidico, sensorial_txt, nome_projeto, autor, observacoes)
+
         st.download_button(
             label="📥 Baixar Relatório PDF",
             data=pdf_buffer,
             file_name=f"relatorio_lipidgenesis_{datetime.now().strftime('%Y%m%d_%H%M%S')}.pdf",
             mime="application/pdf"
         )
-    else:
-        st.warning("Você precisa montar um blend com ao menos um óleo para gerar o relatório.")
 
 # === Rodapé ===
 st.markdown("---")
