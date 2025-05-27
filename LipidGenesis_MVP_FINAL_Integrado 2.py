@@ -728,7 +728,7 @@ with tabs[8]:
 
             # Exportar para buffer
             buffer = BytesIO()
-            pdf_output = pdf.output(dest='S').encode('latin1')
+            pdf_output = pdf.output(dest='S').encode('latin-1', errors='replace')
             buffer.write(pdf_output)
             buffer.seek(0)
             return buffer
