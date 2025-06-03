@@ -698,6 +698,7 @@ with tabs[8]:
         title_style = styles['Heading1']
         subtitle_style = styles['Heading2']
         normal_style = styles['BodyText']
+        return buffer
 
     # Título
     story.append(Paragraph("Relatório de Blends - OGT", title_style))
@@ -752,10 +753,8 @@ with tabs[8]:
 
     # Rodapé
     story.append(Paragraph("Relatório gerado automaticamente pelo LipidGenesis – OGT – The Future of Oil Disruption", styles['Italic']))
-
     doc.build(story)
     buffer.seek(0)
-    return buffer
 
 # ========= STREAMLIT INTERFACE =========
 st.header("📄 Exportação PDF - LipidGenesis")
