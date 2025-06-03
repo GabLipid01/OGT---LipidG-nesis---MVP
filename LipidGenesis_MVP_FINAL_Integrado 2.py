@@ -673,35 +673,37 @@ with tabs[7]:
 # === Exportação PDF ===
 with tabs[8]:
 
-    # Função para gerar gráfico de pizza da composição lipídica
-    def gerar_grafico(acidos_graxos, titulo):
-        labels = list(acidos_graxos.keys())
-        sizes = list(acidos_graxos.values())
-        fig, ax = plt.subplots()
-        ax.pie(sizes, labels=labels, autopct='%1.1f%%', startangle=90)
-        ax.axis('equal')
-        plt.title(titulo)
-        buf = BytesIO()
-        plt.savefig(buf, format='png')
-        plt.close(fig)
-        buf.seek(0)
-        return buf
+# Função auxiliar: gera gráfico de pizza e retorna imagem como BytesIO
+def gerar_grafico(acidos_graxos, titulo):
+    labels = list(acidos_graxos.keys())
+    sizes = list(acidos_graxos.values())
+    fig, ax = plt.subplots()
+    ax.pie(sizes, labels=labels, autopct='%1.1f%%', startangle=90)
+    ax.axis('equal')
+    plt.title(titulo)
+    buf = BytesIO()
+    plt.savefig(buf, format='png')
+    plt.close(fig)
+    buf.seek(0)
+    return buf
 
-# Função principal que gera o PDF
-    def gerar_pdf_reportlab(acidos_graxos, sensoriais, lote, fornecedor):
-        buffer = BytesIO()
-        doc = SimpleDocTemplate(buffer, pagesize=A4,
-        rightMargin=2*cm, leftMargin=2*cm,
-        topMargin=2*cm, bottomMargin=2*cm)
-        story = []
-        styles = getSampleStyleSheet()
-        title_style = styles['Heading1']
-        subtitle_style = styles['Heading2']
-        normal_style = styles['BodyText']
-        story.append(Paragraph("Relatório de Blends - OGT", title_style))
-        story.append(Spacer(1, 12))
-        return buffer
-        
+# Função principal: monta o PDF com dados e gráfico
+def gerar_pdf_reportlab(acidos_graxos, sensoriais, lote, fornecedor):
+    buffer = BytesIO()
+    doc = SimpleDocTemplate(buffer, pagesize=A4,
+                            rightMargin=2*cm, leftMargin=2*cm,
+                            topMargin=2*cm, bottomMargin=2*cm)
+
+    story = []
+    styles = getSampleStyleSheet()
+    title_style = styles['Heading1']
+    subtitle_style = styles['Heading2']
+    normal_style = styles['BodyText']
+
+    # Título
+    story.append(Paragraph("Relatório de Blends - OGT", title_style))
+    story.append(Spacer(1, 12))
+
     # Rastreabilidade
     story.append(Paragraph("Rastreabilidade", subtitle_style))
     rastreabilidade_data = [["Lote", lote], ["Fornecedor", fornecedor]]
@@ -726,7 +728,7 @@ with tabs[8]:
     story.append(tabela_comp)
     story.append(Spacer(1, 12))
 
-    # Gráfico de composição
+    # Gráfico
     story.append(Paragraph("Visualização Gráfica", subtitle_style))
     grafico = gerar_grafico(acidos_graxos, "Composição Lipídica (%)")
     story.append(Image(grafico, width=12*cm, height=9*cm))
@@ -751,13 +753,15 @@ with tabs[8]:
 
     # Rodapé
     story.append(Paragraph("Relatório gerado automaticamente pelo LipidGenesis – OGT – The Future of Oil Disruption", styles['Italic']))
+
     doc.build(story)
     buffer.seek(0)
+    return buffer
 
-# ========= STREAMLIT INTERFACE =========
+# 🔁 Interface Streamlit
 st.header("📄 Exportação PDF - LipidGenesis")
 
-# 🔁 Substitua por variáveis reais do seu app
+# Dados de exemplo (substitua por variáveis reais do seu app)
 acidos_graxos = {
     'Ácido Palmítico': 40,
     'Ácido Oleico': 45,
