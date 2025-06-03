@@ -675,17 +675,17 @@ with tabs[7]:
 with tabs[8]:
 
     def gerar_grafico(acidos_graxos, titulo):
-    labels = list(acidos_graxos.keys())
-    sizes = list(acidos_graxos.values())
-    fig, ax = plt.subplots()
-    ax.pie(sizes, labels=labels, autopct='%1.1f%%', startangle=90)
-    ax.axis('equal')
-    plt.title(titulo)
-    buf = BytesIO()
-    plt.savefig(buf, format='png')
-    plt.close(fig)
-    buf.seek(0)
-    return buf
+        labels = list(acidos_graxos.keys())
+        sizes = list(acidos_graxos.values())
+        fig, ax = plt.subplots()
+        ax.pie(sizes, labels=labels, autopct='%1.1f%%', startangle=90)
+        ax.axis('equal')
+        plt.title(titulo)
+        buf = BytesIO()
+        plt.savefig(buf, format='png')
+        plt.close(fig)
+        buf.seek(0)
+        return buf
 
 # Função para gerar PDF com gráfico embutido
     def gerar_pdf_reportlab(acidos_graxos, sensoriais, lote, fornecedor):
