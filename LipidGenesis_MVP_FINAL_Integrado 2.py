@@ -687,17 +687,18 @@ with tabs[8]:
         buf.seek(0)
         return buf
 
-# Função para gerar PDF com gráfico embutido
+    # Função para gerar PDF com gráfico embutido
     def gerar_pdf_reportlab(acidos_graxos, sensoriais, lote, fornecedor):
         buffer = BytesIO()
         doc = SimpleDocTemplate(buffer, pagesize=A4,
-                            rightMargin=2*cm, leftMargin=2*cm,
-                            topMargin=2*cm, bottomMargin=2*cm)
+        rightMargin=2*cm, leftMargin=2*cm,
+        topMargin=2*cm, bottomMargin=2*cm)
         story = []
         styles = getSampleStyleSheet()
         title_style = styles['Heading1']
         subtitle_style = styles['Heading2']
         normal_style = styles['BodyText']
+        return buffer
 
     # Título e identidade visual
     story.append(Paragraph("Relatório de Blends - OGT", title_style))
@@ -756,10 +757,8 @@ with tabs[8]:
 
     # Rodapé
     story.append(Paragraph("Relatório gerado automaticamente pelo LipidGenesis – OGT – The Future of Oil Disruption", styles['Italic']))
-
     doc.build(story)
     buffer.seek(0)
-    return buffer
 
 # ----------------------------
 # Streamlit Interface
