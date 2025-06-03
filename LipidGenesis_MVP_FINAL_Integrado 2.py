@@ -698,12 +698,10 @@ with tabs[8]:
         title_style = styles['Heading1']
         subtitle_style = styles['Heading2']
         normal_style = styles['BodyText']
+        story.append(Paragraph("Relatório de Blends - OGT", title_style))
+        story.append(Spacer(1, 12))
         return buffer
-
-    # Título
-    story.append(Paragraph("Relatório de Blends - OGT", title_style))
-    story.append(Spacer(1, 12))
-
+        
     # Rastreabilidade
     story.append(Paragraph("Rastreabilidade", subtitle_style))
     rastreabilidade_data = [["Lote", lote], ["Fornecedor", fornecedor]]
