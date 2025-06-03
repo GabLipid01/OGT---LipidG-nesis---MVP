@@ -689,15 +689,15 @@ with tabs[8]:
 
 # Função para gerar PDF com gráfico embutido
     def gerar_pdf_reportlab(acidos_graxos, sensoriais, lote, fornecedor):
-    buffer = BytesIO()
-    doc = SimpleDocTemplate(buffer, pagesize=A4,
+        buffer = BytesIO()
+        doc = SimpleDocTemplate(buffer, pagesize=A4,
                             rightMargin=2*cm, leftMargin=2*cm,
                             topMargin=2*cm, bottomMargin=2*cm)
-    story = []
-    styles = getSampleStyleSheet()
-    title_style = styles['Heading1']
-    subtitle_style = styles['Heading2']
-    normal_style = styles['BodyText']
+        story = []
+        styles = getSampleStyleSheet()
+        title_style = styles['Heading1']
+        subtitle_style = styles['Heading2']
+        normal_style = styles['BodyText']
 
     # Título e identidade visual
     story.append(Paragraph("Relatório de Blends - OGT", title_style))
