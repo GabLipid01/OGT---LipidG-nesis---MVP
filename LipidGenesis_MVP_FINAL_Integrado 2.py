@@ -674,7 +674,6 @@ with tabs[7]:
 # === Exportação PDF ===
 with tabs[8]:
 
-        # Função para gerar gráfico de pizza da composição
 def gerar_grafico(acidos_graxos, titulo):
     labels = list(acidos_graxos.keys())
     sizes = list(acidos_graxos.values())
