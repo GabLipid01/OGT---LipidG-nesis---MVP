@@ -674,7 +674,7 @@ with tabs[7]:
 # === Exportação PDF ===
 with tabs[8]:
 
-def gerar_grafico(acidos_graxos, titulo):
+    def gerar_grafico(acidos_graxos, titulo):
     labels = list(acidos_graxos.keys())
     sizes = list(acidos_graxos.values())
     fig, ax = plt.subplots()
@@ -688,7 +688,7 @@ def gerar_grafico(acidos_graxos, titulo):
     return buf
 
 # Função para gerar PDF com gráfico embutido
-def gerar_pdf_reportlab(acidos_graxos, sensoriais, lote, fornecedor):
+    def gerar_pdf_reportlab(acidos_graxos, sensoriais, lote, fornecedor):
     buffer = BytesIO()
     doc = SimpleDocTemplate(buffer, pagesize=A4,
                             rightMargin=2*cm, leftMargin=2*cm,
