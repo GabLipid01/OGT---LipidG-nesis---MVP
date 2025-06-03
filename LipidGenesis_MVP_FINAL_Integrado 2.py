@@ -5,6 +5,11 @@ import base64
 import unicodedata
 import pdfkit
 import matplotlib.pyplot as plt
+from reportlab.lib.pagesizes import A4
+from reportlab.lib import colors
+from reportlab.lib.units import cm
+from reportlab.platypus import SimpleDocTemplate, Table, TableStyle, Paragraph, Spacer, Image
+from reportlab.lib.styles import getSampleStyleSheet
 from fpdf import FPDF
 from datetime import datetime
 from io import BytesIO
@@ -669,19 +674,100 @@ with tabs[7]:
 # === Exportação PDF ===
 with tabs[8]:
 
-        def gerar_grafico_pizza(data, labels, title):
-            fig, ax = plt.subplots()
-            ax.pie(data, labels=labels, autopct='%1.1f%%', startangle=90)
-            ax.axis('equal')
-            plt.title(title)
-            buf = BytesIO()
-            plt.savefig(buf, format='png', bbox_inches='tight')
-            plt.close(fig)
-            buf.seek(0)
-            img_base64 = base64.b64encode(buf.read()).decode('utf-8')
-            return img_base64
+        # Função para gerar gráfico de pizza da composição
+def gerar_grafico(acidos_graxos, titulo):
+    labels = list(acidos_graxos.keys())
+    sizes = list(acidos_graxos.values())
+    fig, ax = plt.subplots()
+    ax.pie(sizes, labels=labels, autopct='%1.1f%%', startangle=90)
+    ax.axis('equal')
+    plt.title(titulo)
+    buf = BytesIO()
+    plt.savefig(buf, format='png')
+    plt.close(fig)
+    buf.seek(0)
+    return buf
 
-# Exemplo de dados
+# Função para gerar PDF com gráfico embutido
+def gerar_pdf_reportlab(acidos_graxos, sensoriais, lote, fornecedor):
+    buffer = BytesIO()
+    doc = SimpleDocTemplate(buffer, pagesize=A4,
+                            rightMargin=2*cm, leftMargin=2*cm,
+                            topMargin=2*cm, bottomMargin=2*cm)
+    story = []
+    styles = getSampleStyleSheet()
+    title_style = styles['Heading1']
+    subtitle_style = styles['Heading2']
+    normal_style = styles['BodyText']
+
+    # Título e identidade visual
+    story.append(Paragraph("Relatório de Blends - OGT", title_style))
+    story.append(Spacer(1, 12))
+
+    # Rastreabilidade
+    story.append(Paragraph("Rastreabilidade", subtitle_style))
+    rastreabilidade_data = [
+        ["Lote", lote],
+        ["Fornecedor", fornecedor]
+    ]
+    tabela_rastreabilidade = Table(rastreabilidade_data, colWidths=[5*cm, 10*cm])
+    tabela_rastreabilidade.setStyle(TableStyle([
+        ('GRID', (0, 0), (-1, -1), 1, colors.grey),
+        ('FONTNAME', (0, 0), (-1, -1), 'Helvetica'),
+        ('ALIGN', (0, 0), (-1, -1), 'LEFT')
+    ]))
+    story.append(tabela_rastreabilidade)
+    story.append(Spacer(1, 12))
+
+    # Composição lipídica
+    story.append(Paragraph("Composição Lipídica", subtitle_style))
+    comp_data = [["Ácido Graxo", "Proporção (%)"]] + [[k, f"{v}%"] for k, v in acidos_graxos.items()]
+    tabela_comp = Table(comp_data, colWidths=[7*cm, 5*cm])
+    tabela_comp.setStyle(TableStyle([
+        ('BACKGROUND', (0, 0), (-1, 0), colors.lightgrey),
+        ('GRID', (0, 0), (-1, -1), 1, colors.grey),
+        ('FONTNAME', (0, 0), (-1, -1), 'Helvetica'),
+        ('ALIGN', (1, 1), (-1, -1), 'RIGHT')
+    ]))
+    story.append(tabela_comp)
+    story.append(Spacer(1, 12))
+
+    # Gráfico da composição
+    story.append(Paragraph("Visualização Gráfica", subtitle_style))
+    grafico = gerar_grafico(acidos_graxos, "Composição Lipídica (%)")
+    story.append(Image(grafico, width=12*cm, height=9*cm))
+    story.append(Spacer(1, 12))
+
+    # Assinatura sensorial
+    story.append(Paragraph("Assinatura Sensorial", subtitle_style))
+    assinatura_data = [[k, v] for k, v in sensoriais.items()]
+    tabela_sensorial = Table(assinatura_data, colWidths=[5*cm, 10*cm])
+    tabela_sensorial.setStyle(TableStyle([
+        ('GRID', (0, 0), (-1, -1), 1, colors.grey),
+        ('FONTNAME', (0, 0), (-1, -1), 'Helvetica')
+    ]))
+    story.append(tabela_sensorial)
+    story.append(Spacer(1, 12))
+
+    # Notas do usuário
+    story.append(Paragraph("Notas do Usuário", subtitle_style))
+    for _ in range(3):
+        story.append(Paragraph("_______________________________________________", normal_style))
+    story.append(Spacer(1, 24))
+
+    # Rodapé
+    story.append(Paragraph("Relatório gerado automaticamente pelo LipidGenesis – OGT – The Future of Oil Disruption", styles['Italic']))
+
+    doc.build(story)
+    buffer.seek(0)
+    return buffer
+
+# ----------------------------
+# Streamlit Interface
+# ----------------------------
+st.header("📄 Exportação PDF - LipidGenesis")
+
+# Dados simulados — substitua pelos dados do app real
 acidos_graxos = {
     'Ácido Palmítico': 40,
     'Ácido Oleico': 45,
@@ -695,91 +781,15 @@ sensoriais = {
 }
 lote = 'Lote 1234'
 fornecedor = 'OGT - The Future of Oil Disruption'
-data_hoje = pd.Timestamp.now().strftime('%d/%m/%Y')
 
-# Gerar gráfico de pizza
-grafico_base64 = gerar_grafico_pizza(
-    list(acidos_graxos.values()),
-    list(acidos_graxos.keys()),
-    'Composição do Blend (%)'
-)
-
-# Link ou caminho do logo OGT (ajuste o path local ou url direto)
-logo_url = 'https://www.link-da-sua-logo.com/logo_OGT.png'  # substitua com o real!
-
-# HTML atualizado com identidade visual
-html_template = f"""
-<html>
-<head>
-    <style>
-        body {{ font-family: Arial, sans-serif; margin: 30px; color: #333; }}
-        h1 {{ color: #004080; }}
-        h2 {{ color: #006699; }}
-        table {{ width: 100%; border-collapse: collapse; margin-bottom: 20px; }}
-        table, th, td {{ border: 1px solid #ccc; }}
-        th, td {{ padding: 8px; text-align: left; }}
-        .grafico {{ text-align: center; margin-bottom: 20px; }}
-        .logo-topo {{ text-align: center; margin-bottom: 20px; }}
-        .logo-topo img {{ width: 150px; }}
-        .rodape {{
-            text-align: center;
-            font-size: 10px;
-            color: #999;
-            margin-top: 30px;
-            border-top: 1px solid #ccc;
-            padding-top: 5px;
-        }}
-    </style>
-</head>
-<body>
-    <div class="logo-topo">
-        <img src="{logo_url}" alt="Logo OGT">
-    </div>
-
-    <h1>Relatório de Blends</h1>
-
-    <h2>Rastreabilidade</h2>
-    <table>
-        <tr><th>Lote</th><td>{lote}</td></tr>
-        <tr><th>Fornecedor</th><td>{fornecedor}</td></tr>
-    </table>
-
-    <h2>Composição Lipídica</h2>
-    <table>
-        <tr><th>Ácido Graxo</th><th>Proporção (%)</th></tr>
-        {''.join([f"<tr><td>{k}</td><td>{v}%</td></tr>" for k, v in acidos_graxos.items()])}
-    </table>
-
-    <div class="grafico">
-        <img src="data:image/png;base64,{grafico_base64}" width="300">
-    </div>
-
-    <h2>Assinatura Sensorial</h2>
-    <table>
-        {''.join([f"<tr><th>{k}</th><td>{v}</td></tr>" for k, v in sensoriais.items()])}
-    </table>
-
-    <h2>Notas do Usuário</h2>
-    <p>_____________________________________________</p>
-
-    <div class="rodape">
-        Relatório gerado automaticamente pelo LipidGenesis – OGT – The Future of Oil Disruption<br>
-        Data: {data_hoje}
-    </div>
-</body>
-</html>
-"""
-
-if st.button('Exportar Relatório PDF'):
-    pdfkit.from_string(html_template, 'relatorio_OGT.pdf')
-    with open('relatorio_OGT.pdf', 'rb') as f:
-        pdf_bytes = f.read()
-        st.download_button(
-            label='📄 Baixar Relatório PDF',
-            data=pdf_bytes,
-            file_name='relatorio_OGT.pdf',
-            mime='application/pdf'
-        )
+if st.button("📥 Gerar PDF"):
+    pdf_bytes = gerar_pdf_reportlab(acidos_graxos, sensoriais, lote, fornecedor)
+    st.download_button(
+        label="📄 Baixar Relatório PDF",
+        data=pdf_bytes,
+        file_name="relatorio_OGT.pdf",
+        mime="application/pdf"
+    )
 
 # === Rodapé ===
 st.markdown("---")
