@@ -670,16 +670,16 @@ with tabs[7]:
 with tabs[8]:
 
         def gerar_grafico_pizza(data, labels, title):
-        fig, ax = plt.subplots()
-        ax.pie(data, labels=labels, autopct='%1.1f%%', startangle=90)
-        ax.axis('equal')
-        plt.title(title)
-        buf = BytesIO()
-        plt.savefig(buf, format='png', bbox_inches='tight')
-        plt.close(fig)
-        buf.seek(0)
-        img_base64 = base64.b64encode(buf.read()).decode('utf-8')
-        return img_base64
+            fig, ax = plt.subplots()
+            ax.pie(data, labels=labels, autopct='%1.1f%%', startangle=90)
+            ax.axis('equal')
+            plt.title(title)
+            buf = BytesIO()
+            plt.savefig(buf, format='png', bbox_inches='tight')
+            plt.close(fig)
+            buf.seek(0)
+            img_base64 = base64.b64encode(buf.read()).decode('utf-8')
+            return img_base64
 
 # Exemplo de dados
 acidos_graxos = {
