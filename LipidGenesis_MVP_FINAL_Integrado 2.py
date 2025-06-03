@@ -3,6 +3,8 @@ import pandas as pd
 import plotly.express as px
 import base64
 import unicodedata
+import pdfkit
+import matplotlib.pyplot as plt
 from fpdf import FPDF
 from datetime import datetime
 from io import BytesIO
@@ -667,107 +669,116 @@ with tabs[7]:
 # === Exportação PDF ===
 with tabs[8]:
 
-    if not all(k in st.session_state for k in ["blend_lipidico", "df_lipidico", "oil_percentages"]):
-        st.warning("Você precisa montar um blend na aba '🧪 Blend Lipídico' antes de exportar o relatório.")
-    else:
-        # Inputs personalizados
-        nome_projeto = st.text_input("📌 Nome do Projeto", "LipidPalma - Simulação de Blend")
-        autor = st.text_input("👤 Autor ou Responsável Técnico", "Equipe OGT")
-        observacoes = st.text_area("📝 Observações Adicionais (opcional)", "", height=100)
+    def gerar_grafico_pizza(data, labels, title):
+    fig, ax = plt.subplots()
+    ax.pie(data, labels=labels, autopct='%1.1f%%', startangle=90)
+    ax.axis('equal')
+    plt.title(title)
+    buf = BytesIO()
+    plt.savefig(buf, format='png', bbox_inches='tight')
+    plt.close(fig)
+    buf.seek(0)
+    img_base64 = base64.b64encode(buf.read()).decode('utf-8')
+    return img_base64
 
-        # Montagem do texto sensorial e referências
-        oil_percentages = st.session_state["oil_percentages"]
-        sensorial_txt = "Compostos Voláteis Identificados:\n"
-        for oleo in oil_percentages:
-            if oil_percentages[oleo] > 0:
-                sensorial_txt += f"\n{oleo}:\n"
-                for composto, (nota, pct) in perfils_volateis.get(oleo, {}).items():
-                    sensorial_txt += f" - {composto}: {nota} — {pct}%\n"
+# Exemplo de dados
+acidos_graxos = {
+    'Ácido Palmítico': 40,
+    'Ácido Oleico': 45,
+    'Ácido Esteárico': 10,
+    'Ácido Linoleico': 5
+}
+sensoriais = {
+    'Notas de topo': 'Fresco, herbal',
+    'Notas de corpo': 'Gorduroso, amanteigado',
+    'Notas de fundo': 'Suave, persistente'
+}
+lote = 'Lote 1234'
+fornecedor = 'OGT - The Future of Oil Disruption'
+data_hoje = pd.Timestamp.now().strftime('%d/%m/%Y')
 
-        sensorial_txt += "\nReferências Científicas:\n"
-        for oleo in oil_percentages:
-            if oil_percentages[oleo] > 0:
-                ref = referencias.get(oleo)
-                if ref:
-                    sensorial_txt += f" - {oleo}: {ref}\n"
+# Gerar gráfico de pizza
+grafico_base64 = gerar_grafico_pizza(
+    list(acidos_graxos.values()),
+    list(acidos_graxos.keys()),
+    'Composição do Blend (%)'
+)
 
-        # Função para remover caracteres problemáticos para PDF
-        def remover_unicode(texto):
-            return texto.encode('latin-1', 'replace').decode('latin-1')
+# Link ou caminho do logo OGT (ajuste o path local ou url direto)
+logo_url = 'https://www.link-da-sua-logo.com/logo_OGT.png'  # substitua com o real!
 
-        # Função para gerar o PDF
-        def gerar_pdf_melhorado(df_lipidica, sensorial_txt, nome_projeto, autor, observacoes):
-            pdf = FPDF()
-            pdf.add_page()
-            pdf.set_font("Arial", size=12)
+# HTML atualizado com identidade visual
+html_template = f"""
+<html>
+<head>
+    <style>
+        body {{ font-family: Arial, sans-serif; margin: 30px; color: #333; }}
+        h1 {{ color: #004080; }}
+        h2 {{ color: #006699; }}
+        table {{ width: 100%; border-collapse: collapse; margin-bottom: 20px; }}
+        table, th, td {{ border: 1px solid #ccc; }}
+        th, td {{ padding: 8px; text-align: left; }}
+        .grafico {{ text-align: center; margin-bottom: 20px; }}
+        .logo-topo {{ text-align: center; margin-bottom: 20px; }}
+        .logo-topo img {{ width: 150px; }}
+        .rodape {{
+            text-align: center;
+            font-size: 10px;
+            color: #999;
+            margin-top: 30px;
+            border-top: 1px solid #ccc;
+            padding-top: 5px;
+        }}
+    </style>
+</head>
+<body>
+    <div class="logo-topo">
+        <img src="{logo_url}" alt="Logo OGT">
+    </div>
 
-            # Inserir logotipo
-            try:
-                logo_path = "Marca sem fundo.png"
-                pdf.image(logo_path, x=10, y=8, w=20)
-            except:
-                pass  # Continua se o logo não estiver presente
+    <h1>Relatório de Blends</h1>
 
-            # Cabeçalho
-            pdf.set_font("Arial", 'B', size=14)
-            pdf.cell(0, 10, nome_projeto, ln=True, align='C')
-            pdf.set_font("Arial", '', 12)
-            pdf.cell(0, 10, f"Autor: {autor}", ln=True, align='C')
-            pdf.cell(0, 10, txt="Data: " + datetime.now().strftime('%d/%m/%Y %H:%M'), ln=True, align='C')
+    <h2>Rastreabilidade</h2>
+    <table>
+        <tr><th>Lote</th><td>{lote}</td></tr>
+        <tr><th>Fornecedor</th><td>{fornecedor}</td></tr>
+    </table>
 
-            # Receita Lipídica
-            pdf.ln(10)
-            pdf.set_font("Arial", 'B', 12)
-            pdf.cell(0, 10, "Receita Lipídica", ln=True)
-            pdf.set_font("Arial", '', 12)
-            for _, row in df_lipidica.iterrows():
-                nome = f"{row['Nome Completo']}"
-                pdf.cell(0, 8, f"{nome}: {row['%']:.2f}%", ln=True)
+    <h2>Composição Lipídica</h2>
+    <table>
+        <tr><th>Ácido Graxo</th><th>Proporção (%)</th></tr>
+        {''.join([f"<tr><td>{k}</td><td>{v}%</td></tr>" for k, v in acidos_graxos.items()])}
+    </table>
 
-            # Observações
-            if observacoes.strip():
-                pdf.ln(10)
-                pdf.set_font("Arial", 'B', 12)
-                pdf.cell(0, 10, "Observações", ln=True)
-                pdf.set_font("Arial", '', 12)
-                pdf.multi_cell(0, 8, observacoes)
+    <div class="grafico">
+        <img src="data:image/png;base64,{grafico_base64}" width="300">
+    </div>
 
-            # Assinatura sensorial
-            pdf.ln(10)
-            pdf.set_font("Arial", 'B', 12)
-            pdf.cell(0, 10, "Assinatura Sensorial e Referências", ln=True)
-            pdf.set_font("Arial", '', 11)
-            for linha in sensorial_txt.splitlines():
-                pdf.multi_cell(0, 7, linha)
+    <h2>Assinatura Sensorial</h2>
+    <table>
+        {''.join([f"<tr><th>{k}</th><td>{v}</td></tr>" for k, v in sensoriais.items()])}
+    </table>
 
-            # Gera buffer com conteúdo PDF
-            buffer = BytesIO()
-            pdf_output = pdf.output(dest='S').encode('latin-1', errors='replace')
-            buffer.write(pdf_output)
-            buffer.seek(0)
-            return buffer
+    <h2>Notas do Usuário</h2>
+    <p>_____________________________________________</p>
 
-        # Limpa caracteres e gera PDF
-        df_lipidico = st.session_state["df_lipidico"]
-        nome_projeto_clean = remover_unicode(nome_projeto)
-        autor_clean = remover_unicode(autor)
-        observacoes_clean = remover_unicode(observacoes)
-        sensorial_txt_clean = remover_unicode(sensorial_txt)
+    <div class="rodape">
+        Relatório gerado automaticamente pelo LipidGenesis – OGT – The Future of Oil Disruption<br>
+        Data: {data_hoje}
+    </div>
+</body>
+</html>
+"""
 
-        pdf_buffer = gerar_pdf_melhorado(
-            df_lipidico,
-            sensorial_txt_clean,
-            nome_projeto_clean,
-            autor_clean,
-            observacoes_clean
-        )
-
-        # Botão de download do PDF
+if st.button('Exportar Relatório PDF'):
+    pdfkit.from_string(html_template, 'relatorio_OGT.pdf')
+    with open('relatorio_OGT.pdf', 'rb') as f:
+        pdf_bytes = f.read()
         st.download_button(
-            label="📥 Baixar Relatório PDF",
-            data=pdf_buffer,
-            file_name=f"relatorio_lipidgenesis_{datetime.now().strftime('%Y%m%d_%H%M%S')}.pdf",
-            mime="application/pdf"
+            label='📄 Baixar Relatório PDF',
+            data=pdf_bytes,
+            file_name='relatorio_OGT.pdf',
+            mime='application/pdf'
         )
 
 # === Rodapé ===
