@@ -673,6 +673,7 @@ with tabs[7]:
 # === Exportação PDF ===
 with tabs[8]:
 
+    # Função para gerar gráfico de pizza da composição lipídica
     def gerar_grafico(acidos_graxos, titulo):
         labels = list(acidos_graxos.keys())
         sizes = list(acidos_graxos.values())
@@ -686,7 +687,7 @@ with tabs[8]:
         buf.seek(0)
         return buf
 
-    # Função para gerar PDF com gráfico embutido
+# Função principal que gera o PDF
     def gerar_pdf_reportlab(acidos_graxos, sensoriais, lote, fornecedor):
         buffer = BytesIO()
         doc = SimpleDocTemplate(buffer, pagesize=A4,
@@ -697,28 +698,23 @@ with tabs[8]:
         title_style = styles['Heading1']
         subtitle_style = styles['Heading2']
         normal_style = styles['BodyText']
-        return buffer
 
-    # Título e identidade visual
+    # Título
     story.append(Paragraph("Relatório de Blends - OGT", title_style))
     story.append(Spacer(1, 12))
 
     # Rastreabilidade
     story.append(Paragraph("Rastreabilidade", subtitle_style))
-    rastreabilidade_data = [
-        ["Lote", lote],
-        ["Fornecedor", fornecedor]
-    ]
+    rastreabilidade_data = [["Lote", lote], ["Fornecedor", fornecedor]]
     tabela_rastreabilidade = Table(rastreabilidade_data, colWidths=[5*cm, 10*cm])
     tabela_rastreabilidade.setStyle(TableStyle([
         ('GRID', (0, 0), (-1, -1), 1, colors.grey),
-        ('FONTNAME', (0, 0), (-1, -1), 'Helvetica'),
-        ('ALIGN', (0, 0), (-1, -1), 'LEFT')
+        ('FONTNAME', (0, 0), (-1, -1), 'Helvetica')
     ]))
     story.append(tabela_rastreabilidade)
     story.append(Spacer(1, 12))
 
-    # Composição lipídica
+    # Composição Lipídica
     story.append(Paragraph("Composição Lipídica", subtitle_style))
     comp_data = [["Ácido Graxo", "Proporção (%)"]] + [[k, f"{v}%"] for k, v in acidos_graxos.items()]
     tabela_comp = Table(comp_data, colWidths=[7*cm, 5*cm])
@@ -731,13 +727,13 @@ with tabs[8]:
     story.append(tabela_comp)
     story.append(Spacer(1, 12))
 
-    # Gráfico da composição
+    # Gráfico de composição
     story.append(Paragraph("Visualização Gráfica", subtitle_style))
     grafico = gerar_grafico(acidos_graxos, "Composição Lipídica (%)")
     story.append(Image(grafico, width=12*cm, height=9*cm))
     story.append(Spacer(1, 12))
 
-    # Assinatura sensorial
+    # Assinatura Sensorial
     story.append(Paragraph("Assinatura Sensorial", subtitle_style))
     assinatura_data = [[k, v] for k, v in sensoriais.items()]
     tabela_sensorial = Table(assinatura_data, colWidths=[5*cm, 10*cm])
@@ -748,7 +744,7 @@ with tabs[8]:
     story.append(tabela_sensorial)
     story.append(Spacer(1, 12))
 
-    # Notas do usuário
+    # Notas do Usuário
     story.append(Paragraph("Notas do Usuário", subtitle_style))
     for _ in range(3):
         story.append(Paragraph("_______________________________________________", normal_style))
@@ -756,15 +752,15 @@ with tabs[8]:
 
     # Rodapé
     story.append(Paragraph("Relatório gerado automaticamente pelo LipidGenesis – OGT – The Future of Oil Disruption", styles['Italic']))
+
     doc.build(story)
     buffer.seek(0)
+    return buffer
 
-# ----------------------------
-# Streamlit Interface
-# ----------------------------
+# ========= STREAMLIT INTERFACE =========
 st.header("📄 Exportação PDF - LipidGenesis")
 
-# Dados simulados — substitua pelos dados do app real
+# 🔁 Substitua por variáveis reais do seu app
 acidos_graxos = {
     'Ácido Palmítico': 40,
     'Ácido Oleico': 45,
@@ -779,14 +775,17 @@ sensoriais = {
 lote = 'Lote 1234'
 fornecedor = 'OGT - The Future of Oil Disruption'
 
+# Botão de exportação
 if st.button("📥 Gerar PDF"):
-    pdf_bytes = gerar_pdf_reportlab(acidos_graxos, sensoriais, lote, fornecedor)
-    st.download_button(
-        label="📄 Baixar Relatório PDF",
-        data=pdf_bytes,
-        file_name="relatorio_OGT.pdf",
-        mime="application/pdf"
-    )
+    with st.spinner("Gerando relatório..."):
+        pdf_bytes = gerar_pdf_reportlab(acidos_graxos, sensoriais, lote, fornecedor)
+        st.success("✅ Relatório pronto!")
+        st.download_button(
+            label="📄 Baixar Relatório PDF",
+            data=pdf_bytes,
+            file_name="relatorio_OGT.pdf",
+            mime="application/pdf"
+        )
 
 # === Rodapé ===
 st.markdown("---")
