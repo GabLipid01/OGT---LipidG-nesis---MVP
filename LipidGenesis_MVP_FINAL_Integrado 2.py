@@ -3,7 +3,6 @@ import pandas as pd
 import plotly.express as px
 import base64
 import unicodedata
-import pdfkit
 import matplotlib.pyplot as plt
 from reportlab.lib.pagesizes import A4
 from reportlab.lib import colors
