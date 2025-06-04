@@ -779,7 +779,7 @@ with tabs[8]:
     lote = st.session_state.get("lote", "Não informado")
     fornecedor = st.session_state.get("fornecedor", "Não informado")
 
-    if st.button("\ud83d\udcc5 Gerar PDF"):
+    if st.button("📅 Gerar PDF"):
         with st.spinner("Gerando relatório..."):
             pdf_bytes = gerar_pdf_reportlab(acidos_graxos, sensoriais, lote, fornecedor)
             st.success("\u2705 Relatório pronto!")
@@ -789,7 +789,6 @@ with tabs[8]:
                 file_name="relatorio_lipidpalma.pdf",
                 mime="application/pdf"
             )
-
 
 # === Rodapé ===
 st.markdown("---")
