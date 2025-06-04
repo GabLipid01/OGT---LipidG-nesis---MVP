@@ -772,7 +772,7 @@ with tabs[8]:
         buffer.seek(0)
         return buffer
 
-    st.header("\ud83d\udcc4 Exportação PDF - lipidpalma")
+    st.header("📄 Exportação PDF - lipidpalma")
 
     acidos_graxos = st.session_state.get("blend_lipidico", {})
     sensoriais = st.session_state.get("assinatura_sensorial", {})
