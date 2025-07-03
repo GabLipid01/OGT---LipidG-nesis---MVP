@@ -265,11 +265,10 @@ tabs = st.tabs([
     "🏭 Proposta Industrial",      # tabs[1]
     "🧪 Blend Lipídico",           # tabs[2]
     "👃 Assinatura Sensorial",     # tabs[3]
-    "📊 Viabilidade Técnica",      # tabs[4]
-    "📊 Protocolo de Produção",    # tabs[5]
-    "🌱 ESG e Ambiental",          # tabs[6]
-    "📍 Rastreabilidade",          # tabs[7]
-    "📄 Exportação PDF"            # tabs[8]
+    "📊 Protocolo de Produção",    # tabs[4]
+    "🌱 Sustentabilidade",         # tabs[5]
+    "📍 Rastreabilidade",          # tabs[6]
+    "📄 Exportação PDF"            # tabs[7]
 ])
 
 with tabs[0]:
@@ -469,25 +468,6 @@ with tabs[3]:
             if ref:
                 st.markdown(f"**{oleo}:** {ref}")
 
-# === Viabilidade Técnica ===
-with tabs[4]:
-    st.markdown("""
-O modelo LipidPalma permite a criação de óleos estruturados por meio da esterificação enzimática de ácidos graxos,
-oferecendo uma alternativa viável ao refino tradicional de óleos vegetais.
-
-### 📉 Comparativo Econômico: LipidPalma vs. Modelo Tradicional
-
-| Critério                           | LipidPalma (Esterificação Enzimática) | Extração e Refino Tradicional      |
-|-----------------------------------|------------------------------------------|-------------------------------------|
-| **Matéria-prima**                 | Ácidos graxos puros + álcoois            | Frutos frescos de palma             |
-| **Investimento inicial (CAPEX)** | Médio-alto (reatores + controle fino)    | Muito alto (plantio + usinas)       |
-| **Custo operacional (OPEX)**      | Moderado (energia, enzima, reagentes)    | Alto (logística + manutenção rural) |
-| **Consistência do produto**       | Alta (ajustável digitalmente)            | Média (depende da safra e clima)    |
-| **Escalabilidade**                | Alta em módulos industriais              | Alta, mas intensiva em terra        |
-| **Sustentabilidade**              | Muito alta (sem uso de solo)             | Baixa (impacto ambiental elevado)   |
-| **Custo estimado por kg**         | US$ 1,00-1,50                            | US$ 0,70-1,00                       |
-| **Rendimento médio**              | 85-95%                                   | 18-22% de óleo por fruto fresco     |
-""")
 
 # === 📊 PROTOCOLO DE PRODUÇÃO ===
 with tabs[5]:
