@@ -470,7 +470,7 @@ with tabs[3]:
 
 
 # === 📊 PROTOCOLO DE PRODUÇÃO ===
-with tabs[5]:
+with tabs[4]:
     st.header("📊 Protocolo de Produção - Esterificação Enzimática")
 
     if "blend_result" not in st.session_state:
@@ -529,8 +529,8 @@ with tabs[5]:
                      barmode="group", labels={"index": "Ácido Graxo"}, title="Comparação: Antes e Depois da Esterificação")
         st.plotly_chart(fig, use_container_width=True)
 
-# === ESG e Ambiental ===
-with tabs[6]:
+# === Sustentabilidade ===
+with tabs[5]:
 
     st.markdown("""
     Esta seção avalia o impacto ambiental e social do blend produzido via **esterificação enzimática**, com base nos ingredientes selecionados na aba '🧪 Blend Lipídico' e nos parâmetros definidos na aba '📊 Protocolo de Produção'.
@@ -598,7 +598,7 @@ with tabs[6]:
             st.info("🚧 Em desenvolvimento: funcionalidade de exportação em PDF com logotipo, blend utilizado e descrição do impacto.")
 
 # === Rastreabilidade (Placeholder) ===
-with tabs[7]:
+with tabs[6]:
     st.markdown("Esta seção apresenta informações detalhadas sobre a origem, certificações e rastreabilidade dos ingredientes utilizados no blend final.")
 
     oil_percentages = st.session_state.get("oil_percentages", {})
@@ -651,7 +651,7 @@ with tabs[7]:
         st.success("✅ Rastreabilidade registrada com sucesso! Pronta para exportação ou validação por auditoria externa.")
 
 # === Exportação PDF ===
-with tabs[8]:
+with tabs[7]:
 
     # Função auxiliar: gera gráfico de pizza
     def gerar_grafico(acidos_graxos, titulo):
