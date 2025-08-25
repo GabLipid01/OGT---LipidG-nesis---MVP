@@ -290,17 +290,17 @@ tabs = st.tabs([
 ])
 
 # ------- HOME -------
-with tabs[0]:
 
 def _try_logo():
     # Tenta carregar um logo, se existir no diretório do app
+    import os
     for fname in ["logo_ogtera.png", "logo_ogtera.jpg", "logo.png", "ogtera.png"]:
         if os.path.exists(fname):
             st.image(fname, width=180)
             return True
     return False
 
-with st.container():
+with tabs[0]:
     top = st.columns([1,3])
     with top[0]:
         _try_logo()
@@ -317,17 +317,17 @@ with st.container():
 
     st.markdown("---")
 
-    # Proposta de valor (curta, direta)
+    # Proposta de valor
     st.subheader("Por que LipidGenesis para cosméticos?")
     st.write(
         "- **Personalização de blends** para toque, hidratação e estabilidade.\n"
-        "- **Processo limpo (biocatálise)** com potencial de menor impacto.\n"
+        "- **Processo limpo (biocatálise)** com menor impacto.\n"
         "- **Upcycling** (PFAD/soapstock) + **rastreabilidade** + **score ESG**.\n"
-        "- **Sociobioeconomia**: integração com cadeias amazônicas (ex.: parceria Caminho da Mata) para impacto real e narrativa forte."
+        "- **Sociobioeconomia**: integração com cadeias amazônicas (ex.: parceria Caminho da Mata)."
     )
     st.caption("Observação: heurísticas iniciais serão calibradas com dados de bancada. O app não substitui testes regulatórios.")
 
-    # Fluxo recomendado (CTA’s)
+    # Fluxo recomendado
     st.subheader("Como usar (fluxo recomendado)")
     cA, cB, cC, cD = st.columns(4)
     cA.button("🧪 Blend Enzimático")
@@ -336,31 +336,31 @@ with st.container():
     cD.button("📄 Exportação PDF")
 
     st.info(
-        "Sugestão: defina o **Blend Enzimático** → use o **Assistente de Formulação** para escolher a aplicação "
-        "(mãos, corpo, rosto, cabelos) e, opcionalmente, **essências amazônicas** → gere o **Protocolo** e finalize com o **PDF**."
+        "Sugestão: defina o **Blend Enzimático** → use o **Assistente de Formulação** → "
+        "gere o **Protocolo** e finalize com o **PDF**."
     )
 
-    # Cartões de confiança (ESG / Rastreabilidade)
+    # Camadas de confiança
     st.subheader("Camadas de confiança")
     c1, c2, c3 = st.columns(3)
     with c1:
         st.markdown("**ESG transparente**")
-        st.write("Score 0–100 com critérios claros (upcycling, RSPO, orgânico, fair trade, saturados).")
+        st.write("Score 0–100 com critérios claros.")
     with c2:
         st.markdown("**Rastreabilidade**")
-        st.write("Ficha de ingredientes (fornecedor, lote, certificações) com exportação CSV.")
+        st.write("Ficha de ingredientes exportável em CSV.")
     with c3:
         st.markdown("**Licenciamento**")
-        st.write("Modelo de negócio focado em **protótipos + patentes + licenciamento** (sem virar fábrica).")
+        st.write("Modelo de negócio: **protótipos + patentes + licenciamento**.")
 
     st.markdown("---")
 
-    # Rodapé informativo
+    # Rodapé
     left, right = st.columns([2,1])
     with left:
         st.caption(
             f"v7.1 • {datetime.now().strftime('%d/%m/%Y')} • OGTera — MVP para validação técnica. "
-            "Para contato/negócios: contato@ogtera.com (exemplo)."
+            "Contato: contato@ogtera.com"
         )
     with right:
         st.caption("Documentação: README/PDF (se disponível).")
