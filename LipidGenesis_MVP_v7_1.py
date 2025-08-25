@@ -291,9 +291,83 @@ tabs = st.tabs([
 
 # ------- HOME -------
 with tabs[0]:
-    st.title("LipidGenesis — Plataforma de Blends Cosméticos Sustentáveis")
-    st.write("Versão **v7.1** com suporte a **perfis reais de ácidos graxos (CSV/XLSX)**.")
-    st.info("➡️ Opcionalmente, carregue um dataset em **Dados (Perfis Reais)** para substituir as heurísticas.")
+    # ------- HOME (consolidada para cosméticos) -------
+import streamlit as st
+from datetime import datetime
+import os
+
+def _try_logo():
+    # Tenta carregar um logo, se existir no diretório do app
+    for fname in ["logo_ogtera.png", "logo_ogtera.jpg", "logo.png", "ogtera.png"]:
+        if os.path.exists(fname):
+            st.image(fname, width=180)
+            return True
+    return False
+
+with st.container():
+    top = st.columns([1,3])
+    with top[0]:
+        _try_logo()
+    with top[1]:
+        st.title("LipidGenesis — Plataforma de Blends Cosméticos Sustentáveis")
+        st.caption("Design de blends lipídicos por rota **enzimática**, com **ESG** transparente e **sociobioeconomia amazônica**.")
+
+    # KPIs rápidos
+    k1, k2, k3, k4 = st.columns(4)
+    k1.metric("Indústria-alvo", "Cosméticos")
+    k2.metric("Rota", "Enzimática")
+    k3.metric("Módulo ativo", "LipidPalma")
+    k4.metric("Relatórios", "Essencial / Completo")
+
+    st.markdown("---")
+
+    # Proposta de valor (curta, direta)
+    st.subheader("Por que LipidGenesis para cosméticos?")
+    st.write(
+        "- **Personalização de blends** para toque, hidratação e estabilidade.\n"
+        "- **Processo limpo (biocatálise)** com potencial de menor impacto.\n"
+        "- **Upcycling** (PFAD/soapstock) + **rastreabilidade** + **score ESG**.\n"
+        "- **Sociobioeconomia**: integração com cadeias amazônicas (ex.: parceria Caminho da Mata) para impacto real e narrativa forte."
+    )
+    st.caption("Observação: heurísticas iniciais serão calibradas com dados de bancada. O app não substitui testes regulatórios.")
+
+    # Fluxo recomendado (CTA’s)
+    st.subheader("Como usar (fluxo recomendado)")
+    cA, cB, cC, cD = st.columns(4)
+    cA.button("🧪 Blend Enzimático")
+    cB.button("👩‍🔬 Assistente de Formulação")
+    cC.button("⚗️ Protocolo de Produção")
+    cD.button("📄 Exportação PDF")
+
+    st.info(
+        "Sugestão: defina o **Blend Enzimático** → use o **Assistente de Formulação** para escolher a aplicação "
+        "(mãos, corpo, rosto, cabelos) e, opcionalmente, **essências amazônicas** → gere o **Protocolo** e finalize com o **PDF**."
+    )
+
+    # Cartões de confiança (ESG / Rastreabilidade)
+    st.subheader("Camadas de confiança")
+    c1, c2, c3 = st.columns(3)
+    with c1:
+        st.markdown("**ESG transparente**")
+        st.write("Score 0–100 com critérios claros (upcycling, RSPO, orgânico, fair trade, saturados).")
+    with c2:
+        st.markdown("**Rastreabilidade**")
+        st.write("Ficha de ingredientes (fornecedor, lote, certificações) com exportação CSV.")
+    with c3:
+        st.markdown("**Licenciamento**")
+        st.write("Modelo de negócio focado em **protótipos + patentes + licenciamento** (sem virar fábrica).")
+
+    st.markdown("---")
+
+    # Rodapé informativo
+    left, right = st.columns([2,1])
+    with left:
+        st.caption(
+            f"v7.1 • {datetime.now().strftime('%d/%m/%Y')} • OGTera — MVP para validação técnica. "
+            "Para contato/negócios: contato@ogtera.com (exemplo)."
+        )
+    with right:
+        st.caption("Documentação: README/PDF (se disponível).")
 
 # ------- DADOS (upload) -------
 with tabs[1]:
