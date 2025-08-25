@@ -291,10 +291,6 @@ tabs = st.tabs([
 
 # ------- HOME -------
 with tabs[0]:
-    # ------- HOME (consolidada para cosméticos) -------
-import streamlit as st
-from datetime import datetime
-import os
 
 def _try_logo():
     # Tenta carregar um logo, se existir no diretório do app
