@@ -291,79 +291,29 @@ tabs = st.tabs([
 
 # ------- HOME -------
 
-def _try_logo():
-    # Tenta carregar um logo, se existir no diretório do app
-    import os
-    for fname in ["logo_ogtera.png", "logo_ogtera.jpg", "logo.png", "ogtera.png"]:
-        if os.path.exists(fname):
-            st.image(fname, width=180)
-            return True
-    return False
-
 with tabs[0]:
-    top = st.columns([1,3])
-    with top[0]:
-        _try_logo()
-    with top[1]:
-        st.title("LipidGenesis — Plataforma de Blends Cosméticos Sustentáveis")
-        st.caption("Design de blends lipídicos por rota **enzimática**, com **ESG** transparente e **sociobioeconomia amazônica**.")
+    st.markdown("""
+    ***OGT – The Future of Oil Disruption, On Demand*** 
+    **Apresenta:** 
+    
+    ### 🌴 LipidPalma™
 
-    # KPIs rápidos
-    k1, k2, k3, k4 = st.columns(4)
-    k1.metric("Indústria-alvo", "Cosméticos")
-    k2.metric("Rota", "Enzimática")
-    k3.metric("Módulo ativo", "LipidPalma")
-    k4.metric("Relatórios", "Essencial / Completo")
+    ---
 
-    st.markdown("---")
+    Um app interativo para formulação e simulação de blends lipídicos com foco na cadeia do óleo de palma.
 
-    # Proposta de valor
-    st.subheader("Por que LipidGenesis para cosméticos?")
-    st.write(
-        "- **Personalização de blends** para toque, hidratação e estabilidade.\n"
-        "- **Processo limpo (biocatálise)** com menor impacto.\n"
-        "- **Upcycling** (PFAD/soapstock) + **rastreabilidade** + **score ESG**.\n"
-        "- **Sociobioeconomia**: integração com cadeias amazônicas (ex.: parceria Caminho da Mata)."
-    )
-    st.caption("Observação: heurísticas iniciais serão calibradas com dados de bancada. O app não substitui testes regulatórios.")
+    O **LipidPalma** é um produto da marca **LipidGenesis**, uma linha modular de soluções da **OGT** para impulsionar a inovação e a sustentabilidade em óleos vegetais como palma, soja e algodão.
 
-    # Fluxo recomendado
-    st.subheader("Como usar (fluxo recomendado)")
-    cA, cB, cC, cD = st.columns(4)
-    cA.button("🧪 Blend Enzimático")
-    cB.button("👩‍🔬 Assistente de Formulação")
-    cC.button("⚗️ Protocolo de Produção")
-    cD.button("📄 Exportação PDF")
+    ---
 
-    st.info(
-        "Sugestão: defina o **Blend Enzimático** → use o **Assistente de Formulação** → "
-        "gere o **Protocolo** e finalize com o **PDF**."
-    )
+    Para começar:
+    1. Acesse a aba **"Blend Lipídico"** e monte sua formulação com os ingredientes disponíveis.
+    2. Explore as demais abas para entender o perfil físico-químico, sensorial, ambiental e produtivo do seu blend.
 
-    # Camadas de confiança
-    st.subheader("Camadas de confiança")
-    c1, c2, c3 = st.columns(3)
-    with c1:
-        st.markdown("**ESG transparente**")
-        st.write("Score 0–100 com critérios claros.")
-    with c2:
-        st.markdown("**Rastreabilidade**")
-        st.write("Ficha de ingredientes exportável em CSV.")
-    with c3:
-        st.markdown("**Licenciamento**")
-        st.write("Modelo de negócio: **protótipos + patentes + licenciamento**.")
-
-    st.markdown("---")
-
-    # Rodapé
-    left, right = st.columns([2,1])
-    with left:
-        st.caption(
-            f"v7.1 • {datetime.now().strftime('%d/%m/%Y')} • OGTera — MVP para validação técnica. "
-            "Contato: contato@ogtera.com"
-        )
-    with right:
-        st.caption("Documentação: README/PDF (se disponível).")
+    ---
+    
+    Este MVP é voltado para inovação sustentável em P&D, com foco em alternativas ao refino tradicional.
+    """)
 
 # ------- DADOS (upload) -------
 with tabs[1]:
