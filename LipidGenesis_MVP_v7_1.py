@@ -347,7 +347,12 @@ with tabs[3]:
     use_sugerido = st.checkbox("Usar blend sugerido", True)
     if use_sugerido:
         st.session_state.blend.update(blend_sug)
-        II, ISap, PF = props_blend(**st.session_state.blend, props_map=st.session_state.get("props_map", {}))
+        II, ISap, PF = props_blend(
+    st.session_state.blend["PFAD"],
+    st.session_state.blend["RBD (Palma)"],
+    st.session_state.blend["PKO (Palm Kernel Oil)"],
+    props_map=st.session_state.get("props_map", {})
+)
         st.session_state.props = {"II": II, "ISap": ISap, "PFusao": PF}
 
     st.subheader("Essências Amazônicas (máx. 2)")
