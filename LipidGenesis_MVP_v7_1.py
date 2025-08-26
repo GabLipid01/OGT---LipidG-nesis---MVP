@@ -278,6 +278,10 @@ with st.sidebar:
 # ----------- ABAS ------------
 # =============================
 
+# === Título e Slogan (fora das abas) ===
+
+st.title("🌴 LipidPalma - Bioengenharia Lipídica Aplicada à Indústria de Óleo de Palma")
+
 tabs = st.tabs([
     "🏠 Home",
     "📥 Dados (Perfis Reais)",
