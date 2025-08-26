@@ -320,7 +320,7 @@ with tabs[0]:
 
         st.subheader("Como usar")
         st.markdown(
-            "➡️ **🧪 Blend Enzimático** — defina PFAD / RBD / PKO.  \n"
+            "➡️ **🧪 Blend Enzimático** — defina PFAD / RBD / PKO / DERIVADOS.  \n"
             "➡️ **👩‍🔬 Assistente de Formulação** — escolha ocasião (mãos/corpo/rosto/cabelos) e essências (opcional).  \n"
             "➡️ **⚗️ Protocolo de Produção** — parâmetros e custo/kg.  \n"
             "➡️ **📄 Exportação PDF** — gere o dossiê do blend."
