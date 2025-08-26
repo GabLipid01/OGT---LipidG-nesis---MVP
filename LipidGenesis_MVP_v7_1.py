@@ -478,4 +478,15 @@ with tabs[7]:
     pdf_buf = gerar_pdf(relato, modo="completo" if modo == "Completo" else "essencial")
     st.download_button("📄 Baixar PDF", data=pdf_buf, file_name=f"Relatorio_LipidGenesis_{modo}.pdf", mime="application/pdf")
 
+# ------- RODAPÉ -------
+st.markdown("---")
+st.markdown(
+    "<p style='text-align: center; font-size: 14px;'>"
+    "🌿 Desenvolvido por <b>OGTera - The Future of Oil Disruption, On Demand</b>. "
+    "Aplicação modular <b>LipidGenesis</b> com o módulo atual: <b>LipidPalma</b>. "
+    "<br>Versão MVP demonstrativa. &copy; 2025 OGT."
+    "</p>",
+    unsafe_allow_html=True
+)
+
 # Fim
