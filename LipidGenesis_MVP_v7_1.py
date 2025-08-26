@@ -328,7 +328,7 @@ with tabs[0]:
 
     with col_img:
         # Logo institucional (se existir)
-        for fname in ["logo_ogtera.png", "logo_ogtera.jpg", "logo.png", "ogtera.png"]:
+        for fname in ["logo_ogtera.png.PNG", "logo_ogtera.jpg", "logo.png", "ogtera.png"]:
             if os.path.exists(fname):
                 st.image(fname, use_container_width=True)
                 break
