@@ -316,7 +316,7 @@ with tabs[0]:
 
     ---
     
-    Este MVP é voltado para inovação sustentável em P&D, com foco na integracão entre tecnologia, sustentabilidade e saberes amazônicos.
+    Este MVP é voltado para inovação sustentável em P&D, com foco na integração entre tecnologia, sustentabilidade e saberes amazônicos.
     """)
 
 # ------- DADOS (upload) -------
