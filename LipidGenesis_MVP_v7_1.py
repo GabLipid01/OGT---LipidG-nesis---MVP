@@ -302,7 +302,7 @@ with tabs[0]:
 ***OGTera – The Future of Oil Disruption***  
 **Apresenta:** **🌴 LipidPalma™**
 
-**Um app para **simulação e formulação** de blends lipídicos **enzimáticos** aplicado à **cosmética**.  
+Um app para **simulação e formulação** de blends lipídicos **enzimáticos** aplicado à **cosmética**.  
 Faz parte da linha **LipidGenesis**, a plataforma modular da **OGTera** para inovação em lipídios.
 """)
 
