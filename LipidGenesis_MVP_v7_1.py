@@ -367,7 +367,8 @@ with tabs[0]:
 
     # (rodapé permanece exatamente como está no seu arquivo)
 
-# ------- PROPOSTA COSMÉTICA (atualizada com "up" amazônico) -------
+# PROPOSTA COSMÉTICA
+        # ------- PROPOSTA COSMÉTICA (ajustada)
 with tabs[1]:
     st.header("Proposta Cosmética 💄")
     st.write(
@@ -407,6 +408,7 @@ with tabs[1]:
         """,
         help="Mapa qualitativo ampliado: inclui frações da palma e palmiste, além de PFAD e soapstock (upcycling)."
     )
+    st.caption("Nota: **soapstock** requer adequação regulatória (refino/esterificação e dossiê) antes de uso em cosméticos.")
 
     # ---------- UP AMAZÔNICO 1: Assinatura Sensorial ----------
     st.markdown("---")
@@ -425,8 +427,11 @@ with tabs[1]:
             {"nome": "Patchouli Amazônico", "acorde": "terroso-úmido", "família": "chipre", "nota": "fundo"},
         ]
 
-    cols = st.columns(5)
-    for col, e in zip(cols, _ess[:5]):
+    # 🔹 Patch 1: layout mais responsivo (3 + 2 colunas)
+    row1 = st.columns(3)
+    row2 = st.columns(2)
+    cards = row1 + row2
+    for col, e in zip(cards, _ess[:5]):
         with col:
             st.markdown(
                 f"**🌿 {e['nome']}**\n\n"
@@ -450,11 +455,11 @@ with tabs[1]:
     with cD:
         repart = st.checkbox("Repartição de benefícios documentada", False)
 
-    # Índice simples de narrativa amazônica (interno, 0–100)
-    score_amz = 50 + 15*int(origem) + 15*int(rastreio) + 10*int(cert) + 10*int(repart)
+    # 🔹 Patch 2: índice 0–100 com persistência
+    score_amz = 0 + 25*int(origem) + 35*int(rastreio) + 20*int(cert) + 20*int(repart)
     score_amz = max(0, min(100, score_amz))
     st.metric("Índice de Narrativa Amazônica", f"{score_amz} / 100")
-    st.caption("Uso interno para comunicação; ampare claims com documentos (contratos, certificações, notas fiscais).")
+    st.session_state["indice_narrativa_amazonia"] = score_amz
 
     st.markdown("---")
     st.subheader("Proposta de valor para P&D e negócio 🚀")
@@ -476,6 +481,7 @@ with tabs[1]:
         )
         st.caption("Claims dependem de validação de bancada e requisitos regulatórios.")
 
+    st.caption("Esta aba apresenta a **proposta cosmética, assinatura sensorial e narrativa amazônica**, sem repetir instruções já mostradas na Home.")
 
 # ------- BLEND ENZIMÁTICO -------
 with tabs[2]:
