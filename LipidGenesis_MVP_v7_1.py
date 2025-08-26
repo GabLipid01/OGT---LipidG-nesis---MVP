@@ -11,6 +11,7 @@
 #
 # Observação: estimativas de II/ISap são aproximações para MVP. Calibre com literatura e dados laboratoriais.
 
+import os
 import io
 import json
 from datetime import datetime
@@ -278,9 +279,7 @@ with st.sidebar:
 # ----------- ABAS ------------
 # =============================
 
-# === Título e Slogan (fora das abas) ===
-
-st.title("🌴 LipidPalma - Design de Blends Lipídicos por rota enzimática, com ESG transparente e sociobioeconomia amazônica")
+# === Título e Slogan (fora das abas) =
 
 tabs = st.tabs([
     "🏠 Home",
@@ -293,40 +292,71 @@ tabs = st.tabs([
     "📄 Exportação PDF"
 ])
 
-# ------- HOME — layout com logo oficial -------
+# ------- HOME — arquitetura visual ajustada (com mockup cosmético) -------
+
 with tabs[0]:
+    # HERO em duas colunas: texto (3) + imagem/logo (2)
     col_text, col_img = st.columns([3, 2], gap="large")
 
     with col_text:
-        st.markdown("""
-***OGTera – The Future of Oil Disruption***  
-**Apresenta:** **🌴 LipidPalma™**
-
-Um app para **simulação e formulação** de blends lipídicos **enzimáticos** aplicado à **cosmética**.  
-Faz parte da linha **LipidGenesis**, a plataforma modular da **OGTera** para inovação em lipídios.
-""")
+        # Título em 2 linhas (impacto + propósito)
+        st.markdown("## 🌴 **LipidPalma — Design de Blends Lipídicos Enzimáticos**")
+        st.markdown("### **Com ESG transparente e sociobioeconomia amazônica**")
 
         st.markdown("---")
-        st.markdown("**Visão**  \nUnir **biocatálise**, **upcycling** e **rastreabilidade** com **ESG** claro. A integração com a **sociobioeconomia amazônica** começa pela **assinatura sensorial** (essências) e evolui para cadeias **rastreáveis**.")
+        st.markdown("_OGTera – The Future of Oil Disruption_  \n**Apresenta:** **LipidPalma™**")
+        st.write(
+            "Um app para **simulação e formulação** de blends lipídicos **enzimáticos** aplicado à **cosmética**. "
+            "Faz parte da linha **LipidGenesis**, a plataforma modular da **OGTera** para inovação em lipídios."
+        )
 
-        st.markdown("**Como usar**  \n1) **🧪 Blend Enzimático** → defina PFAD/RBD/PKO.  \n2) **👩‍🔬 Assistente** → escolha ocasião e essências (opcional).  \n3) **⚗️ Protocolo** → parâmetros e custo/kg.  \n4) **📄 PDF** → gere o dossiê.")
+        st.markdown("---")
+        st.subheader("Visão")
+        st.write(
+            "Unir **biocatálise**, **upcycling** e **rastreabilidade** com **ESG** claro. "
+            "A integração com a **sociobioeconomia amazônica** começa pela **assinatura sensorial** (essências) "
+            "e evolui para cadeias **rastreáveis**."
+        )
+
+        st.subheader("Como usar")
+        st.markdown(
+            "➡️ **🧪 Blend Enzimático** — defina PFAD / RBD / PKO.  \n"
+            "➡️ **👩‍🔬 Assistente de Formulação** — escolha ocasião (mãos/corpo/rosto/cabelos) e essências (opcional).  \n"
+            "➡️ **⚗️ Protocolo de Produção** — parâmetros e custo/kg.  \n"
+            "➡️ **📄 Exportação PDF** — gere o dossiê do blend."
+        )
 
     with col_img:
-        st.image("logo_ogtera.png.PNG", use_container_width=True)  # versão atualizada
+        # Logo institucional (se existir)
+        for fname in ["logo_ogtera.png", "logo_ogtera.jpg", "logo.png", "ogtera.png"]:
+            if os.path.exists(fname):
+                st.image(fname, use_container_width=True)
+                break
+
+        # Mockup cosmético (troque a URL por um arquivo local se preferir, ex.: 'mockup_cosmetico.png')
+        st.image(
+            "https://raw.githubusercontent.com/streamlit/example-apps/main/assets/cosmetic_mockup.png",
+            caption="Exemplo ilustrativo de aplicação cosmética",
+            use_container_width=True
+        )
 
     st.markdown("---")
 
-    # KPIs em 2x2
+    # KPIs em 2x2 (mais responsivo)
     k1, k2 = st.columns(2)
-    with k1: st.metric("Indústria-alvo", "Cosméticos")
-    with k2: st.metric("Rota", "Enzimática")
+    with k1:
+        st.metric("Indústria-alvo", "Cosméticos")
+    with k2:
+        st.metric("Rota", "Enzimática")
     k3, k4 = st.columns(2)
-    with k3: st.metric("Plataforma", "LipidGenesis")
-    with k4: st.metric("Módulo", "LipidPalma™")
+    with k3:
+        st.metric("Plataforma", "LipidGenesis")
+    with k4:
+        st.metric("Módulo", "LipidPalma™")
 
     st.markdown("---")
 
-    # Pilares com ícones
+    # Pilares de confiança com ícones (visual mais “beauty”)
     st.subheader("Camadas de confiança")
     p1, p2, p3 = st.columns(3)
     with p1:
@@ -339,6 +369,7 @@ Faz parte da linha **LipidGenesis**, a plataforma modular da **OGTera** para ino
         st.markdown("### 📜 Licenciamento")
         st.write("Modelo: **protótipos + patentes + licenças** (B2B).")
 
+    # (rodapé permanece exatamente como está no seu arquivo)
 # ------- DADOS (upload) -------
 with tabs[1]:
     st.header("Dados — Perfis Reais de Ácidos Graxos")
