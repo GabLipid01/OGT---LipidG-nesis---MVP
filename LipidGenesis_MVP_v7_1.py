@@ -327,25 +327,14 @@ with tabs[0]:
         )
 
     with col_img:
-        # --- Imagens da coluna direita: logo (pequena no topo) + mockup (grande) ---
-
-# 1) Logo OGTera pequena no topo
-        for logo_name in ["logo_ogtera.png.PNG", "logo_ogtera.jpg", "logo.png", "ogtera.png"]:
-            if os.path.exists(logo_name):
-                st.image(logo_name, width=160)  # logo menor, alinhada no topo
+          # Logo institucional (se existir)
+        for fname in ["logo_ogtera.png.PNG", "logo_ogtera.jpg", "logo.png", "ogtera.png"]:
+            if os.path.exists(fname):
+                st.image(fname, use_container_width=True)
                 break
 
-# um pequeno respiro visual
-st.markdown("<div style='height:6px'></div>", unsafe_allow_html=True)
-
-# 2) Mockup cosmético grande (sem legenda)
-#    Salve sua imagem como 'cosmetico.png' (ou .jpg) na pasta do app
-shown = False
-for mock_name in ["cosmetico.png.PNG", "cosmetico.jpg", "produto.png", "produto.jpg"]:
-    if os.path.exists(mock_name):
-        st.image(mock_name, use_container_width=True)  # ocupa a coluna inteira
-        shown = True
-        break
+        # Mockup cosmético (troque a URL por um arquivo local se preferir, ex.: 'mockup_cosmetico.png')
+        st.image("cosmetico.png.PNG", caption="Aplicação cosmética", use_container_width=True)
 
     st.markdown("---")
 
