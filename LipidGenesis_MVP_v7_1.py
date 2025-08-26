@@ -280,7 +280,7 @@ with st.sidebar:
 
 # === Título e Slogan (fora das abas) ===
 
-st.title("🌴 LipidPalma - Bioengenharia Lipídica Aplicada à Indústria de Óleo de Palma")
+st.title("🌴 LipidPalma - Bioengenharia Lipídica Aplicada à Indústria de Cosméticos")
 
 tabs = st.tabs([
     "🏠 Home",
@@ -297,26 +297,26 @@ tabs = st.tabs([
 
 with tabs[0]:
     st.markdown("""
-    ***OGT – The Future of Oil Disruption, On Demand*** 
+    ***OGTera – The Future of Oil Disruption, On Demand*** 
     **Apresenta:** 
     
     ### 🌴 LipidPalma™
 
     ---
 
-    Um app interativo para formulação e simulação de blends lipídicos com foco na cadeia do óleo de palma.
+    Um app interativo para formulação e simulação de blends lipídicos baseado na cadeia de óleos amazônicos.
 
-    O **LipidPalma** é um produto da marca **LipidGenesis**, uma linha modular de soluções da **OGT** para impulsionar a inovação e a sustentabilidade em óleos vegetais como palma, soja e algodão.
+    O **LipidPalma** é um produto da marca **LipidGenesis**, uma linha modular de soluções da **OGTera** para impulsionar a inovação e a sustentabilidade em óleos vegetais como palma, buriti e andiroba.
 
     ---
 
     Para começar:
-    1. Acesse a aba **"Blend Lipídico"** e monte sua formulação com os ingredientes disponíveis.
+    1. Acesse a aba **"Blend Enzimático"** e monte sua formulação com os ingredientes disponíveis.
     2. Explore as demais abas para entender o perfil físico-químico, sensorial, ambiental e produtivo do seu blend.
 
     ---
     
-    Este MVP é voltado para inovação sustentável em P&D, com foco em alternativas ao refino tradicional.
+    Este MVP é voltado para inovação sustentável em P&D, com foco na integracão entre tecnologia, sustentabilidade e saberes amazônicos.
     """)
 
 # ------- DADOS (upload) -------
