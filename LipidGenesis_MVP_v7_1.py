@@ -334,11 +334,7 @@ with tabs[0]:
                 break
 
         # Mockup cosmético (troque a URL por um arquivo local se preferir, ex.: 'mockup_cosmetico.png')
-        st.image(
-            "https://raw.githubusercontent.com/streamlit/example-apps/main/assets/cosmetic_mockup.png",
-            caption="Exemplo ilustrativo de aplicação cosmética",
-            use_container_width=True
-        )
+        st.image("cosmetico.png", caption="Aplicação cosmética", use_container_width=True)
 
     st.markdown("---")
 
