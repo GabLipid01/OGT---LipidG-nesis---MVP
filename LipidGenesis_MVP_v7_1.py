@@ -333,7 +333,7 @@ with tabs[0]:
         for logo_name in ["logo_ogtera.png.PNG", "logo_ogtera.jpg", "logo.png", "ogtera.png"]:
             if os.path.exists(logo_name):
                 st.image(logo_name, width=160)  # logo menor, alinhada no topo
-                    break
+                break
 
 # um pequeno respiro visual
 st.markdown("<div style='height:6px'></div>", unsafe_allow_html=True)
