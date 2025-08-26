@@ -283,7 +283,7 @@ with st.sidebar:
 
 tabs = st.tabs([
     "🏠 Home",
-    "📥 Dados (Perfis Reais)",
+    "💄 Proposta Cosmética",          # nova aba 2
     "🧪 Blend Enzimático",
     "👩‍🔬 Assistente de Formulação",
     "⚗️ Protocolo de Produção",
@@ -366,48 +366,74 @@ with tabs[0]:
         st.write("Modelo: **protótipos + patentes + licenças** (B2B).")
 
     # (rodapé permanece exatamente como está no seu arquivo)
-# ------- DADOS (upload) -------
-with tabs[1]:
-    st.header("Dados — Perfis Reais de Ácidos Graxos")
-    file = st.file_uploader("Carregar arquivo CSV/XLSX com colunas de FA (ex.: FA_C18:1, FA_C18:2) e metadados", type=["csv","xlsx"])
-    if file is not None:
-        try:
-            df = load_dataset(file)
-            msgs = validate_dataset(df)
-            if msgs:
-                for m in msgs:
-                    st.warning(m)
-            st.session_state.dataset = df
-            # Construir mapa de propriedades para PFAD / RBD / PKO
-            st.session_state.props_map = build_props_map(df)
-            st.success("Dataset carregado. Perfis identificados (quando encontrados) foram aplicados a PFAD, RBD e PKO.")
-            st.dataframe(df.head(20), use_container_width=True)
-            with st.expander("Resumo de mapeamento → propriedades utilizadas"):
-                st.json(st.session_state.props_map)
-        except Exception as e:
-            st.error(f"Falha ao carregar arquivo: {e}")
 
+# ------- PROPOSTA COSMÉTICA (nova) -------
+with tabs[1]:
+    st.header("Proposta Cosmética")
+    st.write(
+        "O **LipidPalma** foca em **blends lipídicos enzimáticos** para a indústria **cosmética**, "
+        "com personalização de **toque**, **hidratação**, **estabilidade** e **brilho (cabelos)**. "
+        "A plataforma integra **upcycling** (PFAD/soapstock), **rastreabilidade** e **ESG** claro."
+    )
+    cols = st.columns(4)
+    cols[0].metric("Aplicações", "Mãos / Corpo / Rosto / Cabelos")
+    cols[1].metric("Entradas", "PFAD • RBD • PKO")
+    cols[2].metric("Saídas", "II • ISap • PFusão")
+    cols[3].metric("Relatórios", "Essencial / Completo")
+
+    st.subheader("Como usar")
+    st.markdown(
+        "1) Defina o **blend** na aba *🧪 Blend Enzimático* (padrão ou com **perfis reais**).  \n"
+        "2) Ajuste atributos e essências no *👩‍🔬 Assistente de Formulação*.  \n"
+        "3) Estime *⚗️ Protocolo* e custos.  \n"
+        "4) Exporte o *📄 PDF* para registro e compartilhamento."
+    )
+
+    st.caption("Observação: resultados devem ser calibrados com dados de bancada e testes de segurança/estabilidade.")
+
+# ------- BLEND ENZIMÁTICO -------
 # ------- BLEND ENZIMÁTICO -------
 with tabs[2]:
     st.header("Blend Enzimático")
-    st.write("Defina proporções. A soma é normalizada para 100%.")
+
+    # Painel opcional de perfis reais (upload)
+    with st.expander("📥 Perfis Reais (opcional): carregar CSV/XLSX com ácidos graxos e/ou propriedades"):
+        file = st.file_uploader("Carregar arquivo CSV/XLSX", type=["csv", "xlsx"])
+        if file is not None:
+            try:
+                df = load_dataset(file)               # sua função existente
+                msgs = validate_dataset(df)           # sua função existente
+                if msgs:
+                    for m in msgs:
+                        st.warning(m)
+                st.session_state.dataset = df
+                st.session_state.props_map = build_props_map(df)   # sua função existente
+                st.success("Perfis aplicados. Cálculos de II/ISap/PFusão agora usam os dados carregados (ou estimativa por FA).")
+                st.dataframe(df.head(15), use_container_width=True)
+                with st.expander("Mapa de propriedades identificado"):
+                    st.json(st.session_state.props_map)
+            except Exception as e:
+                st.error(f"Falha ao carregar arquivo: {e}")
+
+    # --- (seus sliders atuais) ---
     c1, c2, c3 = st.columns(3)
     with c1:
         pfad = st.slider("PFAD (%)", 0.0, 100.0, float(st.session_state.blend["PFAD"]), 1.0)
     with c2:
-        rbd = st.slider("RBD (Palma) (%)", 0.0, 100.0, float(st.session_state.blend["RBD (Palma)"]), 1.0)
+        rbd  = st.slider("RBD (Palma) (%)", 0.0, 100.0, float(st.session_state.blend["RBD (Palma)"]), 1.0)
     with c3:
-        pko = st.slider("PKO (%)", 0.0, 100.0, float(st.session_state.blend["PKO (Palm Kernel Oil)"]), 1.0)
+        pko  = st.slider("PKO (%)", 0.0, 100.0, float(st.session_state.blend["PKO (Palm Kernel Oil)"]), 1.0)
 
-    pfad_n, rbd_n, pko_n, soma = normaliza_blend(pfad, rbd, pko)
+    pfad_n, rbd_n, pko_n, soma = normaliza_blend(pfad, rbd, pko)   # sua função existente
     st.markdown(f"**Soma antes da normalização:** {soma:.2f}%  →  **Blend final:** PFAD {pfad_n}%, RBD {rbd_n}%, PKO {pko_n}%")
     st.session_state.blend = {"PFAD": pfad_n, "RBD (Palma)": rbd_n, "PKO (Palm Kernel Oil)": pko_n}
 
-    # Propriedades a partir do dataset real (se houver) ou heurística
-    II, ISap, PF = props_blend(pfad_n, rbd_n, pko_n, st.session_state.get("props_map", {}))
+    II, ISap, PF = props_blend(                                    # sua função existente
+        pfad_n, rbd_n, pko_n, st.session_state.get("props_map", {})
+    )
     st.session_state.props = {"II": II, "ISap": ISap, "PFusao": PF}
     st.success(f"II={II} | ISap={ISap} | PFusão≈{PF}°C")
-    st.caption("Se um dataset foi carregado, os valores são calculados com base nele (ou estimados a partir de FA). Senão, usa heurísticas internas.")
+    st.caption("Sem upload, usamos heurísticas internas. Com dataset, os valores seguem o arquivo (ou estimados a partir dos FAs).")
 
 # ------- ASSISTENTE DE FORMULAÇÃO -------
 with tabs[3]:
