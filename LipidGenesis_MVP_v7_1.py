@@ -299,7 +299,7 @@ with tabs[0]:
 
     with col_text:
         st.markdown("""
-***OGTera – The Future of Oil Disruption, On Demand***  
+***OGTera – The Future of Oil Disruption***  
 **Apresenta:** **🌴 LipidPalma™**
 
 **Um app para **simulação e formulação** de blends lipídicos **enzimáticos** aplicado à **cosmética**.  
@@ -502,7 +502,7 @@ with tabs[7]:
 st.markdown("---")
 st.markdown(
     "<p style='text-align: center; font-size: 14px;'>"
-    "🌿 Desenvolvido por <b>OGTera - The Future of Oil Disruption, On Demand</b>. "
+    "🌿 Desenvolvido por <b>OGTera - The Future of Oil Disruption</b>. "
     "Aplicação modular <b>LipidGenesis</b> com o módulo atual: <b>LipidPalma</b>. "
     "<br>Versão MVP demonstrativa. &copy; 2025 OGT."
     "</p>",
