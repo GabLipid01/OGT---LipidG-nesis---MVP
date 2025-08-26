@@ -293,56 +293,51 @@ tabs = st.tabs([
     "📄 Exportação PDF"
 ])
 
-    # ------- HOME — versão institucional -------
+# ------- HOME — layout com logo oficial -------
 with tabs[0]:
-    st.markdown("""
+    col_text, col_img = st.columns([3, 2], gap="large")
+
+    with col_text:
+        st.markdown("""
 ***OGTera – The Future of Oil Disruption, On Demand***  
 **Apresenta:** **🌴 LipidPalma™**
 
-**LipidPalma** é um app para **simulação e formulação** de blends lipídicos **enzimáticos** aplicado à **cosmética**.  
+**Um app para **simulação e formulação** de blends lipídicos **enzimáticos** aplicado à **cosmética**.  
 Faz parte da linha **LipidGenesis**, a plataforma modular da **OGTera** para inovação em lipídios.
-
----
-
-**Visão**  
-Unir **biocatálise**, **upcycling** e **rastreabilidade** com uma camada de **ESG** clara.  
-A integração com a **sociobioeconomia amazônica** começa pela **assinatura sensorial** (essências) e evolui para cadeias de fornecimento **rastreáveis**.
-
-**Como usar**  
-1) **🧪 Blend Enzimático** → defina PFAD/RBD/PKO.  
-2) **👩‍🔬 Assistente de Formulação** → escolha ocasião (mãos/corpo/rosto/cabelos) e essências amazônicas (opcional).  
-3) **⚗️ Protocolo de Produção** → parâmetros e custo/kg.  
-4) **📄 Exportação PDF** → gere o dossiê do blend.
-
-*Nota*: MVP para **P&D**. Resultados devem ser calibrados com **dados de bancada** e testes de **segurança/estabilidade**.
 """)
 
-    # KPIs institucionais (opcionais, mas recomendados)
-    k1, k2, k3, k4 = st.columns(4)
-    k1.metric("Indústria-alvo", "Cosméticos")
-    k2.metric("Rota", "Enzimática")
-    k3.metric("Plataforma", "LipidGenesis")
-    k4.metric("Módulo", "LipidPalma™")
+        st.markdown("---")
+        st.markdown("**Visão**  \nUnir **biocatálise**, **upcycling** e **rastreabilidade** com **ESG** claro. A integração com a **sociobioeconomia amazônica** começa pela **assinatura sensorial** (essências) e evolui para cadeias **rastreáveis**.")
+
+        st.markdown("**Como usar**  \n1) **🧪 Blend Enzimático** → defina PFAD/RBD/PKO.  \n2) **👩‍🔬 Assistente** → escolha ocasião e essências (opcional).  \n3) **⚗️ Protocolo** → parâmetros e custo/kg.  \n4) **📄 PDF** → gere o dossiê.")
+
+    with col_img:
+        st.image("logo_ogtera.png.PNG", use_column_width=True)  # coloque a imagem com esse nome na pasta do app
 
     st.markdown("---")
+
+    # KPIs em 2x2
+    k1, k2 = st.columns(2)
+    with k1: st.metric("Indústria-alvo", "Cosméticos")
+    with k2: st.metric("Rota", "Enzimática")
+    k3, k4 = st.columns(2)
+    with k3: st.metric("Plataforma", "LipidGenesis")
+    with k4: st.metric("Módulo", "LipidPalma™")
+
+    st.markdown("---")
+
+    # Pilares com ícones
     st.subheader("Camadas de confiança")
-    c1, c2, c3 = st.columns(3)
-    with c1:
-        st.markdown("**ESG transparente**")
-        st.write("Score 0–100 com critérios claros (upcycling, RSPO, orgânico, fair trade, saturados).")
-    with c2:
-        st.markdown("**Rastreabilidade**")
+    p1, p2, p3 = st.columns(3)
+    with p1:
+        st.markdown("### ♻️ ESG transparente")
+        st.write("Score 0–100 com critérios claros: upcycling, RSPO, orgânico, fair trade, saturados.")
+    with p2:
+        st.markdown("### 📦 Rastreabilidade")
         st.write("Ficha de ingredientes (fornecedor, lote, certificações) com exportação CSV.")
-    with c3:
-        st.markdown("**Licenciamento**")
-        st.write("Modelo de negócio: **protótipos + patentes + licenças** (B2B).")
-
-    st.markdown("---")
-    left, right = st.columns([2,1])
-    with left:
-        st.caption("v7.1 • OGTera — MVP de validação de conceito.")
-    with right:
-        st.caption("Documentação: README/PDF (quando disponível).")
+    with p3:
+        st.markdown("### 📜 Licenciamento")
+        st.write("Modelo: **protótipos + patentes + licenças** (B2B).")
 
 # ------- DADOS (upload) -------
 with tabs[1]:
