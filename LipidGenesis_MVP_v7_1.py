@@ -367,31 +367,117 @@ with tabs[0]:
 
     # (rodapé permanece exatamente como está no seu arquivo)
 
-# ------- PROPOSTA COSMÉTICA (nova) -------
+# ------- PROPOSTA COSMÉTICA (atualizada com "up" amazônico) -------
 with tabs[1]:
-    st.header("Proposta Cosmética")
+    st.header("Proposta Cosmética 💄")
     st.write(
-        "O **LipidPalma** foca em **blends lipídicos enzimáticos** para a indústria **cosmética**, "
-        "com personalização de **toque**, **hidratação**, **estabilidade** e **brilho (cabelos)**. "
-        "A plataforma integra **upcycling** (PFAD/soapstock), **rastreabilidade** e **ESG** claro."
+        "O **LipidPalma™** é focado em **blends lipídicos enzimáticos** para **cosméticos**, "
+        "ajustando **toque**, **hidratação**, **estabilidade** e **brilho** conforme a aplicação e o perfil do blend."
     )
-    cols = st.columns(4)
-    cols[0].metric("Aplicações", "Mãos / Corpo / Rosto / Cabelos")
-    cols[1].metric("Entradas", "PFAD • RBD • PKO")
-    cols[2].metric("Saídas", "II • ISap • PFusão")
-    cols[3].metric("Relatórios", "Essencial / Completo")
 
-    st.subheader("Como usar")
+    st.markdown("---")
+    st.subheader("Benefícios por aplicação ✨")
+    c1, c2 = st.columns(2)
+    with c1:
+        st.markdown(
+            "- ✋ **Mãos**: absorção rápida, **toque seco** e hidratação leve.\n"
+            "- 🧴 **Corpo**: **nutrição** e maciez com textura uniforme.\n"
+        )
+    with c2:
+        st.markdown(
+            "- 🙂 **Rosto**: perfil **balanceado**, adequado a peles sensíveis.\n"
+            "- 💇‍♀️ **Cabelos**: **brilho**, emoliência e redução de frizz.\n"
+        )
+    st.caption("Observação: os efeitos variam conforme a composição do blend (PFAD/RBD/PKO/derivados) e a presença de essências.")
+
+    st.markdown("---")
+    st.subheader("Contribuição dos ingredientes-base 🧪")
     st.markdown(
-        "1) Defina o **blend** na aba *🧪 Blend Enzimático* (padrão ou com **perfis reais**).  \n"
-        "2) Ajuste atributos e essências no *👩‍🔬 Assistente de Formulação*.  \n"
-        "3) Estime *⚗️ Protocolo* e custos.  \n"
-        "4) Exporte o *📄 PDF* para registro e compartilhamento."
+        """
+| Ingrediente                 | Contribuição cosmética                                                                 |
+|-----------------------------|-----------------------------------------------------------------------------------------|
+| 🟠 **RBD (Palma)**           | **Estabilidade oxidativa**, textura uniforme, base versátil                             |
+| 🧴 **Estearina de Palma**    | Textura **firme**; dá corpo a cremes/manteigas; opacidade em pomadas e sabonetes        |
+| ✨ **Oleína de Palma**       | Fração **líquida e leve**; boa espalhabilidade; usada em loções e óleos capilares       |
+| 🌰 **PKO (Palm Kernel)**     | **Leveza** e **toque seco**; brilho em cabelos; melhora espalhabilidade                 |
+| 🧼 **Estearina de Palmiste** | **Dureza** e espuma; rica em C12–C14; usada em sabonetes e shampoos sólidos              |
+| 💧 **Oleína de Palmiste**    | Fração mais fluida; toque leve; alternativa de baixo custo em hidratantes de absorção rápida |
+| 🌿 **PFAD**                  | Emoliência e **hidratação profunda**; corpo de fórmula                                  |
+| ♻️ **Soapstock**             | Subproduto do refino químico; pode ser refinado/esterificado em blends sustentáveis com apelo ESG |
+        """,
+        help="Mapa qualitativo ampliado: inclui frações da palma e palmiste, além de PFAD e soapstock (upcycling)."
     )
 
-    st.caption("Observação: resultados devem ser calibrados com dados de bancada e testes de segurança/estabilidade.")
+    # ---------- UP AMAZÔNICO 1: Assinatura Sensorial ----------
+    st.markdown("---")
+    st.subheader("Assinatura Sensorial Amazônica (opcional) 🍃")
+    st.caption("Vitrine inspiracional de essências; a seleção efetiva é feita na aba **Assistente de Formulação**.")
 
-# ------- BLEND ENZIMÁTICO -------
+    # Fallback local de essências (não interfere no Assistente)
+    try:
+        _ess = ESSENCIAS  # se você já definiu globalmente
+    except NameError:
+        _ess = [
+            {"nome": "Cumaru (Tonka)", "acorde": "baunilha-amêndoa", "família": "oriental", "nota": "fundo"},
+            {"nome": "Breu-branco", "acorde": "resinoso-limpo", "família": "balsâmico", "nota": "coração"},
+            {"nome": "Priprioca", "acorde": "terroso-amadeirado", "família": "amadeirado", "nota": "coração"},
+            {"nome": "Copaíba", "acorde": "amadeirado-resinoso", "família": "amadeirado", "nota": "fundo"},
+            {"nome": "Patchouli Amazônico", "acorde": "terroso-úmido", "família": "chipre", "nota": "fundo"},
+        ]
+
+    cols = st.columns(5)
+    for col, e in zip(cols, _ess[:5]):
+        with col:
+            st.markdown(
+                f"**🌿 {e['nome']}**\n\n"
+                f"- Acorde: *{e['acorde']}*\n"
+                f"- Família: *{e['família']}*\n"
+                f"- Nota: *{e['nota']}*\n"
+            )
+
+    # ---------- UP AMAZÔNICO 2: Sociobioeconomia ----------
+    st.markdown("---")
+    st.subheader("Sociobioeconomia (indicadores de origem) 🌎")
+    st.caption("Indicadores de narrativa e diligência; não substituem certificações formais.")
+
+    cA, cB, cC, cD = st.columns(4)
+    with cA:
+        origem = st.checkbox("Origem comunitária/cooperativa", False)
+    with cB:
+        rastreio = st.checkbox("Rastreabilidade confirmada", False)
+    with cC:
+        cert = st.checkbox("Certificação socioambiental (ex.: orgânico/fair)", False)
+    with cD:
+        repart = st.checkbox("Repartição de benefícios documentada", False)
+
+    # Índice simples de narrativa amazônica (interno, 0–100)
+    score_amz = 50 + 15*int(origem) + 15*int(rastreio) + 10*int(cert) + 10*int(repart)
+    score_amz = max(0, min(100, score_amz))
+    st.metric("Índice de Narrativa Amazônica", f"{score_amz} / 100")
+    st.caption("Uso interno para comunicação; ampare claims com documentos (contratos, certificações, notas fiscais).")
+
+    st.markdown("---")
+    st.subheader("Proposta de valor para P&D e negócio 🚀")
+    st.markdown(
+        "- ⚡ **Velocidade de P&D**: triagem digital antes do laboratório.\n"
+        "- 🧬 **Precisão**: possibilidade de usar **perfis reais** de ácidos graxos (quando habilitado no Blend).\n"
+        "- ♻️ **Sustentabilidade**: upcycling (PFAD/soapstock) e **ESG** transparente.\n"
+        "- 🔍 **Rastreabilidade**: ficha de ingredientes e certificações (CSV exportável).\n"
+        "- 🛠️ **Customização**: ajuste do blend por **ocasião de uso** e assinatura sensorial (essências amazônicas opcionais).\n"
+        "- 📈 **Negócio**: foco em **protótipos + patentes + licenciamento** (modelo B2B)."
+    )
+
+    with st.expander("💡 Exemplos de posicionamento/claims (ideias)"):
+        st.markdown(
+            "- “Toque sedoso com rápida absorção” (mãos/corpo)\n"
+            "- “Nutrição e maciez com leveza” (corpo)\n"
+            "- “Perfil balanceado para peles delicadas” (rosto)\n"
+            "- “Brilho e emoliência com controle de frizz” (cabelos)\n"
+        )
+        st.caption("Claims dependem de validação de bancada e requisitos regulatórios.")
+
+    st.caption("Esta aba apresenta a **proposta cosmética, assinatura sensorial e narrativa amazônica**, sem repetir instruções já mostradas na Home.")
+
 # ------- BLEND ENZIMÁTICO -------
 with tabs[2]:
     st.header("Blend Enzimático")
