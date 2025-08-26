@@ -330,10 +330,10 @@ with tabs[0]:
         # --- Imagens da coluna direita: logo (pequena no topo) + mockup (grande) ---
 
 # 1) Logo OGTera pequena no topo
-for logo_name in ["logo_ogtera.png.PNG", "logo_ogtera.jpg", "logo.png", "ogtera.png"]:
-    if os.path.exists(logo_name):
-        st.image(logo_name, width=160)  # logo menor, alinhada no topo
-        break
+        for logo_name in ["logo_ogtera.png.PNG", "logo_ogtera.jpg", "logo.png", "ogtera.png"]:
+            if os.path.exists(logo_name):
+                st.image(logo_name, width=160)  # logo menor, alinhada no topo
+                    break
 
 # um pequeno respiro visual
 st.markdown("<div style='height:6px'></div>", unsafe_allow_html=True)
