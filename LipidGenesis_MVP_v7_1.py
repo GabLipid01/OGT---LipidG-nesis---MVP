@@ -312,7 +312,7 @@ Faz parte da linha **LipidGenesis**, a plataforma modular da **OGTera** para ino
         st.markdown("**Como usar**  \n1) **🧪 Blend Enzimático** → defina PFAD/RBD/PKO.  \n2) **👩‍🔬 Assistente** → escolha ocasião e essências (opcional).  \n3) **⚗️ Protocolo** → parâmetros e custo/kg.  \n4) **📄 PDF** → gere o dossiê.")
 
     with col_img:
-    st.image("logo_ogtera.png.PNG", use_container_width=True)  # versão atualizada
+        st.image("logo_ogtera.png.PNG", use_container_width=True)  # versão atualizada
 
     st.markdown("---")
 
