@@ -280,7 +280,7 @@ with st.sidebar:
 
 # === Título e Slogan (fora das abas) ===
 
-st.title("🌴 LipidPalma - Bioengenharia Lipídica Aplicada à Indústria de Cosméticos")
+st.title("🌴 LipidPalma - Design de Blends Lipídicos por rota enzimática, com ESG transparente e sociobioeconomia amazônica")
 
 tabs = st.tabs([
     "🏠 Home",
@@ -293,31 +293,56 @@ tabs = st.tabs([
     "📄 Exportação PDF"
 ])
 
-# ------- HOME -------
-
+    # ------- HOME — versão institucional -------
 with tabs[0]:
     st.markdown("""
-    ***OGTera – The Future of Oil Disruption, On Demand*** 
-    **Apresenta:** 
-    
-    ### 🌴 LipidPalma™
+***OGTera – The Future of Oil Disruption, On Demand***  
+**Apresenta:** **🌴 LipidPalma™**
 
-    ---
+**LipidPalma** é um app para **simulação e formulação** de blends lipídicos **enzimáticos** aplicado à **cosmética**.  
+Faz parte da linha **LipidGenesis**, a plataforma modular da **OGTera** para inovação em lipídios.
 
-    Um app interativo para formulação e simulação de blends lipídicos baseado na cadeia de óleos amazônicos.
+---
 
-    O **LipidPalma** é um produto da marca **LipidGenesis**, uma linha modular de soluções da **OGTera** para impulsionar a inovação e a sustentabilidade em óleos vegetais como palma, buriti e andiroba.
+**Visão**  
+Unir **biocatálise**, **upcycling** e **rastreabilidade** com uma camada de **ESG** clara.  
+A integração com a **sociobioeconomia amazônica** começa pela **assinatura sensorial** (essências) e evolui para cadeias de fornecimento **rastreáveis**.
 
-    ---
+**Como usar**  
+1) **🧪 Blend Enzimático** → defina PFAD/RBD/PKO.  
+2) **👩‍🔬 Assistente de Formulação** → escolha ocasião (mãos/corpo/rosto/cabelos) e essências amazônicas (opcional).  
+3) **⚗️ Protocolo de Produção** → parâmetros e custo/kg.  
+4) **📄 Exportação PDF** → gere o dossiê do blend.
 
-    Para começar:
-    1. Acesse a aba **"Blend Enzimático"** e monte sua formulação com os ingredientes disponíveis.
-    2. Explore as demais abas para entender o perfil físico-químico, sensorial, ambiental e produtivo do seu blend.
+*Nota*: MVP para **P&D**. Resultados devem ser calibrados com **dados de bancada** e testes de **segurança/estabilidade**.
+""")
 
-    ---
-    
-    Este MVP é voltado para inovação sustentável em P&D, com foco na integração entre tecnologia, sustentabilidade e saberes amazônicos.
-    """)
+    # KPIs institucionais (opcionais, mas recomendados)
+    k1, k2, k3, k4 = st.columns(4)
+    k1.metric("Indústria-alvo", "Cosméticos")
+    k2.metric("Rota", "Enzimática")
+    k3.metric("Plataforma", "LipidGenesis")
+    k4.metric("Módulo", "LipidPalma™")
+
+    st.markdown("---")
+    st.subheader("Camadas de confiança")
+    c1, c2, c3 = st.columns(3)
+    with c1:
+        st.markdown("**ESG transparente**")
+        st.write("Score 0–100 com critérios claros (upcycling, RSPO, orgânico, fair trade, saturados).")
+    with c2:
+        st.markdown("**Rastreabilidade**")
+        st.write("Ficha de ingredientes (fornecedor, lote, certificações) com exportação CSV.")
+    with c3:
+        st.markdown("**Licenciamento**")
+        st.write("Modelo de negócio: **protótipos + patentes + licenças** (B2B).")
+
+    st.markdown("---")
+    left, right = st.columns([2,1])
+    with left:
+        st.caption("v7.1 • OGTera — MVP de validação de conceito.")
+    with right:
+        st.caption("Documentação: README/PDF (quando disponível).")
 
 # ------- DADOS (upload) -------
 with tabs[1]:
