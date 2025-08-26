@@ -279,7 +279,7 @@ with st.sidebar:
 # ----------- ABAS ------------
 # =============================
 
-# === Título e Slogan (fora das abas) =
+# === Título e Slogan (fora das abas) 
 
 tabs = st.tabs([
     "🏠 Home",
@@ -306,7 +306,7 @@ with tabs[0]:
         st.markdown("---")
         st.markdown("_OGTera – The Future of Oil Disruption_  \n**Apresenta:** **LipidPalma™**")
         st.write(
-            "Um app para **simulação e formulação** de blends lipídicos **enzimáticos** aplicado à **cosmética**. "
+            "Um app para **simulação e formulação** de blends lipídicos **enzimáticos** aplicados à **cosmética**. "
             "Faz parte da linha **LipidGenesis**, a plataforma modular da **OGTera** para inovação em lipídios."
         )
 
