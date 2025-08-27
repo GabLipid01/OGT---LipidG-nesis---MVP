@@ -366,14 +366,16 @@ with tabs[0]:
         st.write("Modelo: **protótipos + patentes + licenças** (B2B).")
 
     # (rodapé permanece exatamente como está no seu arquivo)
-
-# PROPOSTA COSMÉTICA
-        # ------- PROPOSTA COSMÉTICA (ajustada)
+ 
+    # ------- PROPOSTA COSMÉTICA (6 essências, layout 3+3) -------
 with tabs[1]:
     st.header("Proposta Cosmética 💄")
     st.write(
         "O **LipidPalma™** é focado em **blends lipídicos enzimáticos** para **cosméticos**, "
-        "ajustando **toque**, **hidratação**, **estabilidade** e **brilho** conforme a aplicação e o perfil do blend."
+        "ajustando **toque**, **hidratação**, **estabilidade** e **brilho** conforme a aplicação e o perfil do blend.\n\n"
+        "Como apresentado na **Home**, o LipidPalma™ integra pilares de **ESG**, **rastreabilidade** e **inovação**. "
+        "Aqui destacamos **como esses conceitos se traduzem em valor concreto para a indústria cosmética**, "
+        "tanto em termos de **benefícios práticos** quanto de **narrativa amazônica**."
     )
 
     st.markdown("---")
@@ -415,23 +417,24 @@ with tabs[1]:
     st.subheader("Assinatura Sensorial Amazônica (opcional) 🍃")
     st.caption("Vitrine inspiracional de essências; a seleção efetiva é feita na aba **Assistente de Formulação**.")
 
-    # Fallback local de essências (não interfere no Assistente)
+    # Fallback local de essências (agora com 6 itens para layout 3+3)
     try:
         _ess = ESSENCIAS  # se você já definiu globalmente
     except NameError:
         _ess = [
-            {"nome": "Cumaru (Tonka)", "acorde": "baunilha-amêndoa", "família": "oriental", "nota": "fundo"},
-            {"nome": "Breu-branco", "acorde": "resinoso-limpo", "família": "balsâmico", "nota": "coração"},
-            {"nome": "Priprioca", "acorde": "terroso-amadeirado", "família": "amadeirado", "nota": "coração"},
-            {"nome": "Copaíba", "acorde": "amadeirado-resinoso", "família": "amadeirado", "nota": "fundo"},
-            {"nome": "Patchouli Amazônico", "acorde": "terroso-úmido", "família": "chipre", "nota": "fundo"},
+            {"nome": "Cumaru (Tonka)",        "acorde": "baunilha-amêndoa",   "família": "oriental",   "nota": "fundo"},
+            {"nome": "Breu-branco",           "acorde": "resinoso-limpo",     "família": "balsâmico",  "nota": "coração"},
+            {"nome": "Priprioca",             "acorde": "terroso-amadeirado", "família": "amadeirado", "nota": "coração"},
+            {"nome": "Copaíba",               "acorde": "amadeirado-resinoso","família": "amadeirado", "nota": "fundo"},
+            {"nome": "Patchouli Amazônico",   "acorde": "terroso-úmido",      "família": "chipre",     "nota": "fundo"},
+            {"nome": "Pau-rosa (Rosewood)",   "acorde": "floral-amadeirado",  "família": "floral",     "nota": "coração"},
         ]
 
-    # 🔹 Patch 1: layout mais responsivo (3 + 2 colunas)
+    # Layout responsivo 3 + 3 colunas
     row1 = st.columns(3)
-    row2 = st.columns(2)
+    row2 = st.columns(3)
     cards = row1 + row2
-    for col, e in zip(cards, _ess[:5]):
+    for col, e in zip(cards, _ess[:6]):
         with col:
             st.markdown(
                 f"**🌿 {e['nome']}**\n\n"
@@ -455,7 +458,7 @@ with tabs[1]:
     with cD:
         repart = st.checkbox("Repartição de benefícios documentada", False)
 
-    # 🔹 Patch 2: índice 0–100 com persistência
+    # Índice 0–100 com persistência
     score_amz = 0 + 25*int(origem) + 35*int(rastreio) + 20*int(cert) + 20*int(repart)
     score_amz = max(0, min(100, score_amz))
     st.metric("Índice de Narrativa Amazônica", f"{score_amz} / 100")
@@ -480,6 +483,8 @@ with tabs[1]:
             "- “Brilho e emoliência com controle de frizz” (cabelos)\n"
         )
         st.caption("Claims dependem de validação de bancada e requisitos regulatórios.")
+
+    st.caption("Esta aba apresenta a **proposta cosmética, assinatura sensorial e narrativa amazônica**, sem repetir instruções já mostradas na Home.")
 
 # ------- BLEND ENZIMÁTICO -------
 with tabs[2]:
