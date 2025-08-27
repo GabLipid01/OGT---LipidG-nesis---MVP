@@ -431,23 +431,11 @@ except NameError:
         {"emoji": "🌸", "nome": "Pau-rosa (Rosewood)", "acorde": "floral-amadeirado",  "família": "floral",     "nota": "coração"},
     ]
 
-# 2) Normalização: garante campos e atribui emoji padrão quando faltar
-_default_emojis = ["🌰","🔥","🌿","🌳","🍂","🌸","🌺","🌲"]
-_ess = []
-for i, e in enumerate(_ess_raw[:6]):
-    _ess.append({
-        "emoji":   e.get("emoji", _default_emojis[i % len(_default_emojis)]),
-        "nome":    e.get("nome", "Essência"),
-        "acorde":  e.get("acorde", "—"),
-        "família": e.get("família", "—"),
-        "nota":    e.get("nota", "—"),
-    })
-
-# 3) Renderização 3 + 3 colunas (agora é seguro usar e['emoji'])
+# Layout responsivo 3 + 3 colunas
 row1 = st.columns(3)
 row2 = st.columns(3)
 cards = row1 + row2
-for col, e in zip(cards, _ess):
+for col, e in zip(cards, _ess[:6]):
     with col:
         st.markdown(
             f"**{e['emoji']} {e['nome']}**\n\n"
