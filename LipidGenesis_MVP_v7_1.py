@@ -481,6 +481,8 @@ with tabs[1]:
         )
         st.caption("Claims dependem de validação de bancada e requisitos regulatórios.")
 
+st.caption("Esta aba apresenta a **proposta cosmética, assinatura sensorial e narrativa amazônica**, sem repetir instruções já mostradas na Home.")
+
 # ------- BLEND ENZIMÁTICO -------
 with tabs[2]:
     st.header("Blend Enzimático")
