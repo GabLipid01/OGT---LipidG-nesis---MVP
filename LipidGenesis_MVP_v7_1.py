@@ -483,9 +483,9 @@ score_amz = max(0, min(100, score_amz))
 st.metric("Índice de Narrativa Amazônica", f"{score_amz} / 100")
 st.session_state["indice_narrativa_amazonia"] = score_amz
 
-    st.markdown("---")
-    st.subheader("Proposta de valor para P&D e negócio 🚀")
-    st.markdown(
+st.markdown("---")
+st.subheader("Proposta de valor para P&D e negócio 🚀")
+st.markdown(
         "- ⚡ **Velocidade de P&D**: triagem digital antes do laboratório.\n"
         "- 🧬 **Precisão**: possibilidade de usar **perfis reais** de ácidos graxos (quando habilitado no Blend).\n"
         "- ♻️ **Sustentabilidade**: upcycling (PFAD/soapstock) e **ESG** transparente.\n"
