@@ -367,6 +367,7 @@ with tabs[0]:
         st.write("Modelo: **protótipos + patentes + licenças** (B2B).")
 
     # (rodapé permanece exatamente como está no seu arquivo)
+
  # ------- PROPOSTA COSMÉTICA (ajustada com ponte para Home) -------
 with tabs[1]:
     st.header("Proposta Cosmética 💄")
@@ -399,10 +400,10 @@ with tabs[1]:
         """
 | Ingrediente                 | Contribuição cosmética                                                                 |
 |-----------------------------|-----------------------------------------------------------------------------------------|
-| 🟠 **RBD (Palma)**           | **Estabilidade oxidativa**, textura uniforme, base versátil                             |
+| 🟠 **RBD(Óleo de Palma)**    | **Estabilidade oxidativa**, textura uniforme, base versátil                             |
 | 🧴 **Estearina de Palma**    | Textura **firme**; dá corpo a cremes/manteigas; opacidade em pomadas e sabonetes        |
 | ✨ **Oleína de Palma**       | Fração **líquida e leve**; boa espalhabilidade; usada em loções e óleos capilares       |
-| 🌰 **PKO (Palm Kernel)**     | **Leveza** e **toque seco**; brilho em cabelos; melhora espalhabilidade                 |
+| 🌰 **RPKO(Óleo de Palmiste)**| **Leveza** e **toque seco**; brilho em cabelos; melhora espalhabilidade                 |
 | 🧼 **Estearina de Palmiste** | **Dureza** e espuma; rica em C12–C14; usada em sabonetes e shampoos sólidos              |
 | 💧 **Oleína de Palmiste**    | Fração mais fluida; toque leve; alternativa de baixo custo em hidratantes de absorção rápida |
 | 🌿 **PFAD**                  | Emoliência e **hidratação profunda**; corpo de fórmula                                  |
@@ -427,6 +428,7 @@ with tabs[1]:
             {"nome": "Priprioca", "acorde": "terroso-amadeirado", "família": "amadeirado", "nota": "coração"},
             {"nome": "Copaíba", "acorde": "amadeirado-resinoso", "família": "amadeirado", "nota": "fundo"},
             {"nome": "Patchouli Amazônico", "acorde": "terroso-úmido", "família": "chipre", "nota": "fundo"},
+            {"nome": "Pau-rosa (Rosewood)", "acorde": "floral-amadeirado", "família": "floral", "nota": "coração"},
         ]
 
     # 🔹 Layout responsivo (3 + 2 colunas)
