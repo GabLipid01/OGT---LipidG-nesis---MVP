@@ -400,52 +400,53 @@ with tabs[1]:
         """
 | Ingrediente                 | Contribuição cosmética                                                                 |
 |-----------------------------|-----------------------------------------------------------------------------------------|
-| 🟠 **RBD(Óleo de Palma)**    | **Estabilidade oxidativa**, textura uniforme, base versátil                             |
+| 🟠 **RBD (Óleo de Palma)**   | **Estabilidade oxidativa**, textura uniforme, base versátil                             |
 | 🧴 **Estearina de Palma**    | Textura **firme**; dá corpo a cremes/manteigas; opacidade em pomadas e sabonetes        |
 | ✨ **Oleína de Palma**       | Fração **líquida e leve**; boa espalhabilidade; usada em loções e óleos capilares       |
-| 🌰 **RPKO(Óleo de Palmiste)**| **Leveza** e **toque seco**; brilho em cabelos; melhora espalhabilidade                 |
-| 🧼 **Estearina de Palmiste** | **Dureza** e espuma; rica em C12–C14; usada em sabonetes e shampoos sólidos              |
+| 🌰 **RPKO (Óleo de Palmiste)**| **Leveza** e **toque seco**; brilho em cabelos; melhora espalhabilidade                |
+| 🧼 **Estearina de Palmiste** | **Dureza** e espuma; rica em C12–C14; usada em sabonetes e shampoos sólidos             |
 | 💧 **Oleína de Palmiste**    | Fração mais fluida; toque leve; alternativa de baixo custo em hidratantes de absorção rápida |
 | 🌿 **PFAD**                  | Emoliência e **hidratação profunda**; corpo de fórmula                                  |
 | ♻️ **Soapstock**             | Subproduto do refino químico; pode ser refinado/esterificado em blends sustentáveis com apelo ESG |
         """,
         help="Mapa qualitativo ampliado: inclui frações da palma e palmiste, além de PFAD e soapstock (upcycling)."
     )
-    st.caption("Nota: **soapstock** requer adequação regulatória (refino/esterificação e dossiê) antes de uso em cosméticos.")
+    st.caption(
+        "Nota: **soapstock** requer adequação regulatória "
+        "(refino/esterificação e dossiê) antes de uso em cosméticos."
+    )
 
     # ---------- UP AMAZÔNICO 1: Assinatura Sensorial ----------
     st.markdown("---")
     st.subheader("Assinatura Sensorial Amazônica (opcional) 🍃")
     st.caption("Vitrine inspiracional de essências; a seleção efetiva é feita na aba **Assistente de Formulação**.")
 
-    # --- Definição + normalização das essências (coloque ANTES do loop 3+3) ---
-
     # 1) Fonte de dados: usa ESSENCIAS se existir; senão, fallback local
     try:
-    _ess_raw = ESSENCIAS  # sua lista global (pode não ter 'emoji' em todos)
+        _ess_raw = ESSENCIAS  # pode não ter 'emoji' em todos
     except NameError:
-    _ess_raw = [
-        {"emoji": "🌰", "nome": "Cumaru (Tonka)",      "acorde": "baunilha-amêndoa",   "família": "oriental",   "nota": "fundo"},
-        {"emoji": "🔥", "nome": "Breu-branco",         "acorde": "resinoso-limpo",     "família": "balsâmico",  "nota": "coração"},
-        {"emoji": "🌿", "nome": "Priprioca",           "acorde": "terroso-amadeirado", "família": "amadeirado", "nota": "coração"},
-        {"emoji": "🌳", "nome": "Copaíba",             "acorde": "amadeirado-resinoso","família": "amadeirado", "nota": "fundo"},
-        {"emoji": "🍂", "nome": "Patchouli Amazônico", "acorde": "terroso-úmido",      "família": "chipre",     "nota": "fundo"},
-        {"emoji": "🌸", "nome": "Pau-rosa (Rosewood)", "acorde": "floral-amadeirado",  "família": "floral",     "nota": "coração"},
-    ]
+        _ess_raw = [
+            {"emoji": "🌰", "nome": "Cumaru (Tonka)",      "acorde": "baunilha-amêndoa",   "família": "oriental",   "nota": "fundo"},
+            {"emoji": "🔥", "nome": "Breu-branco",         "acorde": "resinoso-limpo",     "família": "balsâmico",  "nota": "coração"},
+            {"emoji": "🌿", "nome": "Priprioca",           "acorde": "terroso-amadeirado", "família": "amadeirado", "nota": "coração"},
+            {"emoji": "🌳", "nome": "Copaíba",             "acorde": "amadeirado-resinoso","família": "amadeirado", "nota": "fundo"},
+            {"emoji": "🍂", "nome": "Patchouli Amazônico", "acorde": "terroso-úmido",      "família": "chipre",     "nota": "fundo"},
+            {"emoji": "🌸", "nome": "Pau-rosa (Rosewood)", "acorde": "floral-amadeirado",  "família": "floral",     "nota": "coração"},
+        ]
 
-    # 2) Normalização: garante chaves e aplica emoji padrão quando faltar
+    # 2) Normalização
     _default_emojis = ["🌰","🔥","🌿","🌳","🍂","🌸","🌺","🌲"]
     _ess = []
     for i, e in enumerate(_ess_raw[:6]):
-    _ess.append({
-        "emoji":   e.get("emoji", _default_emojis[i % len(_default_emojis)]),
-        "nome":    e.get("nome", "Essência"),
-        "acorde":  e.get("acorde", "—"),
-        "família": e.get("família", "—"),
-        "nota":    e.get("nota", "—"),
-    })
+        _ess.append({
+            "emoji":   e.get("emoji", _default_emojis[i % len(_default_emojis)]),
+            "nome":    e.get("nome", "Essência"),
+            "acorde":  e.get("acorde", "—"),
+            "família": e.get("família", "—"),
+            "nota":    e.get("nota", "—"),
+        })
 
-    # --- Renderização 3 + 3 colunas ---
+    # 3) Renderização 3 + 3 colunas
     row1 = st.columns(3)
     row2 = st.columns(3)
     cards = row1 + row2
@@ -458,7 +459,6 @@ with tabs[1]:
                 f"- Família: *{e['família']}*\n"
                 f"- Nota: *{e['nota']}*\n"
             )
-
 
     # ---------- UP AMAZÔNICO 2: Sociobioeconomia ----------
     st.markdown("---")
@@ -501,22 +501,22 @@ with tabs[1]:
     st.markdown("---")
     st.subheader("Proposta de valor para P&D e negócio 🚀")
     st.markdown(
-            "- ⚡ **Velocidade de P&D**: triagem digital antes do laboratório.\n"
-            "- 🧬 **Precisão**: possibilidade de usar **perfis reais** de ácidos graxos (quando habilitado no Blend).\n"
-            "- ♻️ **Sustentabilidade**: upcycling (PFAD/soapstock) e **ESG** transparente.\n"
-            "- 🔍 **Rastreabilidade**: ficha de ingredientes e certificações (CSV exportável).\n"
-            "- 🛠️ **Customização**: ajuste do blend por **ocasião de uso** e assinatura sensorial (essências amazônicas opcionais).\n"
-            "- 📈 **Negócio**: foco em **protótipos + patentes + licenciamento** (modelo B2B)."
-        )
+        "- ⚡ **Velocidade de P&D**: triagem digital antes do laboratório.\n"
+        "- 🧬 **Precisão**: possibilidade de usar **perfis reais** de ácidos graxos (quando habilitado no Blend).\n"
+        "- ♻️ **Sustentabilidade**: upcycling (PFAD/soapstock) e **ESG** transparente.\n"
+        "- 🔍 **Rastreabilidade**: ficha de ingredientes e certificações (CSV exportável).\n"
+        "- 🛠️ **Customização**: ajuste do blend por **ocasião de uso** e assinatura sensorial (essências amazônicas opcionais).\n"
+        "- 📈 **Negócio**: foco em **protótipos + patentes + licenciamento** (modelo B2B)."
+    )
 
     with st.expander("💡 Exemplos de posicionamento/claims (ideias)"):
-            st.markdown(
-                "- “Toque sedoso com rápida absorção” (mãos/corpo)\n"
-                "- “Nutrição e maciez com leveza” (corpo)\n"
-                "- “Perfil balanceado para peles delicadas” (rosto)\n"
-                "- “Brilho e emoliência com controle de frizz” (cabelos)\n"
-            )
-            st.caption("Claims dependem de validação de bancada e requisitos regulatórios.")
+        st.markdown(
+            "- “Toque sedoso com rápida absorção” (mãos/corpo)\n"
+            "- “Nutrição e maciez com leveza” (corpo)\n"
+            "- “Perfil balanceado para peles delicadas” (rosto)\n"
+            "- “Brilho e emoliência com controle de frizz” (cabelos)\n"
+        )
+        st.caption("Claims dependem de validação de bancada e requisitos regulatórios.")
 
 
 # ------- BLEND ENZIMÁTICO -------
