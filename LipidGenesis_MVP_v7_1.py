@@ -411,7 +411,7 @@ with tabs[1]:
         """,
         help="Mapa qualitativo ampliado: inclui frações da palma e palmiste, além de PFAD e soapstock (upcycling)."
     )
-    st.caption("Nota: **soapstock** requer adequação regulatória (refino/esterificação e dossiê) antes de uso em 
+    st.caption("Nota: **soapstock** requer adequação regulatória (refino/esterificação e dossiê) antes de uso em cosméticos.")
 
                # ---------- UP AMAZÔNICO 1: Assinatura Sensorial ----------
 st.markdown("---")
