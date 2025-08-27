@@ -414,15 +414,15 @@ with tabs[1]:
     st.caption("Nota: **soapstock** requer adequação regulatória (refino/esterificação e dossiê) antes de uso em cosméticos.")
 
     # ---------- UP AMAZÔNICO 1: Assinatura Sensorial ----------
-    st.markdown("---")
-    st.subheader("Assinatura Sensorial Amazônica (opcional) 🍃")
-    st.caption("Vitrine inspiracional de essências; a seleção efetiva é feita na aba **Assistente de Formulação**.")
+st.markdown("---")
+st.subheader("Assinatura Sensorial Amazônica (opcional) 🍃")
+st.caption("Vitrine inspiracional de essências; a seleção efetiva é feita na aba **Assistente de Formulação**.")
 
-    # Fallback local de essências (6 itens, layout 3+3, cada uma com emoji próprio)
+# 1) Fonte de dados: usa ESSENCIAS se existir; senão, fallback local (6 itens)
 try:
-    _ess = ESSENCIAS  # se você já definiu globalmente
+    _ess_raw = ESSENCIAS  # pode NÃO ter 'emoji' em cada item
 except NameError:
-    _ess = [
+    _ess_raw = [
         {"emoji": "🌰", "nome": "Cumaru (Tonka)",      "acorde": "baunilha-amêndoa",   "família": "oriental",   "nota": "fundo"},
         {"emoji": "🔥", "nome": "Breu-branco",         "acorde": "resinoso-limpo",     "família": "balsâmico",  "nota": "coração"},
         {"emoji": "🌿", "nome": "Priprioca",           "acorde": "terroso-amadeirado", "família": "amadeirado", "nota": "coração"},
@@ -431,11 +431,23 @@ except NameError:
         {"emoji": "🌸", "nome": "Pau-rosa (Rosewood)", "acorde": "floral-amadeirado",  "família": "floral",     "nota": "coração"},
     ]
 
-    # Layout responsivo 3 + 3 colunas
+# 2) Normalização: garante campos e atribui emoji padrão quando faltar
+_default_emojis = ["🌰","🔥","🌿","🌳","🍂","🌸","🌺","🌲"]
+_ess = []
+for i, e in enumerate(_ess_raw[:6]):
+    _ess.append({
+        "emoji":   e.get("emoji", _default_emojis[i % len(_default_emojis)]),
+        "nome":    e.get("nome", "Essência"),
+        "acorde":  e.get("acorde", "—"),
+        "família": e.get("família", "—"),
+        "nota":    e.get("nota", "—"),
+    })
+
+# 3) Renderização 3 + 3 colunas (agora é seguro usar e['emoji'])
 row1 = st.columns(3)
 row2 = st.columns(3)
 cards = row1 + row2
-for col, e in zip(cards, _ess[:6]):
+for col, e in zip(cards, _ess):
     with col:
         st.markdown(
             f"**{e['emoji']} {e['nome']}**\n\n"
@@ -443,6 +455,7 @@ for col, e in zip(cards, _ess[:6]):
             f"- Família: *{e['família']}*\n"
             f"- Nota: *{e['nota']}*\n"
         )
+
 
     # ---------- UP AMAZÔNICO 2: Sociobioeconomia ----------
     st.markdown("---")
