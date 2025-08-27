@@ -411,16 +411,16 @@ with tabs[1]:
         """,
         help="Mapa qualitativo ampliado: inclui frações da palma e palmiste, além de PFAD e soapstock (upcycling)."
     )
-    st.caption("Nota: **soapstock** requer adequação regulatória (refino/esterificação e dossiê) antes de uso em cosméticos.")
+    st.caption("Nota: **soapstock** requer adequação regulatória (refino/esterificação e dossiê) antes de uso em 
 
-    # ---------- UP AMAZÔNICO 1: Assinatura Sensorial ----------
-    st.markdown("---")
-    st.subheader("Assinatura Sensorial Amazônica (opcional) 🍃")
-    st.caption("Vitrine inspiracional de essências; a seleção efetiva é feita na aba **Assistente de Formulação**.")
+               # ---------- UP AMAZÔNICO 1: Assinatura Sensorial ----------
+st.markdown("---")
+st.subheader("Assinatura Sensorial Amazônica (opcional) 🍃")
+st.caption("Vitrine inspiracional de essências; a seleção efetiva é feita na aba **Assistente de Formulação**.")
 
-    # Fallback local de essências (6 itens, layout 3+3, cada uma com emoji próprio)
+# 1) Fonte de dados: usa ESSENCIAS se existir; senão, fallback local (com 6 itens)
 try:
-    _ess = ESSENCIAS  # se você já definiu globalmente
+    _ess = ESSENCIAS  # se você já definiu globalmente (pode NÃO ter 'emoji' em cada item)
 except NameError:
     _ess = [
         {"emoji": "🌰", "nome": "Cumaru (Tonka)",      "acorde": "baunilha-amêndoa",   "família": "oriental",   "nota": "fundo"},
@@ -431,17 +431,26 @@ except NameError:
         {"emoji": "🌸", "nome": "Pau-rosa (Rosewood)", "acorde": "floral-amadeirado",  "família": "floral",     "nota": "coração"},
     ]
 
-    # Layout responsivo 3 + 3 colunas
+# 2) Loop robusto: suporta itens sem 'emoji' (usa defaults) e campos faltantes
 row1 = st.columns(3)
 row2 = st.columns(3)
 cards = row1 + row2
-for col, e in zip(cards, _ess[:6]):
+
+_default_emojis = ["🌰","🔥","🌿","🌳","🍂","🌸","🌺","🌲"]
+
+for i, (col, e) in enumerate(zip(cards, _ess[:6])):
     with col:
+        emoji   = e.get("emoji", _default_emojis[i % len(_default_emojis)])
+        nome    = e.get("nome", "Essência")
+        acorde  = e.get("acorde", "—")
+        familia = e.get("família", "—")
+        nota    = e.get("nota", "—")
+
         st.markdown(
-            f"**{e['emoji']} {e['nome']}**\n\n"
-            f"- Acorde: *{e['acorde']}*\n"
-            f"- Família: *{e['família']}*\n"
-            f"- Nota: *{e['nota']}*\n"
+            f"**{emoji} {nome}**\n\n"
+            f"- Acorde: *{acorde}*\n"
+            f"- Família: *{familia}*\n"
+            f"- Nota: *{nota}*\n"
         )
 
     # ---------- UP AMAZÔNICO 2: Sociobioeconomia ----------
