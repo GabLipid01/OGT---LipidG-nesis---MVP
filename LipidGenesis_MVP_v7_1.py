@@ -47,6 +47,7 @@ ESSENCIAS = [
     {"nome": "Priprioca", "acorde": "terroso-amadeirado", "família": "amadeirado", "nota": "coração"},
     {"nome": "Copaíba", "acorde": "amadeirado-resinoso", "família": "amadeirado", "nota": "fundo"},
     {"nome": "Patchouli Amazônico", "acorde": "terroso-úmido", "família": "chipre", "nota": "fundo"},
+    {"nome": "Pau-rosa (Rosewood)", "acorde": "floral-amadeirado", "família": "floral", "nota": "coração"},
 ]
 
 # Constantes para estimar II a partir de FA (%), usando fatores aproximados (Wij's)
@@ -434,23 +435,13 @@ except NameError:
 row1 = st.columns(3)
 row2 = st.columns(3)
 cards = row1 + row2
-
-# opcional: emojis padrão para distribuir quando faltar
-_default_emojis = ["🌰","🔥","🌿","🌳","🍂","🌸","🌺","🌲"]
-
-for i, (col, e) in enumerate(zip(cards, _ess[:6])):
+for col, e in zip(cards, _ess[:6]):
     with col:
-        emoji   = e.get("emoji", _default_emojis[i % len(_default_emojis)])
-        nome    = e.get("nome", "Essência")
-        acorde  = e.get("acorde", "—")
-        familia = e.get("família", "—")
-        nota    = e.get("nota", "—")
-
         st.markdown(
-            f"**{emoji} {nome}**\n\n"
-            f"- Acorde: *{acorde}*\n"
-            f"- Família: *{familia}*\n"
-            f"- Nota: *{nota}*\n"
+            f"**{e['emoji']} {e['nome']}**\n\n"
+            f"- Acorde: *{e['acorde']}*\n"
+            f"- Família: *{e['família']}*\n"
+            f"- Nota: *{e['nota']}*\n"
         )
 
     # ---------- UP AMAZÔNICO 2: Sociobioeconomia ----------
