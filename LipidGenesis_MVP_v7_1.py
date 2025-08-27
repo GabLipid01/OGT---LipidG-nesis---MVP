@@ -431,11 +431,11 @@ with tabs[1]:
             {"nome": "Pau-rosa (Rosewood)", "acorde": "floral-amadeirado", "família": "floral", "nota": "coração"},
         ]
 
-    # 🔹 Layout responsivo (3 + 2 colunas)
+    # 🔹 Layout responsivo (3 + 3 colunas)
     row1 = st.columns(3)
-    row2 = st.columns(2)
+    row2 = st.columns(3)
     cards = row1 + row2
-    for col, e in zip(cards, _ess[:5]):
+    for col, e in zip(cards, _ess[:6]):
         with col:
             st.markdown(
                 f"**🌿 {e['nome']}**\n\n"
