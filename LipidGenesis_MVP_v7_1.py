@@ -418,19 +418,6 @@ st.markdown("---")
 st.subheader("Assinatura Sensorial Amazônica (opcional) 🍃")
 st.caption("Vitrine inspiracional de essências; a seleção efetiva é feita na aba **Assistente de Formulação**.")
 
-# 1) Fonte de dados: usa ESSENCIAS se existir; senão, fallback local (6 itens)
-try:
-    _ess_raw = ESSENCIAS  # pode NÃO ter 'emoji' em cada item
-except NameError:
-    _ess_raw = [
-        {"emoji": "🌰", "nome": "Cumaru (Tonka)",      "acorde": "baunilha-amêndoa",   "família": "oriental",   "nota": "fundo"},
-        {"emoji": "🔥", "nome": "Breu-branco",         "acorde": "resinoso-limpo",     "família": "balsâmico",  "nota": "coração"},
-        {"emoji": "🌿", "nome": "Priprioca",           "acorde": "terroso-amadeirado", "família": "amadeirado", "nota": "coração"},
-        {"emoji": "🌳", "nome": "Copaíba",             "acorde": "amadeirado-resinoso","família": "amadeirado", "nota": "fundo"},
-        {"emoji": "🍂", "nome": "Patchouli Amazônico", "acorde": "terroso-úmido",      "família": "chipre",     "nota": "fundo"},
-        {"emoji": "🌸", "nome": "Pau-rosa (Rosewood)", "acorde": "floral-amadeirado",  "família": "floral",     "nota": "coração"},
-    ]
-
 # --- Definição + normalização das essências (coloque ANTES do loop 3+3) ---
 
 # 1) Fonte de dados: usa ESSENCIAS se existir; senão, fallback local
