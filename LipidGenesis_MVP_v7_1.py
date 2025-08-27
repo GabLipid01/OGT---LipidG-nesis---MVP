@@ -494,7 +494,7 @@ st.markdown(
         "- 📈 **Negócio**: foco em **protótipos + patentes + licenciamento** (modelo B2B)."
     )
 
-    with st.expander("💡 Exemplos de posicionamento/claims (ideias)"):
+with st.expander("💡 Exemplos de posicionamento/claims (ideias)"):
         st.markdown(
             "- “Toque sedoso com rápida absorção” (mãos/corpo)\n"
             "- “Nutrição e maciez com leveza” (corpo)\n"
