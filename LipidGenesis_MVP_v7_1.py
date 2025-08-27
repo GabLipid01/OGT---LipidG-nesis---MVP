@@ -367,8 +367,7 @@ with tabs[0]:
         st.write("Modelo: **protótipos + patentes + licenças** (B2B).")
 
     # (rodapé permanece exatamente como está no seu arquivo)
- 
-    # ------- PROPOSTA COSMÉTICA (6 essências, layout 3+3) -------
+ # ------- PROPOSTA COSMÉTICA (ajustada com ponte para Home) -------
 with tabs[1]:
     st.header("Proposta Cosmética 💄")
     st.write(
@@ -413,45 +412,35 @@ with tabs[1]:
     )
     st.caption("Nota: **soapstock** requer adequação regulatória (refino/esterificação e dossiê) antes de uso em cosméticos.")
 
-               # ---------- UP AMAZÔNICO 1: Assinatura Sensorial ----------
-st.markdown("---")
-st.subheader("Assinatura Sensorial Amazônica (opcional) 🍃")
-st.caption("Vitrine inspiracional de essências; a seleção efetiva é feita na aba **Assistente de Formulação**.")
+    # ---------- UP AMAZÔNICO 1: Assinatura Sensorial ----------
+    st.markdown("---")
+    st.subheader("Assinatura Sensorial Amazônica (opcional) 🍃")
+    st.caption("Vitrine inspiracional de essências; a seleção efetiva é feita na aba **Assistente de Formulação**.")
 
-# 1) Fonte de dados: usa ESSENCIAS se existir; senão, fallback local (com 6 itens)
-try:
-    _ess = ESSENCIAS  # se você já definiu globalmente (pode NÃO ter 'emoji' em cada item)
-except NameError:
-    _ess = [
-        {"emoji": "🌰", "nome": "Cumaru (Tonka)",      "acorde": "baunilha-amêndoa",   "família": "oriental",   "nota": "fundo"},
-        {"emoji": "🔥", "nome": "Breu-branco",         "acorde": "resinoso-limpo",     "família": "balsâmico",  "nota": "coração"},
-        {"emoji": "🌿", "nome": "Priprioca",           "acorde": "terroso-amadeirado", "família": "amadeirado", "nota": "coração"},
-        {"emoji": "🌳", "nome": "Copaíba",             "acorde": "amadeirado-resinoso","família": "amadeirado", "nota": "fundo"},
-        {"emoji": "🍂", "nome": "Patchouli Amazônico", "acorde": "terroso-úmido",      "família": "chipre",     "nota": "fundo"},
-        {"emoji": "🌸", "nome": "Pau-rosa (Rosewood)", "acorde": "floral-amadeirado",  "família": "floral",     "nota": "coração"},
-    ]
+    # Fallback local de essências (não interfere no Assistente)
+    try:
+        _ess = ESSENCIAS  # se você já definiu globalmente
+    except NameError:
+        _ess = [
+            {"nome": "Cumaru (Tonka)", "acorde": "baunilha-amêndoa", "família": "oriental", "nota": "fundo"},
+            {"nome": "Breu-branco", "acorde": "resinoso-limpo", "família": "balsâmico", "nota": "coração"},
+            {"nome": "Priprioca", "acorde": "terroso-amadeirado", "família": "amadeirado", "nota": "coração"},
+            {"nome": "Copaíba", "acorde": "amadeirado-resinoso", "família": "amadeirado", "nota": "fundo"},
+            {"nome": "Patchouli Amazônico", "acorde": "terroso-úmido", "família": "chipre", "nota": "fundo"},
+        ]
 
-# 2) Loop robusto: suporta itens sem 'emoji' (usa defaults) e campos faltantes
-row1 = st.columns(3)
-row2 = st.columns(3)
-cards = row1 + row2
-
-_default_emojis = ["🌰","🔥","🌿","🌳","🍂","🌸","🌺","🌲"]
-
-for i, (col, e) in enumerate(zip(cards, _ess[:6])):
-    with col:
-        emoji   = e.get("emoji", _default_emojis[i % len(_default_emojis)])
-        nome    = e.get("nome", "Essência")
-        acorde  = e.get("acorde", "—")
-        familia = e.get("família", "—")
-        nota    = e.get("nota", "—")
-
-        st.markdown(
-            f"**{emoji} {nome}**\n\n"
-            f"- Acorde: *{acorde}*\n"
-            f"- Família: *{familia}*\n"
-            f"- Nota: *{nota}*\n"
-        )
+    # 🔹 Layout responsivo (3 + 2 colunas)
+    row1 = st.columns(3)
+    row2 = st.columns(2)
+    cards = row1 + row2
+    for col, e in zip(cards, _ess[:5]):
+        with col:
+            st.markdown(
+                f"**🌿 {e['nome']}**\n\n"
+                f"- Acorde: *{e['acorde']}*\n"
+                f"- Família: *{e['família']}*\n"
+                f"- Nota: *{e['nota']}*\n"
+            )
 
     # ---------- UP AMAZÔNICO 2: Sociobioeconomia ----------
     st.markdown("---")
@@ -468,7 +457,7 @@ for i, (col, e) in enumerate(zip(cards, _ess[:6])):
     with cD:
         repart = st.checkbox("Repartição de benefícios documentada", False)
 
-    # Índice 0–100 com persistência
+    # 🔹 Índice 0–100 com persistência
     score_amz = 0 + 25*int(origem) + 35*int(rastreio) + 20*int(cert) + 20*int(repart)
     score_amz = max(0, min(100, score_amz))
     st.metric("Índice de Narrativa Amazônica", f"{score_amz} / 100")
@@ -495,7 +484,6 @@ for i, (col, e) in enumerate(zip(cards, _ess[:6])):
         st.caption("Claims dependem de validação de bancada e requisitos regulatórios.")
 
     st.caption("Esta aba apresenta a **proposta cosmética, assinatura sensorial e narrativa amazônica**, sem repetir instruções já mostradas na Home.")
-
 # ------- BLEND ENZIMÁTICO -------
 with tabs[2]:
     st.header("Blend Enzimático")
