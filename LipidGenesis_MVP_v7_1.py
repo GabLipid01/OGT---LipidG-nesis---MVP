@@ -446,25 +446,42 @@ for col, e in zip(cards, _ess[:6]):
 
 
     # ---------- UP AMAZÔNICO 2: Sociobioeconomia ----------
-    st.markdown("---")
-    st.subheader("Sociobioeconomia (indicadores de origem) 🌎")
-    st.caption("Indicadores de narrativa e diligência; não substituem certificações formais.")
+st.markdown("---")
+st.subheader("Sociobioeconomia (indicadores de origem) 🌎")
+st.caption("Indicadores de narrativa e diligência; não substituem certificações formais.")
 
-    cA, cB, cC, cD = st.columns(4)
-    with cA:
-        origem = st.checkbox("Origem comunitária/cooperativa", False)
-    with cB:
-        rastreio = st.checkbox("Rastreabilidade confirmada", False)
-    with cC:
-        cert = st.checkbox("Certificação socioambiental (ex.: orgânico/fair)", False)
-    with cD:
-        repart = st.checkbox("Repartição de benefícios documentada", False)
+cA, cB, cC, cD = st.columns(4)
 
-    # 🔹 Índice 0–100 com persistência
-    score_amz = 0 + 25*int(origem) + 35*int(rastreio) + 20*int(cert) + 20*int(repart)
-    score_amz = max(0, min(100, score_amz))
-    st.metric("Índice de Narrativa Amazônica", f"{score_amz} / 100")
-    st.session_state["indice_narrativa_amazonia"] = score_amz
+with cA:
+    origem = st.checkbox(
+        "Origem comunitária/cooperativa",
+        value=st.session_state.get("soc_origem", False),
+        key="chk_soc_origem"
+    )
+with cB:
+    rastreio = st.checkbox(
+        "Rastreabilidade confirmada",
+        value=st.session_state.get("soc_rastreio", False),
+        key="chk_soc_rastreio"
+    )
+with cC:
+    cert = st.checkbox(
+        "Certificação socioambiental (ex.: orgânico/fair)",
+        value=st.session_state.get("soc_cert", False),
+        key="chk_soc_cert"
+    )
+with cD:
+    repart = st.checkbox(
+        "Repartição de benefícios documentada",
+        value=st.session_state.get("soc_repart", False),
+        key="chk_soc_repart"
+    )
+
+# Índice 0–100 com persistência
+score_amz = 0 + 25*int(origem) + 35*int(rastreio) + 20*int(cert) + 20*int(repart)
+score_amz = max(0, min(100, score_amz))
+st.metric("Índice de Narrativa Amazônica", f"{score_amz} / 100")
+st.session_state["indice_narrativa_amazonia"] = score_amz
 
     st.markdown("---")
     st.subheader("Proposta de valor para P&D e negócio 🚀")
