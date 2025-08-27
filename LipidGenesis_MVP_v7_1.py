@@ -431,11 +431,39 @@ except NameError:
         {"emoji": "🌸", "nome": "Pau-rosa (Rosewood)", "acorde": "floral-amadeirado",  "família": "floral",     "nota": "coração"},
     ]
 
-# Layout responsivo 3 + 3 colunas
+# --- Definição + normalização das essências (coloque ANTES do loop 3+3) ---
+
+# 1) Fonte de dados: usa ESSENCIAS se existir; senão, fallback local
+try:
+    _ess_raw = ESSENCIAS  # sua lista global (pode não ter 'emoji' em todos)
+except NameError:
+    _ess_raw = [
+        {"emoji": "🌰", "nome": "Cumaru (Tonka)",      "acorde": "baunilha-amêndoa",   "família": "oriental",   "nota": "fundo"},
+        {"emoji": "🔥", "nome": "Breu-branco",         "acorde": "resinoso-limpo",     "família": "balsâmico",  "nota": "coração"},
+        {"emoji": "🌿", "nome": "Priprioca",           "acorde": "terroso-amadeirado", "família": "amadeirado", "nota": "coração"},
+        {"emoji": "🌳", "nome": "Copaíba",             "acorde": "amadeirado-resinoso","família": "amadeirado", "nota": "fundo"},
+        {"emoji": "🍂", "nome": "Patchouli Amazônico", "acorde": "terroso-úmido",      "família": "chipre",     "nota": "fundo"},
+        {"emoji": "🌸", "nome": "Pau-rosa (Rosewood)", "acorde": "floral-amadeirado",  "família": "floral",     "nota": "coração"},
+    ]
+
+# 2) Normalização: garante chaves e aplica emoji padrão quando faltar
+_default_emojis = ["🌰","🔥","🌿","🌳","🍂","🌸","🌺","🌲"]
+_ess = []
+for i, e in enumerate(_ess_raw[:6]):
+    _ess.append({
+        "emoji":   e.get("emoji", _default_emojis[i % len(_default_emojis)]),
+        "nome":    e.get("nome", "Essência"),
+        "acorde":  e.get("acorde", "—"),
+        "família": e.get("família", "—"),
+        "nota":    e.get("nota", "—"),
+    })
+
+# --- Renderização 3 + 3 colunas ---
 row1 = st.columns(3)
 row2 = st.columns(3)
 cards = row1 + row2
-for col, e in zip(cards, _ess[:6]):
+
+for col, e in zip(cards, _ess):
     with col:
         st.markdown(
             f"**{e['emoji']} {e['nome']}**\n\n"
