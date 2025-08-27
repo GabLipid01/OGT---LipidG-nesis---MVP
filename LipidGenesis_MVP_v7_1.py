@@ -418,31 +418,31 @@ with tabs[1]:
     st.subheader("Assinatura Sensorial Amazônica (opcional) 🍃")
     st.caption("Vitrine inspiracional de essências; a seleção efetiva é feita na aba **Assistente de Formulação**.")
 
-    # Fallback local de essências (não interfere no Assistente)
-    try:
-        _ess = ESSENCIAS  # se você já definiu globalmente
-    except NameError:
-        _ess = [
-            {"nome": "Cumaru (Tonka)", "acorde": "baunilha-amêndoa", "família": "oriental", "nota": "fundo"},
-            {"nome": "Breu-branco", "acorde": "resinoso-limpo", "família": "balsâmico", "nota": "coração"},
-            {"nome": "Priprioca", "acorde": "terroso-amadeirado", "família": "amadeirado", "nota": "coração"},
-            {"nome": "Copaíba", "acorde": "amadeirado-resinoso", "família": "amadeirado", "nota": "fundo"},
-            {"nome": "Patchouli Amazônico", "acorde": "terroso-úmido", "família": "chipre", "nota": "fundo"},
-            {"nome": "Pau-rosa (Rosewood)", "acorde": "floral-amadeirado", "família": "floral", "nota": "coração"},
-        ]
+    # Fallback local de essências (6 itens, layout 3+3, cada uma com emoji próprio)
+try:
+    _ess = ESSENCIAS  # se você já definiu globalmente
+except NameError:
+    _ess = [
+        {"emoji": "🌰", "nome": "Cumaru (Tonka)",      "acorde": "baunilha-amêndoa",   "família": "oriental",   "nota": "fundo"},
+        {"emoji": "🔥", "nome": "Breu-branco",         "acorde": "resinoso-limpo",     "família": "balsâmico",  "nota": "coração"},
+        {"emoji": "🌿", "nome": "Priprioca",           "acorde": "terroso-amadeirado", "família": "amadeirado", "nota": "coração"},
+        {"emoji": "🌳", "nome": "Copaíba",             "acorde": "amadeirado-resinoso","família": "amadeirado", "nota": "fundo"},
+        {"emoji": "🍂", "nome": "Patchouli Amazônico", "acorde": "terroso-úmido",      "família": "chipre",     "nota": "fundo"},
+        {"emoji": "🌸", "nome": "Pau-rosa (Rosewood)", "acorde": "floral-amadeirado",  "família": "floral",     "nota": "coração"},
+    ]
 
-    # 🔹 Layout responsivo (3 + 3 colunas)
-    row1 = st.columns(3)
-    row2 = st.columns(3)
-    cards = row1 + row2
-    for col, e in zip(cards, _ess[:6]):
-        with col:
-            st.markdown(
-                f"**🌿 {e['nome']}**\n\n"
-                f"- Acorde: *{e['acorde']}*\n"
-                f"- Família: *{e['família']}*\n"
-                f"- Nota: *{e['nota']}*\n"
-            )
+    # Layout responsivo 3 + 3 colunas
+row1 = st.columns(3)
+row2 = st.columns(3)
+cards = row1 + row2
+for col, e in zip(cards, _ess[:6]):
+    with col:
+        st.markdown(
+            f"**{e['emoji']} {e['nome']}**\n\n"
+            f"- Acorde: *{e['acorde']}*\n"
+            f"- Família: *{e['família']}*\n"
+            f"- Nota: *{e['nota']}*\n"
+        )
 
     # ---------- UP AMAZÔNICO 2: Sociobioeconomia ----------
     st.markdown("---")
