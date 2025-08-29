@@ -107,17 +107,18 @@ with tabs[0]:
 
     st.markdown("---")
 
-    # KPIs em 2x2 (mais responsivo)
-    k1, k2 = st.columns(2)
-    with k1:
-        st.metric("Indústria-alvo", "Cosméticos")
-    with k2:
-        st.metric("Rota", "Enzimática")
-    k3, k4 = st.columns(2)
-    with k3:
-        st.metric("Plataforma", "LipidGenesis")
-    with k4:
-        st.metric("Módulo", "LipidPalma™")
+    # --- KPIs institucionais em linha única ---
+st.markdown("---")
+k1, k2, k3, k4 = st.columns(4)
+
+with k1:
+    st.metric("Indústria-alvo", "Cosméticos")
+with k2:
+    st.metric("Rota", "Enzimática")
+with k3:
+    st.metric("Plataforma", "LipidGenesis")
+with k4:
+    st.metric("Módulo", "LipidPalma™")
 
     st.markdown("---")
 
