@@ -110,37 +110,37 @@ A integração com a **sociobioeconomia amazônica** começa pela **assinatura s
     st.markdown("")
     col_l, col_c, col_r = st.columns([1, 2, 1])
     with col_c:
-    found_logo = show_first_existing_image(
-        [
-            "logo_ogtera.png.PNG", "logo_ogtera.jpg", "ogtera.png",
-            "assets/logo_ogtera.png", "assets/ogtera.png",
-            "static/logo_ogtera.png", "static/ogtera.png"
-        ],
-        caption=None,  # sem legenda
-        use_container_width=True
-    )
-    if not found_logo:
-        st.info("⚠️ Adicione o arquivo da logomarca ao repositório (por ex.: `logo_ogtera.png`).")
+        found_logo = show_first_existing_image(
+            [
+                "logo_ogtera.png.PNG", "logo_ogtera.jpg", "ogtera.png",
+                "assets/logo_ogtera.png", "assets/ogtera.png",
+                "static/logo_ogtera.png", "static/ogtera.png"
+            ],
+            caption=None,  # sem legenda
+            use_container_width=True
+        )
+        if not found_logo:
+            st.info("⚠️ Adicione o arquivo da logomarca ao repositório (por ex.: `logo_ogtera.png`).")
 
 # --- Mockup cosmético maior, centralizado ---
     st.markdown("")
     m1, m2, m3 = st.columns([1, 2, 1])
     with m2:
-    found_mock = show_first_existing_image(
-        [
-            "cosmetico.png.PNG", "mockup_cosmetico.png", "mockup.png",
-            "assets/cosmetico.png", "assets/mockup_cosmetico.png",
-            "static/cosmetico.png", "static/mockup_cosmetico.png"
-        ],
-        caption=None,  # sem “Aplicação cosmética”
-        use_container_width=True
-    )
-    if not found_mock:
-        st.info("⚠️ Adicione o mockup (ex.: `cosmetico.png`) na raiz, `assets/` ou `static/`.")
+        found_mock = show_first_existing_image(
+            [
+                "cosmetico.png.PNG", "mockup_cosmetico.png", "mockup.png",
+                "assets/cosmetico.png", "assets/mockup_cosmetico.png",
+                "static/cosmetico.png", "static/mockup_cosmetico.png"
+            ],
+            caption=None,  # sem “Aplicação cosmética”
+            use_container_width=True
+        )
+        if not found_mock:
+            st.info("⚠️ Adicione o mockup (ex.: `cosmetico.png`) na raiz, `assets/` ou `static/`.")
 
-with right:
-    st.caption("Documentação: README/PDF (quando disponível).")
+    with right:
         st.caption("Documentação: README/PDF (quando disponível).")
+        
 
 # ======================================================================
 # TAB 1 — PROPOSTA COSMÉTICA (consolidada)
