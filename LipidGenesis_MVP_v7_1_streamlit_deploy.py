@@ -1,11 +1,24 @@
 # -*- coding: utf-8 -*-
 # LipidGenesis_MVP_v7_1_streamlit_deploy.py — OGTera / LipidPalma (MVP) — 8 abas
 
+import os
 import streamlit as st
 import pandas as pd
 import matplotlib.pyplot as plt
 import json, io, math
 from collections import OrderedDict
+
+def show_first_existing_image(candidates, *, caption=None, use_container_width=True, target=None):
+    """
+    Tenta exibir a primeira imagem existente na lista `candidates`.
+    Retorna True se conseguiu, False se nenhum arquivo foi encontrado.
+    """
+    area = target if target is not None else st
+    for path in candidates:
+        if os.path.exists(path):
+            area.image(path, caption=caption, use_container_width=use_container_width)
+            return True
+    return False
 
 # ---------------- Page config ----------------
 try:
@@ -96,6 +109,39 @@ A integração com a **sociobioeconomia amazônica** começa pela **assinatura s
     left, right = st.columns([2,1])
     with left:
         st.caption("v7.1 • OGTera — MVP de validação de conceito.")
+        
+        # --- Cabeçalho visual: logo centralizada pequena ---
+
+    st.markdown("")
+    col_l, col_c, col_r = st.columns([1, 2, 1])
+    with col_c:
+    found_logo = show_first_existing_image(
+        [
+            "logo_ogtera.png.PNG", "logo_ogtera.jpg", "ogtera.png",
+            "assets/logo_ogtera.png", "assets/ogtera.png",
+            "static/logo_ogtera.png", "static/ogtera.png"
+        ],
+        caption=None,  # sem legenda
+        use_container_width=True
+    )
+    if not found_logo:
+        st.info("⚠️ Adicione o arquivo da logomarca ao repositório (por ex.: `logo_ogtera.png`).")
+
+# --- Mockup cosmético maior, centralizado ---
+    st.markdown("")
+    m1, m2, m3 = st.columns([1, 2, 1])
+    with m2:
+    found_mock = show_first_existing_image(
+        [
+            "cosmetico.png.PNG", "mockup_cosmetico.png", "mockup.png",
+            "assets/cosmetico.png", "assets/mockup_cosmetico.png",
+            "static/cosmetico.png", "static/mockup_cosmetico.png"
+        ],
+        caption=None,  # sem “Aplicação cosmética”
+        use_container_width=True
+    )
+    if not found_mock:
+        st.info("⚠️ Adicione o mockup (ex.: `cosmetico.png`) na raiz, `assets/` ou `static/`.")
     with right:
         st.caption("Documentação: README/PDF (quando disponível).")
 
