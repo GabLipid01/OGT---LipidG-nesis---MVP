@@ -8,17 +8,15 @@ import matplotlib.pyplot as plt
 import json, io, math
 from collections import OrderedDict
 
-def show_first_existing_image(candidates, *, caption=None, use_container_width=True, target=None):
+def _first_existing(paths):
     """
-    Tenta exibir a primeira imagem existente na lista `candidates`.
-    Retorna True se conseguiu, False se nenhum arquivo foi encontrado.
+    Retorna o primeiro caminho existente de uma lista de caminhos de arquivo.
+    Se nenhum arquivo existir, retorna None.
     """
-    area = target if target is not None else st
-    for path in candidates:
-        if os.path.exists(path):
-            area.image(path, caption=caption, use_container_width=use_container_width)
-            return True
-    return False
+    for p in paths:
+        if os.path.exists(p):
+            return p
+    return None
 
 # ---------------- Page config ----------------
 try:
