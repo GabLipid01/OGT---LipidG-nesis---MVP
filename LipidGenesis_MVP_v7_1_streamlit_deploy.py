@@ -122,18 +122,24 @@ with k4:
 
     st.markdown("---")
 
-    # Pilares de confiança com ícones (visual mais “beauty”)
-    st.subheader("Camadas de confiança")
-    p1, p2, p3 = st.columns(3)
-    with p1:
-        st.markdown("### ♻️ ESG transparente")
-        st.write("Score 0–100 com critérios claros: upcycling, RSPO, orgânico, fair trade, saturados.")
-    with p2:
-        st.markdown("### 📦 Rastreabilidade")
-        st.write("Ficha de ingredientes (fornecedor, lote, certificações) com exportação CSV.")
-    with p3:
-        st.markdown("### 📜 Licenciamento")
-        st.write("Modelo: **protótipos + patentes + licenças** (B2B).")
+    # --- Camadas de confiança (layout estável e responsivo) ---
+st.markdown("---")
+st.subheader("Camadas de confiança")
+
+c1, c2, c3 = st.columns(3)
+
+with c1:
+    st.markdown("**♻️ ESG transparente**")
+    st.caption("Score 0–100: upcycling, RSPO, orgânico, fair trade, saturados.")
+
+with c2:
+    st.markdown("**📦 Rastreabilidade**")
+    st.caption("Ficha de ingredientes (fornecedor, lote, certificações) + exportação CSV.")
+
+with c3:
+    st.markdown("**📜 Licenciamento**")
+    st.caption("Modelo B2B: protótipos + patentes + licenças.")
+
 
 # ======================================================================
 # TAB 1 — PROPOSTA COSMÉTICA (consolidada)
