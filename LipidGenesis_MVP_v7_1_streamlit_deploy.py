@@ -137,9 +137,6 @@ A integração com a **sociobioeconomia amazônica** começa pela **assinatura s
         )
         if not found_mock:
             st.info("⚠️ Adicione o mockup (ex.: `cosmetico.png`) na raiz, `assets/` ou `static/`.")
-
-    with right:
-        st.caption("Documentação: README/PDF (quando disponível).")
         
 
 # ======================================================================
