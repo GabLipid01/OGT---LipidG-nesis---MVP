@@ -215,24 +215,6 @@ with tabs[1]:
             )
 
     st.markdown("---")
-    st.subheader("Sociobioeconomia (indicadores de origem) 🌎")
-    st.caption("Indicadores de narrativa e diligência; não substituem certificações formais.")
-    cA, cB, cC, cD = st.columns(4)
-    with cA:
-        origem = st.checkbox("Origem comunitária/cooperativa", False, key="pc_soc_origem")
-    with cB:
-        rastreio = st.checkbox("Rastreabilidade confirmada", False, key="pc_soc_rastreio")
-    with cC:
-        cert = st.checkbox("Certificação socioambiental (ex.: orgânico/fair)", False, key="pc_soc_cert")
-    with cD:
-        repart = st.checkbox("Repartição de benefícios documentada", False, key="pc_soc_repart")
-
-    score_amz = 50 + 15*int(origem) + 15*int(rastreio) + 10*int(cert) + 10*int(repart)
-    score_amz = max(0, min(100, score_amz))
-    st.metric("Índice de Narrativa Amazônica", f"{score_amz} / 100")
-    st.caption("Uso interno para comunicação; ampare claims com documentos (contratos, certificações, notas fiscais).")
-
-    st.markdown("---")
     st.subheader("Proposta de valor para P&D e negócio 🚀")
     st.markdown(
         "- ⚡ **Velocidade de P&D**: triagem digital antes do laboratório.\n"
@@ -996,7 +978,24 @@ with tabs[4]:
 with tabs[5]:
     st.header("Sustentabilidade / ESG 🌱")
     st.caption("Camada de ESG e métricas (RSPO, orgânico, fair trade, upcycling).")
-    st.info("Placeholder para o MVP. Cole aqui sua lógica original quando quiser.")
+    
+    st.markdown("---")
+    st.subheader("Sociobioeconomia (indicadores de origem) 🌎")
+    st.caption("Indicadores de narrativa e diligência; não substituem certificações formais.")
+    cA, cB, cC, cD = st.columns(4)
+    with cA:
+        origem = st.checkbox("Origem comunitária/cooperativa", False, key="pc_soc_origem")
+    with cB:
+        rastreio = st.checkbox("Rastreabilidade confirmada", False, key="pc_soc_rastreio")
+    with cC:
+        cert = st.checkbox("Certificação socioambiental (ex.: orgânico/fair)", False, key="pc_soc_cert")
+    with cD:
+        repart = st.checkbox("Repartição de benefícios documentada", False, key="pc_soc_repart")
+
+    score_amz = 50 + 15*int(origem) + 15*int(rastreio) + 10*int(cert) + 10*int(repart)
+    score_amz = max(0, min(100, score_amz))
+    st.metric("Índice de Narrativa Amazônica", f"{score_amz} / 100")
+    st.caption("Uso interno para comunicação; ampare claims com documentos (contratos, certificações, notas fiscais).")
 
 # ======================================================================
 # TAB 6 — RASTREABILIDADE (placeholder leve)
