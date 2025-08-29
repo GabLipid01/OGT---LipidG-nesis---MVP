@@ -94,16 +94,16 @@ with tabs[0]:
         )
 
     with col_img:
-        # Logo institucional (se existir)
-        for fname in ["logo_ogtera.png.PNG", "logo_ogtera.png", "logo_ogtera.jpg", "logo.png", "ogtera.png"]:
+          # Logo institucional (se existir)
+        for fname in ["logo_ogtera.png.PNG", "logo_ogtera.jpg", "logo.png", "ogtera.png"]:
             if os.path.exists(fname):
-                st.image(fname, width=200)  # menor e fixo
+                st.image(fname, use_container_width=True)
                 break
 
-        # Mockup cosmético (centralizado um pouco à direita)
-        col1, col2, col3 = st.columns([2, 2, 1])
+        # Mockup cosmético (troque a URL por um arquivo local se preferir, ex.: 'mockup_cosmetico.png')
+        col1, col2, col3 = st.columns([2,2,1])
         with col2:
-            st.image("cosmetico.png.PNG", width=320)  # ajuste o tamanho conforme desejar
+            st.image("cosmetico.png.PNG.jpeg", width=400)
 
     st.markdown("---")
 
