@@ -62,83 +62,75 @@ tabs = st.tabs([
 # TAB 0 — HOME (institucional consolidado)
 # ======================================================================
 with tabs[0]:
+    # HERO em duas colunas: texto (3) + imagem/logo (2)
+    col_text, col_img = st.columns([3, 2], gap="large")
 
-      # Logo centralizada (menor)
-    st.markdown("")  # pequeno respiro
-    _, c, _ = st.columns([1, 2, 1])
-    with c:
-        logo_path = _first_existing([
-            "logo_ogtera.png.PNG", "logo_ogtera.png", "logo_ogtera.jpg", "ogtera.png",
-            "assets/logo_ogtera.png", "assets/ogtera.png",
-            "static/logo_ogtera.png", "static/ogtera.png"
-        ])
-        if logo_path:
-            st.image(logo_path, caption=None, width=220)  # menor no topo
-        else:
-            st.info("⚠️ Adicione o arquivo da logomarca ao repositório (ex.: `logo_ogtera.png`).")
+    with col_text:
+        # Título em 2 linhas (impacto + propósito)
+        st.markdown("## 🌴 **LipidPalma — Design de Blends Lipídicos Enzimáticos**")
+        st.markdown("### **Com ESG transparente e sociobioeconomia amazônica**")
 
-    def _find_first_existing(candidates):
-        for p in candidates:
-            if os.path.exists(p):
-                return p
-        return None
+        st.markdown("---")
+        st.markdown("_OGTera – The Future of Oil Disruption_  \n**Apresenta:** **LipidPalma™**")
+        st.write(
+            "Um app para **simulação e formulação** de blends lipídicos **enzimáticos** aplicados à **cosmética**. "
+            "Faz parte da linha **LipidGenesis**, a plataforma modular da **OGTera** para inovação em lipídios."
+        )
 
-    # Mockup maior logo abaixo
-    st.markdown("")  # respiro
-    _, c2, _ = st.columns([1, 2, 1])
-    with c2:
-        mock_path = first_existing([
-            "cosmetico.png.PNG", "cosmetico.png", "mockup_cosmetico.png", "mockup.png",
-            "assets/cosmetico.png", "assets/mockup_cosmetico.png",
-            "static/cosmetico.png", "static/mockup_cosmetico.png"
-        ])
-        if mock_path:
-            st.image(mock_path, caption=None, use_container_width=True)  # ocupa mais espaço
-        else:
-            st.info("⚠️ Adicione o mockup (ex.: `cosmetico.png`) na raiz, `assets/` ou `static/`.")
+        st.markdown("---")
+        st.subheader("Visão")
+        st.write(
+            "Unir **biocatálise**, **upcycling** e **rastreabilidade** com **ESG** claro. "
+            "A integração com a **sociobioeconomia amazônica** começa pela **assinatura sensorial** (essências) "
+            "e evolui para cadeias **rastreáveis**."
+        )
 
-    # ===== CONTEÚDO INSTITUCIONAL (mantido) =====
-    st.markdown("""
-***OGTera – The Future of Oil Disruption, On Demand***  
-**Apresenta:** **🌴 LipidPalma™**
+        st.subheader("Como usar")
+        st.markdown(
+            "➡️ **🧪 Blend Enzimático** — defina PFAD / RBD / PKO / DERIVADOS.  \n"
+            "➡️ **👩‍🔬 Assistente de Formulação** — escolha ocasião (mãos/corpo/rosto/cabelos) e essências (opcional).  \n"
+            "➡️ **⚗️ Protocolo de Produção** — parâmetros e custo/kg.  \n"
+            "➡️ **📄 Exportação PDF** — gere o dossiê do blend."
+        )
 
-**LipidPalma** é um app para **simulação e formulação** de blends lipídicos **enzimáticos** aplicado à **cosmética**.  
-Faz parte da linha **LipidGenesis**, a plataforma modular da **OGTera** para inovação em lipídios.
+    with col_img:
+          # Logo institucional (se existir)
+        for fname in ["logo_ogtera.png.PNG", "logo_ogtera.jpg", "logo.png", "ogtera.png"]:
+            if os.path.exists(fname):
+                st.image(fname, use_container_width=True)
+                break
 
----
-
-**Visão**  
-Unir **biocatálise**, **upcycling** e **rastreabilidade** com uma camada de **ESG** clara.  
-A integração com a **sociobioeconomia amazônica** começa pela **assinatura sensorial** (essências) e evolui para cadeias de fornecimento **rastreáveis**.
-
-**Como usar**  
-1) **🧪 Blend Enzimático** → defina PFAD/RBD/PKO e frações relacionadas.  
-2) **👩‍🔬 Assistente de Formulação** → escolha ocasião (mãos/corpo/rosto/cabelos) e essências amazônicas (opcional).  
-3) **⚗️ Protocolo de Produção** → parâmetros e custo/kg.  
-4) **📄 Exportação PDF** → gere o dossiê do blend.
-
-*Nota*: MVP para **P&D**. Resultados devem ser calibrados com **dados de bancada** e testes de **segurança/estabilidade**.
-""")
-
-    k1, k2, k3, k4 = st.columns(4)
-    k1.metric("Indústria-alvo", "Cosméticos")
-    k2.metric("Rota", "Enzimática")
-    k3.metric("Plataforma", "LipidGenesis")
-    k4.metric("Módulo", "LipidPalma™")
+        # Mockup cosmético (troque a URL por um arquivo local se preferir, ex.: 'mockup_cosmetico.png')
+        st.image("cosmetico.png.PNG", use_container_width=True)
 
     st.markdown("---")
+
+    # KPIs em 2x2 (mais responsivo)
+    k1, k2 = st.columns(2)
+    with k1:
+        st.metric("Indústria-alvo", "Cosméticos")
+    with k2:
+        st.metric("Rota", "Enzimática")
+    k3, k4 = st.columns(2)
+    with k3:
+        st.metric("Plataforma", "LipidGenesis")
+    with k4:
+        st.metric("Módulo", "LipidPalma™")
+
+    st.markdown("---")
+
+    # Pilares de confiança com ícones (visual mais “beauty”)
     st.subheader("Camadas de confiança")
-    c1, c2, c3 = st.columns(3)
-    with c1:
-        st.markdown("**ESG transparente**")
-        st.write("Score 0–100 com critérios claros (upcycling, RSPO, orgânico, fair trade, saturados).")
-    with c2:
-        st.markdown("**Rastreabilidade**")
+    p1, p2, p3 = st.columns(3)
+    with p1:
+        st.markdown("### ♻️ ESG transparente")
+        st.write("Score 0–100 com critérios claros: upcycling, RSPO, orgânico, fair trade, saturados.")
+    with p2:
+        st.markdown("### 📦 Rastreabilidade")
         st.write("Ficha de ingredientes (fornecedor, lote, certificações) com exportação CSV.")
-    with c3:
-        st.markdown("**Licenciamento**")
-        st.write("Modelo de negócio: **protótipos + patentes + licenças** (B2B).")
-        
+    with p3:
+        st.markdown("### 📜 Licenciamento")
+        st.write("Modelo: **protótipos + patentes + licenças** (B2B).")
 
 # ======================================================================
 # TAB 1 — PROPOSTA COSMÉTICA (consolidada)
