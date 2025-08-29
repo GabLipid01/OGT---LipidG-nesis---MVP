@@ -982,6 +982,7 @@ with tabs[5]:
     st.markdown("---")
     st.subheader("Sociobioeconomia (indicadores de origem) 🌎")
     st.caption("Indicadores de narrativa e diligência; não substituem certificações formais.")
+    
     cA, cB, cC, cD = st.columns(4)
     with cA:
         origem = st.checkbox("Origem comunitária/cooperativa", False, key="pc_soc_origem")
