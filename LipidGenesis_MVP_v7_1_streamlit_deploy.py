@@ -63,16 +63,9 @@ tabs = st.tabs([
 # ======================================================================
 # TAB 0 — HOME (institucional consolidado)
 # ======================================================================
-with tabs[0]:
-    # ===== HERO VISUAL NO TOPO =====
+with tabs[0]
 
-    def _find_first_existing(candidates):
-        for p in candidates:
-            if os.path.exists(p):
-                return p
-        return None
-
-    # Logo centralizada (menor)
+      # Logo centralizada (menor)
     st.markdown("")  # pequeno respiro
     _, c, _ = st.columns([1, 2, 1])
     with c:
@@ -85,6 +78,12 @@ with tabs[0]:
             st.image(logo_path, caption=None, width=220)  # menor no topo
         else:
             st.info("⚠️ Adicione o arquivo da logomarca ao repositório (ex.: `logo_ogtera.png`).")
+
+    def _find_first_existing(candidates):
+        for p in candidates:
+            if os.path.exists(p):
+                return p
+        return None
 
     # Mockup maior logo abaixo
     st.markdown("")  # respiro
