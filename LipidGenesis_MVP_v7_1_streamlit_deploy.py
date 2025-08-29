@@ -791,12 +791,12 @@ with tabs[2]:
             "variabilidade": {"ativada": bool(consider_var), "cenario": scenario},
         }
 
-         st.session_state["assist_payload"] = assist_payload
-         if st.button("➜ Enviar para Assistente de Formulação", key="btn_handoff_assist_real_adj"):
+        st.session_state["assist_payload"] = assist_payload
+        if st.button("➜ Enviar para Assistente de Formulação", key="btn_handoff_assist_real_adj"):
              st.session_state["go_to_assistente"] = True
              st.success("Perfil enviado (Upload + Ajuste fino). Abra a aba **Assistente de Formulação** para continuar.")
-     else:
-         st.caption("Carregue um **perfil de ácidos graxos** (ou ingredientes) para habilitar KPIs, gráficos e ajuste fino.")
+    else:
+        st.caption("Carregue um **perfil de ácidos graxos** (ou ingredientes) para habilitar KPIs, gráficos e ajuste fino.")
 
 # ======================================================================
 # TAB 3 — ASSISTENTE DE FORMULAÇÃO (placeholder leve)
