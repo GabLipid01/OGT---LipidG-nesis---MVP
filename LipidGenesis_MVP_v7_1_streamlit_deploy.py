@@ -94,52 +94,44 @@ with tabs[0]:
         )
 
     with col_img:
-          # Logo institucional (se existir)
-        for fname in ["logo_ogtera.png.PNG", "logo_ogtera.jpg", "logo.png", "ogtera.png"]:
+        # Logo institucional (se existir)
+        for fname in ["logo_ogtera.png.PNG", "logo_ogtera.png", "logo_ogtera.jpg", "logo.png", "ogtera.png"]:
             if os.path.exists(fname):
-                st.image(fname, use_container_width=True)
+                st.image(fname, width=200)  # menor e fixo
                 break
 
-        # Mockup cosmético (troque a URL por um arquivo local se preferir, ex.: 'mockup_cosmetico.png')
-        col1, col2, col3 = st.columns([2,2,1])
+        # Mockup cosmético (centralizado um pouco à direita)
+        col1, col2, col3 = st.columns([2, 2, 1])
         with col2:
-            st.image("cosmetico.png.PNG.jpeg", width=400)
+            st.image("cosmetico.png.PNG", width=320)  # ajuste o tamanho conforme desejar
 
     st.markdown("---")
 
     # --- KPIs institucionais em linha única ---
-st.markdown("---")
-k1, k2, k3, k4 = st.columns(4)
-
-with k1:
-    st.metric("Indústria-alvo", "Cosméticos")
-with k2:
-    st.metric("Rota", "Enzimática")
-with k3:
-    st.metric("Plataforma", "LipidGenesis")
-with k4:
-    st.metric("Módulo", "LipidPalma™")
+    k1, k2, k3, k4 = st.columns(4)
+    with k1:
+        st.metric("Indústria-alvo", "Cosméticos")
+    with k2:
+        st.metric("Rota", "Enzimática")
+    with k3:
+        st.metric("Plataforma", "LipidGenesis")
+    with k4:
+        st.metric("Módulo", "LipidPalma™")
 
     st.markdown("---")
 
     # --- Camadas de confiança (layout estável e responsivo) ---
-st.markdown("---")
-st.subheader("Camadas de confiança")
-
-c1, c2, c3 = st.columns(3)
-
-with c1:
-    st.markdown("**♻️ ESG transparente**")
-    st.caption("Score 0–100: upcycling, RSPO, orgânico, fair trade, saturados.")
-
-with c2:
-    st.markdown("**📦 Rastreabilidade**")
-    st.caption("Ficha de ingredientes (fornecedor, lote, certificações) + exportação CSV.")
-
-with c3:
-    st.markdown("**📜 Licenciamento**")
-    st.caption("Modelo B2B: protótipos + patentes + licenças.")
-
+    st.subheader("Camadas de confiança")
+    c1, c2, c3 = st.columns(3)
+    with c1:
+        st.markdown("**♻️ ESG transparente**")
+        st.caption("Score 0–100: upcycling, RSPO, orgânico, fair trade, saturados.")
+    with c2:
+        st.markdown("**📦 Rastreabilidade**")
+        st.caption("Ficha de ingredientes (fornecedor, lote, certificações) + exportação CSV.")
+    with c3:
+        st.markdown("**📜 Licenciamento**")
+        st.caption("Modelo B2B: protótipos + patentes + licenças.")
 
 # ======================================================================
 # TAB 1 — PROPOSTA COSMÉTICA (consolidada)
