@@ -64,6 +64,43 @@ tabs = st.tabs([
 # TAB 0 — HOME (institucional consolidado)
 # ======================================================================
 with tabs[0]:
+    # ===== HERO VISUAL NO TOPO =====
+
+    def _find_first_existing(candidates):
+        for p in candidates:
+            if os.path.exists(p):
+                return p
+        return None
+
+    # Logo centralizada (menor)
+    st.markdown("")  # pequeno respiro
+    _, c, _ = st.columns([1, 2, 1])
+    with c:
+        logo_path = _find_first_existing([
+            "logo_ogtera.png.PNG", "logo_ogtera.png", "logo_ogtera.jpg", "ogtera.png",
+            "assets/logo_ogtera.png", "assets/ogtera.png",
+            "static/logo_ogtera.png", "static/ogtera.png"
+        ])
+        if logo_path:
+            st.image(logo_path, caption=None, width=220)  # menor no topo
+        else:
+            st.info("⚠️ Adicione o arquivo da logomarca ao repositório (ex.: `logo_ogtera.png`).")
+
+    # Mockup maior logo abaixo
+    st.markdown("")  # respiro
+    _, c2, _ = st.columns([1, 2, 1])
+    with c2:
+        mock_path = _find_first_existing([
+            "cosmetico.png.PNG", "cosmetico.png", "mockup_cosmetico.png", "mockup.png",
+            "assets/cosmetico.png", "assets/mockup_cosmetico.png",
+            "static/cosmetico.png", "static/mockup_cosmetico.png"
+        ])
+        if mock_path:
+            st.image(mock_path, caption=None, use_container_width=True)  # ocupa mais espaço
+        else:
+            st.info("⚠️ Adicione o mockup (ex.: `cosmetico.png`) na raiz, `assets/` ou `static/`.")
+
+    # ===== CONTEÚDO INSTITUCIONAL (mantido) =====
     st.markdown("""
 ***OGTera – The Future of Oil Disruption, On Demand***  
 **Apresenta:** **🌴 LipidPalma™**
@@ -104,39 +141,6 @@ A integração com a **sociobioeconomia amazônica** começa pela **assinatura s
     with c3:
         st.markdown("**Licenciamento**")
         st.write("Modelo de negócio: **protótipos + patentes + licenças** (B2B).")
-        
-
-    # --- Cabeçalho visual: logo centralizada pequena ---
-    st.markdown("")
-    col_l, col_c, col_r = st.columns([1, 2, 1])
-    with col_c:
-        found_logo = show_first_existing_image(
-            [
-                "logo_ogtera.png.PNG", "logo_ogtera.jpg", "ogtera.png",
-                "assets/logo_ogtera.png", "assets/ogtera.png",
-                "static/logo_ogtera.png", "static/ogtera.png"
-            ],
-            caption=None,  # sem legenda
-            use_container_width=True
-        )
-        if not found_logo:
-            st.info("⚠️ Adicione o arquivo da logomarca ao repositório (por ex.: `logo_ogtera.png`).")
-
-# --- Mockup cosmético maior, centralizado ---
-    st.markdown("")
-    m1, m2, m3 = st.columns([1, 2, 1])
-    with m2:
-        found_mock = show_first_existing_image(
-            [
-                "cosmetico.png.PNG", "mockup_cosmetico.png", "mockup.png",
-                "assets/cosmetico.png", "assets/mockup_cosmetico.png",
-                "static/cosmetico.png", "static/mockup_cosmetico.png"
-            ],
-            caption=None,  # sem “Aplicação cosmética”
-            use_container_width=True
-        )
-        if not found_mock:
-            st.info("⚠️ Adicione o mockup (ex.: `cosmetico.png`) na raiz, `assets/` ou `static/`.")
         
 
 # ======================================================================
