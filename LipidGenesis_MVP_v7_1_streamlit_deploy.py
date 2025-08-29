@@ -69,7 +69,7 @@ with tabs[0]:
     st.markdown("")  # pequeno respiro
     _, c, _ = st.columns([1, 2, 1])
     with c:
-        logo_path = _find_first_existing([
+        logo_path = _first_existing([
             "logo_ogtera.png.PNG", "logo_ogtera.png", "logo_ogtera.jpg", "ogtera.png",
             "assets/logo_ogtera.png", "assets/ogtera.png",
             "static/logo_ogtera.png", "static/ogtera.png"
@@ -89,7 +89,7 @@ with tabs[0]:
     st.markdown("")  # respiro
     _, c2, _ = st.columns([1, 2, 1])
     with c2:
-        mock_path = _find_first_existing([
+        mock_path = first_existing([
             "cosmetico.png.PNG", "cosmetico.png", "mockup_cosmetico.png", "mockup.png",
             "assets/cosmetico.png", "assets/mockup_cosmetico.png",
             "static/cosmetico.png", "static/mockup_cosmetico.png"
