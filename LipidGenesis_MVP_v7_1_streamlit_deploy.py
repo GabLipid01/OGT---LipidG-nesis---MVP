@@ -104,14 +104,9 @@ A integração com a **sociobioeconomia amazônica** começa pela **assinatura s
     with c3:
         st.markdown("**Licenciamento**")
         st.write("Modelo de negócio: **protótipos + patentes + licenças** (B2B).")
-
-    st.markdown("---")
-    left, right = st.columns([2,1])
-    with left:
-        st.caption("v7.1 • OGTera — MVP de validação de conceito.")
         
-        # --- Cabeçalho visual: logo centralizada pequena ---
 
+    # --- Cabeçalho visual: logo centralizada pequena ---
     st.markdown("")
     col_l, col_c, col_r = st.columns([1, 2, 1])
     with col_c:
@@ -142,7 +137,9 @@ A integração com a **sociobioeconomia amazônica** começa pela **assinatura s
     )
     if not found_mock:
         st.info("⚠️ Adicione o mockup (ex.: `cosmetico.png`) na raiz, `assets/` ou `static/`.")
-    with right:
+
+with right:
+    st.caption("Documentação: README/PDF (quando disponível).")
         st.caption("Documentação: README/PDF (quando disponível).")
 
 # ======================================================================
