@@ -795,7 +795,7 @@ with tabs[2]:
          if st.button("➜ Enviar para Assistente de Formulação", key="btn_handoff_assist_real_adj"):
              st.session_state["go_to_assistente"] = True
              st.success("Perfil enviado (Upload + Ajuste fino). Abra a aba **Assistente de Formulação** para continuar.")
-         else:
+    else:
          st.caption("Carregue um **perfil de ácidos graxos** (ou ingredientes) para habilitar KPIs, gráficos e ajuste fino.")
 
 # ======================================================================
