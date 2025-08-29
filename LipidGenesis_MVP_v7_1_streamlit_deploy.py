@@ -249,7 +249,7 @@ with tabs[2]:
         ("soapstock",            "♻️ Soapstock"),
     ]
 
-    # Constantes FA
+    # Constantes FA (para proxies de KPIs – abordagem UIGES-like)
     FA_CONST = {
         "C12:0": {"IV": 0.0,   "MW": 200.32},
         "C14:0": {"IV": 0.0,   "MW": 228.37},
@@ -333,7 +333,7 @@ with tabs[2]:
         profs = FA_PROFILES_RANGED.get(ing_key, {})
         return profs.get(scenario, profs.get("mean", {}))
 
-    # KPIs
+    # KPIs (proxies derivados do perfil FA – mesma visualização)
     def iodine_index(fa_pct: dict) -> float:
         return sum((fa_pct.get(k, 0.0) / 100.0) * FA_CONST[k]["IV"] for k in FA_CONST.keys())
 
@@ -662,6 +662,42 @@ with tabs[2]:
         c3.metric("Ponto de Fusão (proxy, 0–100)", f"{PF_proxy:.0f}")
         st.caption("⚠️ Estimativas. Para decisões técnicas, use **Upload de perfil real**.")
 
+        # ——— Expanders com faixas típicas (somente no heurístico) ———
+        e1, e2, e3 = st.columns(3)
+        with e1:
+            with st.expander("ℹ️ Faixas típicas — II (estimativo)"):
+                st.markdown(
+                    "- **RBD (Palma)**: ~50–55\n"
+                    "- **Estearina de Palma**: ~32–42\n"
+                    "- **Oleína de Palma**: ~55–65\n"
+                    "- **RPKO (Palmiste)**: ~14–22\n"
+                    "- **Estearina de Palmiste**: ~8–14\n"
+                    "- **Oleína de Palmiste**: ~18–28\n"
+                    "- **PFAD**: ~45–55\n"
+                    "- **Soapstock**: ~50–65\n"
+                    "_Obs.: faixas orientativas com base em literatura/mercado; variam por lote/processo._"
+                )
+        with e2:
+            with st.expander("ℹ️ Faixas típicas — ISap (mgKOH/g, estimativo)"):
+                st.markdown(
+                    "- **RBD (Palma)**: ~190–205\n"
+                    "- **Estearina de Palma**: ~185–200\n"
+                    "- **Oleína de Palma**: ~195–205\n"
+                    "- **RPKO (Palmiste)**: ~240–255\n"
+                    "- **Estearina de Palmiste**: ~235–250\n"
+                    "- **Oleína de Palmiste**: ~240–255\n"
+                    "- **PFAD**: ~185–205\n"
+                    "- **Soapstock**: ~185–210\n"
+                    "_Estimativas por perfil FA; confirmar com dados de bancada._"
+                )
+        with e3:
+            with st.expander("ℹ️ Faixas típicas — Ponto de Fusão (proxy 0–100)"):
+                st.markdown(
+                    "- **Mais saturados/estearinas** → **proxy alto** (textura firme)\n"
+                    "- **Mais insaturados/oleínas** → **proxy baixo** (toque fluido)\n"
+                    "_O valor é um **índice** (0–100) como **proxy** de MP real._"
+                )
+
         st.info("📄 Após finalizar sua formulação, gere o dossiê completo na aba **Exportação PDF** (perfil FA, KPIs, preview e narrativa).")
         with st.expander("🌱 Integração narrativa (ESG) — recomendações de apresentação do blend"):
             st.markdown(
@@ -754,194 +790,13 @@ with tabs[2]:
             "classes": {"A": dict(A_vals), "B": dict(B_vals), "C": dict(C_vals)},
             "variabilidade": {"ativada": bool(consider_var), "cenario": scenario},
         }
-        st.session_state["assist_payload"] = assist_payload
-        if st.button("➜ Enviar para Assistente de Formulação", key="btn_handoff_assist_est_ABC"):
-            st.session_state["go_to_assistente"] = True
-            st.success("Perfil estimado enviado. Abra a aba **Assistente de Formulação** para continuar.")
 
-    # ---------------- UPLOAD (perfil real) ----------------
-    else:
-        st.subheader("Upload de planilha real")
-        st.caption(
-            "Aceita **CSV/XLSX** com **Ingredientes (%)** ou **Ácidos graxos (%)**. "
-            "O sistema **auto-normaliza**. Após carregar, você pode aplicar **ajuste fino** por "
-            "**B (FA)** ou **C (Ingredientes)**."
-        )
-
-        formato = st.selectbox("Formato da planilha", ["Ingredientes (%)", "Ácidos graxos (%)"], key="formato_planilha")
-        if formato == "Ingredientes (%)":
-            modelo_df = pd.DataFrame({"Ingrediente": [lbl for _, lbl in INGREDIENTS], "Percentual": [0]*8})
-        else:
-            modelo_df = pd.DataFrame({"AcidoGraxos": list(FA_CONST.keys()), "Percentual": [0]*len(FA_CONST)})
-        buf = io.BytesIO(); modelo_df.to_csv(buf, index=False)
-        st.download_button("📥 Baixar modelo CSV", data=buf.getvalue(), file_name="modelo_blend.csv",
-                           mime="text/csv", key="dl_modelo_csv_upload")
-
-        file = st.file_uploader("Carregar planilha (CSV/XLSX)", type=["csv", "xlsx"], key="uploader_real")
-        parsed_ing, parsed_fa = OrderedDict(), OrderedDict()
-        original_total = None; fa_norm = None
-
-        if file is not None:
-            try:
-                df = pd.read_csv(file) if file.name.lower().endswith(".csv") else pd.read_excel(file)
-            except Exception as e:
-                st.error(f"Erro ao ler arquivo: {e}"); df = None
-
-            if df is not None:
-                st.write("Prévia da planilha carregada:"); st.dataframe(df, use_container_width=True)
-                if formato == "Ingredientes (%)":
-                    col_ing, col_pct = "Ingrediente", "Percentual"
-                    if col_ing in df.columns and col_pct in df.columns:
-                        label_to_key = {lbl: k for k, lbl in INGREDIENTS}
-                        for _, row in df.iterrows():
-                            lbl = str(row[col_ing]).strip()
-                            pct = float(row[col_pct]) if pd.notna(row[col_pct]) else 0.0
-                            k = label_to_key.get(lbl)
-                            if k: parsed_ing[k] = parsed_ing.get(k, 0.0) + pct
-                            else: st.warning(f"Ingrediente não reconhecido e ignorado: '{lbl}'")
-                        original_total = sum(parsed_ing.values()); _badge_total(original_total, "Total da planilha (ingredientes)")
-                        fa_tmp = {k: 0.0 for k in FA_ORDER}
-                        tot = sum(parsed_ing.values()) or 1.0
-                        for ing_key, pct in parsed_ing.items():
-                            w = pct / tot
-                            prof = _get_profile(ing_key, scenario if consider_var else "mean")
-                            for fa_key, fa_pct in prof.items():
-                                fa_tmp[fa_key] += w * fa_pct
-                        fa_norm = _normalize_percentages(fa_tmp)
-                    else:
-                        st.error("Planilha deve ter colunas 'Ingrediente' e 'Percentual'.")
-                else:
-                    col_fa, col_pct = "AcidoGraxos", "Percentual"
-                    if col_fa in df.columns and col_pct in df.columns:
-                        for _, row in df.iterrows():
-                            fa = str(row[col_fa]).strip()
-                            pct = float(row[col_pct]) if pd.notna(row[col_pct]) else 0.0
-                            parsed_fa[fa] = parsed_fa.get(fa, 0.0) + pct
-                        original_total = sum(parsed_fa.values()); _badge_total(original_total, "Total da planilha (FA)")
-                        fa_norm = _normalize_percentages(parsed_fa)
-                    else:
-                        st.error("Planilha deve ter colunas 'AcidoGraxos' e 'Percentual'.")
-
-        if fa_norm:
-            st.markdown("---")
-            st.subheader("KPIs do Blend (perfil real) + Ajuste fino (opcional)")
-
-            method_upl = st.radio("Método de ajuste", ["Classe B — Ácidos graxos puros", "Classe C — Ingredientes"],
-                                  horizontal=True, key="ajuste_method_upload")
-
-            B_vals_upload = OrderedDict((fa, 0.0) for fa in FA_ORDER)
-            total_B_upload = 0.0
-            if method_upl.startswith("Classe B"):
-                with st.expander("Classe B — Ajuste fino por Ácidos graxos puros (sobre perfil real)", expanded=True):
-                    colsB = st.columns(4)
-                    for idx, fa in enumerate(FA_ORDER):
-                        with colsB[idx % 4]:
-                            B_vals_upload[fa] = st.slider(
-                                f"FA {fa} (ajuste fino)", min_value=0.0, max_value=30.0, value=0.0, step=0.5,
-                                key=f"slider_upload_fa_{fa}", help="Adição opcional ao perfil real (%)"
-                            )
-                    total_B_upload = sum(B_vals_upload.values())
-                    if total_B_upload > 30:
-                        st.warning("Classe B excede 30% do blend — considere reduzir para manter o caráter do óleo base.")
-
-            C_vals_upload = OrderedDict((k, 0.0) for k, _ in INGREDIENTS)
-            total_C_upload = 0.0
-            if method_upl.startswith("Classe C"):
-                with st.expander("Classe C — Ajuste fino por Ingredientes (sobre perfil real)", expanded=True):
-                    colsC = st.columns(4)
-                    for idx, (k, label) in enumerate(INGREDIENTS):
-                        with colsC[idx % 4]:
-                            C_vals_upload[k] = st.slider(
-                                f"{label} (ajuste fino)", min_value=0.0, max_value=30.0, value=0.0, step=0.5,
-                                key=f"slider_upload_adj_{k}", help="Adição opcional ao perfil real (%)"
-                            )
-                    total_C_upload = sum(C_vals_upload.values())
-                    if total_C_upload > 30:
-                        st.warning("Classe C excede 30% do blend — considere reduzir para manter o caráter do óleo base.")
-
-            fa_comb = fa_norm.copy()
-            if method_upl.startswith("Classe B") and total_B_upload > 0:
-                for fa, pct in B_vals_upload.items():
-                    fa_comb[fa] = fa_comb.get(fa, 0.0) + pct
-                fa_comb = _normalize_percentages(fa_comb)
-            elif method_upl.startswith("Classe C") and total_C_upload > 0:
-                add = {k: 0.0 for k in FA_ORDER}
-                for ing_key, pct in C_vals_upload.items():
-                    if pct <= 0: continue
-                    prof = _get_profile(ing_key, scenario if consider_var else "mean")
-                    for fa_key, fa_pct in prof.items():
-                        add[fa_key] += (pct * fa_pct / 100.0)
-                for fa_key, inc in add.items():
-                    fa_comb[fa_key] = fa_comb.get(fa_key, 0.0) + inc
-                fa_comb = _normalize_percentages(fa_comb)
-
-            II = iodine_index(fa_comb); ISap = saponification_index(fa_comb); PF_proxy = melt_proxy(fa_comb)
-            c1, c2, c3 = st.columns(3)
-            c1.metric("Índice de Iodo (II)", f"{II:.1f}")
-            c2.metric("Índice de Saponificação (ISap)", f"{ISap:.1f} mgKOH/g")
-            c3.metric("Ponto de Fusão (proxy, 0–100)", f"{PF_proxy:.0f}")
-            st.caption("KPIs calculados sobre o perfil **combinado** (real + ajuste fino, se houver).")
-
-            st.info("📄 Após finalizar sua formulação, gere o dossiê completo na aba **Exportação PDF** (perfil FA, KPIs, preview e narrativa).")
-            with st.expander("🌱 Integração narrativa (ESG) — recomendações de apresentação do blend"):
-                st.markdown(
-                    "- **Upcycling e origem**: destaque **PFAD** e **soapstock** como rotas de **reaproveitamento**; cite rastreio e fornecedores quando houver.\n"
-                    "- **Consistência de qualidade**: use **variabilidade de lote (Min/Típico/Max)** para mostrar **faixas de KPI** (robustez do blend).\n"
-                    "- **Claims alinhados**: conecte KPIs a atributos de uso:\n"
-                    "  - **II↓ / PF↑** → texturas mais firmes, toque menos oleoso (mãos/rosto).\n"
-                    "  - **ISap↑** → base interessante para saboaria/shampoo sólido (palmiste/estearina).\n"
-                    "  - **Insaturados↑ (oleico/linoleico)** → espalhabilidade e nutrição (corpo/cabelos).\n"
-                    "- **Compliance**: para **soapstock/PFAD**, mencionar **refino/esterificação** e dossiê regulatório antes de claims cosméticos."
-                )
-
-            g1, g2 = st.columns(2)
-            with g1: plot_fa_bars(fa_comb)
-            with g2:
-                _, radar_vals = finalidade_scores(fa_comb, PF_proxy, II)
-                plot_radar(radar_vals)
-
-            st.markdown("---")
-            st.subheader("Análise de Trade-offs (variação de +5% por ingrediente sobre o perfil real)")
-            trade_u = _compute_tradeoffs_upload(
-                fa_start=fa_comb,
-                method_upl=method_upl,
-                B_vals_upload=B_vals_upload if method_upl.startswith("Classe B") else {fa:0.0 for fa in FA_ORDER},
-                C_vals_upload=C_vals_upload if method_upl.startswith("Classe C") else {k:0.0 for k,_ in INGREDIENTS},
-                consider_var=consider_var, scenario=scenario
-            )
-            if trade_u:
-                labels_u, dII_u, dIS_u, dPF_u = trade_u
-                ctu1, ctu2, ctu3 = st.columns(3)
-                with ctu1: _plot_tradeoff_bars("Δ Índice de Iodo (II)", labels_u, dII_u, "Δ II")
-                with ctu2: _plot_tradeoff_bars("Δ Índice de Saponificação (ISap)", labels_u, dIS_u, "Δ ISap")
-                with ctu3: _plot_tradeoff_bars("Δ Ponto de Fusão (proxy)", labels_u, dPF_u, "Δ PF")
-                st.caption("Leitura: as barras mostram como **cada ingrediente** alteraria os KPIs ao adicionar **+5%** equivalente FA (renormalizado).")
-            else:
-                st.caption("Carregue um perfil e/ou ajuste fino para visualizar os trade-offs.")
-
-            st.subheader("Preview de notas por finalidade (0–100)")
-            scores, _ = finalidade_scores(fa_comb, PF_proxy, II)
-            p1, p2, p3, p4 = st.columns(4)
-            p1.metric("Mãos", f"{scores['Mãos']}"); p2.metric("Corpo", f"{scores['Corpo']}")
-            p3.metric("Rosto", f"{scores['Rosto']}"); p4.metric("Cabelos", f"{scores['Cabelos']}")
-
-            st.markdown("---")
-            st.info("Pronto para detalhar por finalidade e assinatura sensorial no **Assistente de Formulação**.")
-            assist_payload = {
-                "fa_profile": fa_comb,
-                "kpis": {"II": II, "ISap": ISap, "PF_proxy": PF_proxy},
-                "scores_preview": scores,
-                "source": "upload_real+" + ("ajusteB" if method_upl.startswith("Classe B") else "ajusteC"),
-                "ajuste": {"method": "B" if method_upl.startswith("Classe B") else "C",
-                           "B_vals": dict(B_vals_upload), "C_vals": dict(C_vals_upload)},
-                "variabilidade": {"ativada": bool(consider_var), "cenario": scenario},
-            }
-            st.session_state["assist_payload"] = assist_payload
-            if st.button("➜ Enviar para Assistente de Formulação", key="btn_handoff_assist_real_adj"):
-                st.session_state["go_to_assistente"] = True
-                st.success("Perfil enviado (Upload + Ajuste fino). Abra a aba **Assistente de Formulação** para continuar.")
-        else:
-            st.caption("Carregue um **perfil de ácidos graxos** (ou ingredientes) para habilitar KPIs, gráficos e ajuste fino.")
+         st.session_state["assist_payload"] = assist_payload
+         if st.button("➜ Enviar para Assistente de Formulação", key="btn_handoff_assist_real_adj"):
+             st.session_state["go_to_assistente"] = True
+             st.success("Perfil enviado (Upload + Ajuste fino). Abra a aba **Assistente de Formulação** para continuar.")
+         else:
+         st.caption("Carregue um **perfil de ácidos graxos** (ou ingredientes) para habilitar KPIs, gráficos e ajuste fino.")
 
 # ======================================================================
 # TAB 3 — ASSISTENTE DE FORMULAÇÃO (placeholder leve)
