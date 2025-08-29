@@ -13,8 +13,6 @@ try:
 except Exception:
     pass
 
-st.set_option("deprecation.showfileUploaderEncoding", False)
-
 # ---------------- Session defaults ----------------
 _defaults = {
     "blend_mode_radio": "Heurísticas (rápido)",
