@@ -101,7 +101,7 @@ with tabs[0]:
                 break
 
         # Mockup cosmético (troque a URL por um arquivo local se preferir, ex.: 'mockup_cosmetico.png')
-        st.image("cosmetico.png.PNG", use_container_width=True)
+        st.image("cosmetico.png.PNG", width=250)
 
     st.markdown("---")
 
