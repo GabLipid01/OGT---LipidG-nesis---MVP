@@ -63,7 +63,7 @@ tabs = st.tabs([
 # ======================================================================
 # TAB 0 — HOME (institucional consolidado)
 # ======================================================================
-with tabs[0]
+with tabs[0]:
 
       # Logo centralizada (menor)
     st.markdown("")  # pequeno respiro
