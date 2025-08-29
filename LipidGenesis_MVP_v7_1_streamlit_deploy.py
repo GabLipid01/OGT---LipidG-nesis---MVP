@@ -971,3 +971,14 @@ with tabs[7]:
     st.header("Exportação PDF 📄")
     st.caption("Gere o dossiê do blend com perfil FA, KPIs, narrativa ESG e anexos.")
     st.info("Placeholder para o MVP. Cole aqui sua lógica original quando quiser.")
+
+# ============ RODAPÉ ============
+st.markdown("---")
+st.markdown(
+    "<p style='text-align: center; font-size: 14px;'>"
+    "🌿 Desenvolvido por <b>OGTera - The Future of Oil Disruption</b>. "
+    "Aplicação modular <b>LipidGenesis</b> com o módulo atual: <b>LipidPalma</b>. "
+    "<br>Versão MVP demonstrativa. &copy; 2025 OGTera."
+    "</p>",
+    unsafe_allow_html=True
+)
