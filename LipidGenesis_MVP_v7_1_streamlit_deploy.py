@@ -101,7 +101,7 @@ with tabs[0]:
                 break
 
         # Mockup cosmético (troque a URL por um arquivo local se preferir, ex.: 'mockup_cosmetico.png')
-        col1, col2, col3 = st.columns([1,2,1])
+        col1, col2, col3 = st.columns([2,2,1])
         with col2:
             st.image("cosmetico.png.PNG", width=400)
 
