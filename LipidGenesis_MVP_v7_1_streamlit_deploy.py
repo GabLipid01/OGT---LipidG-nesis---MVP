@@ -895,7 +895,7 @@ with tabs[2]:
                         st.error("Planilha deve ter colunas 'Ingrediente' e 'Percentual'.")
                 else:
                     col_fa, col_pct = "AcidoGraxos", "Percentual"
-                    if col_fa in df.columns && col_pct in df.columns:  # <-- Python não aceita '&&'; linha original usava 'and'
+                    if col_fa in df.columns and col_pct in df.columns:
                         for _, row in df.iterrows():
                             fa = str(row[col_fa]).strip()
                             pct = float(row[col_pct]) if pd.notna(row[col_pct]) else 0.0
