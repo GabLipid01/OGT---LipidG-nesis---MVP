@@ -637,15 +637,17 @@ with tabs[2]:
                 w = pct / total_all
                 prof = _get_profile(ing_key, scenario if consider_var else "mean")
                 for fa_key, fa_pct in prof.items():
-                    fa_est[fa_key] += w * fa_pct
+                                        fa_est[fa_key] += w * fa_pct
             if method.startswith("Classe B"):
                 for fa_key, pct in B_vals.items():
-                    if pct <= 0: continue
+                    if pct <= 0:
+                        continue
                     w = pct / total_all
                     fa_est[fa_key] += w * 100.0
             else:
                 for ing_key, pct in C_vals.items():
-                    if pct <= 0: continue
+                    if pct <= 0:
+                        continue
                     w = pct / total_all
                     prof = _get_profile(ing_key, scenario if consider_var else "mean")
                     for fa_key, fa_pct in prof.items():
@@ -659,7 +661,7 @@ with tabs[2]:
         c1, c2, c3 = st.columns(3)
         c1.metric("Índice de Iodo (II)", f"{II:.1f}")
         c2.metric("Índice de Saponificação (ISap)", f"{ISap:.1f} mgKOH/g")
-        c3.metric("Ponto de Fusão (proxy, 0–100)", f"{PF_proxy:.0f}")
+        c3.metric("Ponto de Fusão", f"{PF_proxy:.0f}")  # nomenclatura ajustada
         st.caption("⚠️ Estimativas. Para decisões técnicas, use **Upload de perfil real**.")
 
         # ——— Expanders com faixas típicas (somente no heurístico) ———
@@ -691,11 +693,11 @@ with tabs[2]:
                     "_Estimativas por perfil FA; confirmar com dados de bancada._"
                 )
         with e3:
-            with st.expander("ℹ️ Faixas típicas — Ponto de Fusão (proxy 0–100)"):
+            with st.expander("ℹ️ Faixas típicas — Ponto de Fusão (estimativo)"):
                 st.markdown(
-                    "- **Mais saturados/estearinas** → **proxy alto** (textura firme)\n"
-                    "- **Mais insaturados/oleínas** → **proxy baixo** (toque fluido)\n"
-                    "_O valor é um **índice** (0–100) como **proxy** de MP real._"
+                    "- **Mais saturados/estearinas** → **maior ponto de fusão** (textura firme)\n"
+                    "- **Mais insaturados/oleínas** → **menor ponto de fusão** (toque fluido)\n"
+                    "_O valor exibido é uma **estimativa heurística** com base no perfil FA._"
                 )
 
         st.info("📄 Após finalizar sua formulação, gere o dossiê completo na aba **Exportação PDF** (perfil FA, KPIs, preview e narrativa).")
@@ -711,7 +713,8 @@ with tabs[2]:
             )
 
         g1, g2 = st.columns(2)
-        with g1: plot_fa_bars(fa_est)
+        with g1:
+            plot_fa_bars(fa_est)
         with g2:
             _, radar_vals = finalidade_scores(fa_est, PF_proxy, II)
             plot_radar(radar_vals)
@@ -727,16 +730,21 @@ with tabs[2]:
         else:
             labels, dII, dIS, dPF = trade
             cto1, cto2, cto3 = st.columns(3)
-            with cto1: _plot_tradeoff_bars("Δ Índice de Iodo (II)", labels, dII, "Δ II")
-            with cto2: _plot_tradeoff_bars("Δ Índice de Saponificação (ISap)", labels, dIS, "Δ ISap")
-            with cto3: _plot_tradeoff_bars("Δ Ponto de Fusão (proxy)", labels, dPF, "Δ PF")
+            with cto1:
+                _plot_tradeoff_bars("Δ Índice de Iodo (II)", labels, dII, "Δ II")
+            with cto2:
+                _plot_tradeoff_bars("Δ Índice de Saponificação (ISap)", labels, dIS, "Δ ISap")
+            with cto3:
+                _plot_tradeoff_bars("Δ Ponto de Fusão", labels, dPF, "Δ PF")  # título ajustado
             st.caption("Leitura: as barras mostram como **cada ingrediente** alteraria os KPIs ao variar **+5%** (renormalizado).")
 
         st.subheader("Preview de notas por finalidade (0–100) – estimativas")
         scores, _ = finalidade_scores(fa_est, PF_proxy, II)
         p1, p2, p3, p4 = st.columns(4)
-        p1.metric("Mãos", f"{scores['Mãos']}"); p2.metric("Corpo", f"{scores['Corpo']}")
-        p3.metric("Rosto", f"{scores['Rosto']}"); p4.metric("Cabelos", f"{scores['Cabelos']}")
+        p1.metric("Mãos", f"{scores['Mãos']}")
+        p2.metric("Corpo", f"{scores['Corpo']}")
+        p3.metric("Rosto", f"{scores['Rosto']}")
+        p4.metric("Cabelos", f"{scores['Cabelos']}")
 
         st.markdown("---")
         st.subheader("Salvar / Carregar Blend (JSON)")
@@ -784,7 +792,7 @@ with tabs[2]:
         st.info("Pronto para detalhar por finalidade no **Assistente de Formulação** (estimativa baseada em heurística).")
         assist_payload = {
             "fa_profile": fa_est,
-            "kpis": {"II": II, "ISap": ISap, "PF_proxy": PF_proxy},
+            "kpis": {"II": II, "ISap": ISap, "PF": PF_proxy},  # chave 'PF' mantendo o novo rótulo
             "scores_preview": scores,
             "source": "heuristica_estimada_A+" + ("B" if method.startswith("Classe B") else "C"),
             "classes": {"A": dict(A_vals), "B": dict(B_vals), "C": dict(C_vals)},
@@ -792,12 +800,10 @@ with tabs[2]:
         }
 
         st.session_state["assist_payload"] = assist_payload
-        if st.button("➜ Enviar para Assistente de Formulação", key="btn_handoff_assist_real_adj"):
-             st.session_state["go_to_assistente"] = True
-             st.success("Perfil enviado (Upload + Ajuste fino). Abra a aba **Assistente de Formulação** para continuar.")
-    else:
-        st.caption("Carregue um **perfil de ácidos graxos** (ou ingredientes) para habilitar KPIs, gráficos e ajuste fino.")
-
+        if st.button("➜ Enviar para Assistente de Formulação", key="btn_handoff_assist_est_ABC"):
+            st.session_state["go_to_assistente"] = True
+            st.success("Perfil estimado enviado. Abra a aba **Assistente de Formulação** para continuar.")
+            
 # ======================================================================
 # TAB 3 — ASSISTENTE DE FORMULAÇÃO (placeholder leve)
 # ======================================================================
