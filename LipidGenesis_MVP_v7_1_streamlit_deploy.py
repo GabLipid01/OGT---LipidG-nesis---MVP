@@ -249,7 +249,20 @@ with tabs[2]:
         ("soapstock",            "♻️ Soapstock"),
     ]
 
-    # Constantes FA (para proxies de KPIs – abordagem UIGES-like)
+    # >>> NOVO: Médias das faixas típicas por ingrediente (usadas APENAS no modo Heurístico)
+    # Valores médios (média do intervalo mostrado nos expanders) – base de comunicação.
+    KPI_MEANS = {
+        "rbd_palma":          {"II": 52.5, "ISap": 197.5},
+        "estearina_palma":    {"II": 37.0, "ISap": 192.5},
+        "oleina_palma":       {"II": 60.0, "ISap": 200.0},
+        "rpko_palmiste":      {"II": 18.0, "ISap": 247.5},
+        "estearina_palmiste": {"II": 11.0, "ISap": 242.5},
+        "oleina_palmiste":    {"II": 23.0, "ISap": 247.5},
+        "pfad":               {"II": 50.0, "ISap": 195.0},
+        "soapstock":          {"II": 57.5, "ISap": 197.5},
+    }
+
+    # Constantes FA (para cálculo do ponto de fusão como índice e outras heurísticas)
     FA_CONST = {
         "C12:0": {"IV": 0.0,   "MW": 200.32},
         "C14:0": {"IV": 0.0,   "MW": 228.37},
@@ -333,7 +346,31 @@ with tabs[2]:
         profs = FA_PROFILES_RANGED.get(ing_key, {})
         return profs.get(scenario, profs.get("mean", {}))
 
-    # KPIs (proxies derivados do perfil FA – mesma visualização)
+    # >>> NOVO (Heurístico): KPIs calibrados por média das faixas típicas
+    def kpis_calibrados_por_medias(A_vals: dict, C_vals: dict) -> tuple[float, float]:
+        # Usa somente Classe A + Classe C (ingredientes); Classe B (FA puros) não entra na média de comunicação.
+        total_ref = sum(A_vals.values()) + sum(C_vals.values())
+        if total_ref <= 0:
+            return 0.0, 0.0
+        II = 0.0
+        IS = 0.0
+        # Contribuição de A
+        for ing_key, pct in A_vals.items():
+            if pct <= 0: continue
+            w = pct / total_ref
+            m = KPI_MEANS.get(ing_key, {})
+            II += w * m.get("II", 0.0)
+            IS += w * m.get("ISap", 0.0)
+        # Contribuição de C
+        for ing_key, pct in C_vals.items():
+            if pct <= 0: continue
+            w = pct / total_ref
+            m = KPI_MEANS.get(ing_key, {})
+            II += w * m.get("II", 0.0)
+            IS += w * m.get("ISap", 0.0)
+        return II, IS
+
+    # KPIs (derivados do perfil FA) – ainda usados para PF (índice) e heurísticas sensoriais
     def iodine_index(fa_pct: dict) -> float:
         return sum((fa_pct.get(k, 0.0) / 100.0) * FA_CONST[k]["IV"] for k in FA_CONST.keys())
 
@@ -630,6 +667,7 @@ with tabs[2]:
                 for k, v in C_vals.items(): st.session_state[f"slider_adj_{k}"] = round(v, 2)
             st.experimental_rerun()
 
+        # Perfil FA estimado (para PF e heurísticas)
         fa_est = {k: 0.0 for k in FA_ORDER}
         if total_all > 0:
             for ing_key, pct in A_vals.items():
@@ -637,17 +675,15 @@ with tabs[2]:
                 w = pct / total_all
                 prof = _get_profile(ing_key, scenario if consider_var else "mean")
                 for fa_key, fa_pct in prof.items():
-                                        fa_est[fa_key] += w * fa_pct
+                    fa_est[fa_key] += w * fa_pct
             if method.startswith("Classe B"):
                 for fa_key, pct in B_vals.items():
-                    if pct <= 0:
-                        continue
+                    if pct <= 0: continue
                     w = pct / total_all
                     fa_est[fa_key] += w * 100.0
             else:
                 for ing_key, pct in C_vals.items():
-                    if pct <= 0:
-                        continue
+                    if pct <= 0: continue
                     w = pct / total_all
                     prof = _get_profile(ing_key, scenario if consider_var else "mean")
                     for fa_key, fa_pct in prof.items():
@@ -655,14 +691,19 @@ with tabs[2]:
 
         fa_est = _normalize_percentages(fa_est)
 
-        II = iodine_index(fa_est); ISap = saponification_index(fa_est); PF_proxy = melt_proxy(fa_est)
+        # >>> ALTERAÇÃO: KPIs exibidos no modo Heurístico
+        # II e ISap: média ponderada das MÉDIAS por ingrediente (Classe A + C)
+        II_cal, ISap_cal = kpis_calibrados_por_medias(A_vals, C_vals)
+        # PF continua calculado do perfil FA (apenas renomeado no rótulo)
+        PF_idx = melt_proxy(fa_est)
+
         st.markdown("---")
-        st.subheader("KPIs (estimados a partir de perfis médios + ajuste selecionado)")
+        st.subheader("KPIs (médias por ingrediente + ajuste selecionado)")
         c1, c2, c3 = st.columns(3)
-        c1.metric("Índice de Iodo (II)", f"{II:.1f}")
-        c2.metric("Índice de Saponificação (ISap)", f"{ISap:.1f} mgKOH/g")
-        c3.metric("Ponto de Fusão", f"{PF_proxy:.0f}")  # nomenclatura ajustada
-        st.caption("⚠️ Estimativas. Para decisões técnicas, use **Upload de perfil real**.")
+        c1.metric("Índice de Iodo (II)", f"{II_cal:.1f}")
+        c2.metric("Índice de Saponificação (ISap)", f"{ISap_cal:.1f} mgKOH/g")
+        c3.metric("Ponto de Fusão", f"{PF_idx:.0f}")  # <- rótulo atualizado
+        st.caption("II e ISap: médias por ingrediente (Classe A + C). Ponto de Fusão: índice calculado por perfil FA.")
 
         # ——— Expanders com faixas típicas (somente no heurístico) ———
         e1, e2, e3 = st.columns(3)
@@ -693,11 +734,11 @@ with tabs[2]:
                     "_Estimativas por perfil FA; confirmar com dados de bancada._"
                 )
         with e3:
-            with st.expander("ℹ️ Faixas típicas — Ponto de Fusão (estimativo)"):
+            with st.expander("ℹ️ Faixas típicas — Ponto de Fusão (índice 0–100)"):
                 st.markdown(
-                    "- **Mais saturados/estearinas** → **maior ponto de fusão** (textura firme)\n"
-                    "- **Mais insaturados/oleínas** → **menor ponto de fusão** (toque fluido)\n"
-                    "_O valor exibido é uma **estimativa heurística** com base no perfil FA._"
+                    "- **Mais saturados/estearinas** → **índice mais alto** (textura firme)\n"
+                    "- **Mais insaturados/oleínas** → **índice mais baixo** (toque fluido)\n"
+                    "_O valor exibido é um **índice** (0–100) como **proxy** de MP real._"
                 )
 
         st.info("📄 Após finalizar sua formulação, gere o dossiê completo na aba **Exportação PDF** (perfil FA, KPIs, preview e narrativa).")
@@ -713,10 +754,12 @@ with tabs[2]:
             )
 
         g1, g2 = st.columns(2)
-        with g1:
-            plot_fa_bars(fa_est)
+        with g1: plot_fa_bars(fa_est)
         with g2:
-            _, radar_vals = finalidade_scores(fa_est, PF_proxy, II)
+            # Para o radar, seguimos usando II calculado do perfil FA (coerente com heurísticas sensoriais),
+            # mas poderíamos usar II_cal se preferir alinhar 100% ao discurso. Mantive como estava.
+            II_for_radar = iodine_index(fa_est)
+            _, radar_vals = finalidade_scores(fa_est, PF_idx, II_for_radar)
             plot_radar(radar_vals)
 
         st.markdown("---")
@@ -730,21 +773,16 @@ with tabs[2]:
         else:
             labels, dII, dIS, dPF = trade
             cto1, cto2, cto3 = st.columns(3)
-            with cto1:
-                _plot_tradeoff_bars("Δ Índice de Iodo (II)", labels, dII, "Δ II")
-            with cto2:
-                _plot_tradeoff_bars("Δ Índice de Saponificação (ISap)", labels, dIS, "Δ ISap")
-            with cto3:
-                _plot_tradeoff_bars("Δ Ponto de Fusão", labels, dPF, "Δ PF")  # título ajustado
+            with cto1: _plot_tradeoff_bars("Δ Índice de Iodo (II)", labels, dII, "Δ II")
+            with cto2: _plot_tradeoff_bars("Δ Índice de Saponificação (ISap)", labels, dIS, "Δ ISap")
+            with cto3: _plot_tradeoff_bars("Δ Ponto de Fusão", labels, dPF, "Δ PF")  # <- título atualizado
             st.caption("Leitura: as barras mostram como **cada ingrediente** alteraria os KPIs ao variar **+5%** (renormalizado).")
 
         st.subheader("Preview de notas por finalidade (0–100) – estimativas")
-        scores, _ = finalidade_scores(fa_est, PF_proxy, II)
+        scores, _ = finalidade_scores(fa_est, PF_idx, II_for_radar)
         p1, p2, p3, p4 = st.columns(4)
-        p1.metric("Mãos", f"{scores['Mãos']}")
-        p2.metric("Corpo", f"{scores['Corpo']}")
-        p3.metric("Rosto", f"{scores['Rosto']}")
-        p4.metric("Cabelos", f"{scores['Cabelos']}")
+        p1.metric("Mãos", f"{scores['Mãos']}"); p2.metric("Corpo", f"{scores['Corpo']}")
+        p3.metric("Rosto", f"{scores['Rosto']}"); p4.metric("Cabelos", f"{scores['Cabelos']}")
 
         st.markdown("---")
         st.subheader("Salvar / Carregar Blend (JSON)")
@@ -757,7 +795,7 @@ with tabs[2]:
             "fa_profile": _normalize_percentages(fa_est),
             "total_pct": float(total_all),
             "variabilidade": {"ativada": bool(consider_var), "cenario": scenario},
-            "nota": "Heurístico com Classe A (base) + ajuste fino (B=FA puros OU C=Ingredientes). KPIs estimados.",
+            "nota": "Heurístico com Classe A (base) + ajuste fino (B=FA puros OU C=Ingredientes). KPIs: II/ISap = médias por ingrediente; PF = índice por perfil FA.",
         }
         cjs1, cjs2 = st.columns(2)
         with cjs1:
@@ -792,7 +830,7 @@ with tabs[2]:
         st.info("Pronto para detalhar por finalidade no **Assistente de Formulação** (estimativa baseada em heurística).")
         assist_payload = {
             "fa_profile": fa_est,
-            "kpis": {"II": II, "ISap": ISap, "PF": PF_proxy},  # chave 'PF' mantendo o novo rótulo
+            "kpis": {"II": II_cal, "ISap": ISap_cal, "PF_proxy": PF_idx},  # mantém a chave PF_proxy para compatibilidade
             "scores_preview": scores,
             "source": "heuristica_estimada_A+" + ("B" if method.startswith("Classe B") else "C"),
             "classes": {"A": dict(A_vals), "B": dict(B_vals), "C": dict(C_vals)},
@@ -803,6 +841,190 @@ with tabs[2]:
         if st.button("➜ Enviar para Assistente de Formulação", key="btn_handoff_assist_est_ABC"):
             st.session_state["go_to_assistente"] = True
             st.success("Perfil estimado enviado. Abra a aba **Assistente de Formulação** para continuar.")
+
+    # ---------------- UPLOAD (perfil real) ----------------
+    else:
+        st.subheader("Upload de planilha real")
+        st.caption(
+            "Aceita **CSV/XLSX** com **Ingredientes (%)** ou **Ácidos graxos (%)**. "
+            "O sistema **auto-normaliza**. Após carregar, você pode aplicar **ajuste fino** por "
+            "**B (FA)** ou **C (Ingredientes)**."
+        )
+
+        formato = st.selectbox("Formato da planilha", ["Ingredientes (%)", "Ácidos graxos (%)"], key="formato_planilha")
+        if formato == "Ingredientes (%)":
+            modelo_df = pd.DataFrame({"Ingrediente": [lbl for _, lbl in INGREDIENTS], "Percentual": [0]*8})
+        else:
+            modelo_df = pd.DataFrame({"AcidoGraxos": list(FA_CONST.keys()), "Percentual": [0]*len(FA_CONST)})
+        buf = io.BytesIO(); modelo_df.to_csv(buf, index=False)
+        st.download_button("📥 Baixar modelo CSV", data=buf.getvalue(), file_name="modelo_blend.csv",
+                           mime="text/csv", key="dl_modelo_csv_upload")
+
+        file = st.file_uploader("Carregar planilha (CSV/XLSX)", type=["csv", "xlsx"], key="uploader_real")
+        parsed_ing, parsed_fa = OrderedDict(), OrderedDict()
+        original_total = None; fa_norm = None
+
+        if file is not None:
+            try:
+                df = pd.read_csv(file) if file.name.lower().endswith(".csv") else pd.read_excel(file)
+            except Exception as e:
+                st.error(f"Erro ao ler arquivo: {e}"); df = None
+
+            if df is not None:
+                st.write("Prévia da planilha carregada:"); st.dataframe(df, use_container_width=True)
+                if formato == "Ingredientes (%)":
+                    col_ing, col_pct = "Ingrediente", "Percentual"
+                    if col_ing in df.columns and col_pct in df.columns:
+                        label_to_key = {lbl: k for k, lbl in INGREDIENTS}
+                        for _, row in df.iterrows():
+                            lbl = str(row[col_ing]).strip()
+                            pct = float(row[col_pct]) if pd.notna(row[col_pct]) else 0.0
+                            k = label_to_key.get(lbl)
+                            if k: parsed_ing[k] = parsed_ing.get(k, 0.0) + pct
+                            else: st.warning(f"Ingrediente não reconhecido e ignorado: '{lbl}'")
+                        original_total = sum(parsed_ing.values()); _badge_total(original_total, "Total da planilha (ingredientes)")
+                        fa_tmp = {k: 0.0 for k in FA_ORDER}
+                        tot = sum(parsed_ing.values()) or 1.0
+                        for ing_key, pct in parsed_ing.items():
+                            w = pct / tot
+                            prof = _get_profile(ing_key, scenario if consider_var else "mean")
+                            for fa_key, fa_pct in prof.items():
+                                fa_tmp[fa_key] += w * fa_pct
+                        fa_norm = _normalize_percentages(fa_tmp)
+                    else:
+                        st.error("Planilha deve ter colunas 'Ingrediente' e 'Percentual'.")
+                else:
+                    col_fa, col_pct = "AcidoGraxos", "Percentual"
+                    if col_fa in df.columns && col_pct in df.columns:  # <-- Python não aceita '&&'; linha original usava 'and'
+                        for _, row in df.iterrows():
+                            fa = str(row[col_fa]).strip()
+                            pct = float(row[col_pct]) if pd.notna(row[col_pct]) else 0.0
+                            parsed_fa[fa] = parsed_fa.get(fa, 0.0) + pct
+                        original_total = sum(parsed_fa.values()); _badge_total(original_total, "Total da planilha (FA)")
+                        fa_norm = _normalize_percentages(parsed_fa)
+                    else:
+                        st.error("Planilha deve ter colunas 'AcidoGraxos' e 'Percentual'.")
+
+        if fa_norm:
+            st.markdown("---")
+            st.subheader("KPIs do Blend (perfil real) + Ajuste fino (opcional)")
+
+            method_upl = st.radio("Método de ajuste", ["Classe B — Ácidos graxos puros", "Classe C — Ingredientes"],
+                                  horizontal=True, key="ajuste_method_upload")
+
+            B_vals_upload = OrderedDict((fa, 0.0) for fa in FA_ORDER)
+            total_B_upload = 0.0
+            if method_upl.startswith("Classe B"):
+                with st.expander("Classe B — Ajuste fino por Ácidos graxos puros (sobre perfil real)", expanded=True):
+                    colsB = st.columns(4)
+                    for idx, fa in enumerate(FA_ORDER):
+                        with colsB[idx % 4]:
+                            B_vals_upload[fa] = st.slider(
+                                f"FA {fa} (ajuste fino)", min_value=0.0, max_value=30.0, value=0.0, step=0.5,
+                                key=f"slider_upload_fa_{fa}", help="Adição opcional ao perfil real (%)"
+                            )
+                    total_B_upload = sum(B_vals_upload.values())
+                    if total_B_upload > 30:
+                        st.warning("Classe B excede 30% do blend — considere reduzir para manter o caráter do óleo base.")
+
+            C_vals_upload = OrderedDict((k, 0.0) for k, _ in INGREDIENTS)
+            total_C_upload = 0.0
+            if method_upl.startswith("Classe C"):
+                with st.expander("Classe C — Ajuste fino por Ingredientes (sobre perfil real)", expanded=True):
+                    colsC = st.columns(4)
+                    for idx, (k, label) in enumerate(INGREDIENTS):
+                        with colsC[idx % 4]:
+                            C_vals_upload[k] = st.slider(
+                                f"{label} (ajuste fino)", min_value=0.0, max_value=30.0, value=0.0, step=0.5,
+                                key=f"slider_upload_adj_{k}", help="Adição opcional ao perfil real (%)"
+                            )
+                    total_C_upload = sum(C_vals_upload.values())
+                    if total_C_upload > 30:
+                        st.warning("Classe C excede 30% do blend — considere reduzir para manter o caráter do óleo base.")
+
+            fa_comb = fa_norm.copy()
+            if method_upl.startswith("Classe B") and total_B_upload > 0:
+                for fa, pct in B_vals_upload.items():
+                    fa_comb[fa] = fa_comb.get(fa, 0.0) + pct
+                fa_comb = _normalize_percentages(fa_comb)
+            elif method_upl.startswith("Classe C") and total_C_upload > 0:
+                add = {k: 0.0 for k in FA_ORDER}
+                for ing_key, pct in C_vals_upload.items():
+                    if pct <= 0: continue
+                    prof = _get_profile(ing_key, scenario if consider_var else "mean")
+                    for fa_key, fa_pct in prof.items():
+                        add[fa_key] += (pct * fa_pct / 100.0)
+                for fa_key, inc in add.items():
+                    fa_comb[fa_key] = fa_comb.get(fa_key, 0.0) + inc
+                fa_comb = _normalize_percentages(fa_comb)
+
+            II = iodine_index(fa_comb); ISap = saponification_index(fa_comb); PF_proxy = melt_proxy(fa_comb)
+            c1, c2, c3 = st.columns(3)
+            c1.metric("Índice de Iodo (II)", f"{II:.1f}")
+            c2.metric("Índice de Saponificação (ISap)", f"{ISap:.1f} mgKOH/g")
+            c3.metric("Ponto de Fusão", f"{PF_proxy:.0f}")  # <- rótulo atualizado aqui também
+            st.caption("KPIs calculados sobre o perfil **combinado** (real + ajuste fino, se houver).")
+
+            st.info("📄 Após finalizar sua formulação, gere o dossiê completo na aba **Exportação PDF** (perfil FA, KPIs, preview e narrativa).")
+            with st.expander("🌱 Integração narrativa (ESG) — recomendações de apresentação do blend"):
+                st.markdown(
+                    "- **Upcycling e origem**: destaque **PFAD** e **soapstock** como rotas de **reaproveitamento**; cite rastreio e fornecedores quando houver.\n"
+                    "- **Consistência de qualidade**: use **variabilidade de lote (Min/Típico/Max)** para mostrar **faixas de KPI** (robustez do blend).\n"
+                    "- **Claims alinhados**: conecte KPIs a atributos de uso:\n"
+                    "  - **II↓ / PF↑** → texturas mais firmes, toque menos oleoso (mãos/rosto).\n"
+                    "  - **ISap↑** → base interessante para saboaria/shampoo sólido (palmiste/estearina).\n"
+                    "  - **Insaturados↑ (oleico/linoleico)** → espalhabilidade e nutrição (corpo/cabelos).\n"
+                    "- **Compliance**: para **soapstock/PFAD**, mencionar **refino/esterificação** e dossiê regulatório antes de claims cosméticos."
+                )
+
+            g1, g2 = st.columns(2)
+            with g1: plot_fa_bars(fa_comb)
+            with g2:
+                _, radar_vals = finalidade_scores(fa_comb, PF_proxy, II)
+                plot_radar(radar_vals)
+
+            st.markdown("---")
+            st.subheader("Análise de Trade-offs (variação de +5% por ingrediente sobre o perfil real)")
+            trade_u = _compute_tradeoffs_upload(
+                fa_start=fa_comb,
+                method_upl=method_upl,
+                B_vals_upload=B_vals_upload if method_upl.startswith("Classe B") else {fa:0.0 for fa in FA_ORDER},
+                C_vals_upload=C_vals_upload if method_upl.startswith("Classe C") else {k:0.0 for k,_ in INGREDIENTS},
+                consider_var=consider_var, scenario=scenario
+            )
+            if trade_u:
+                labels_u, dII_u, dIS_u, dPF_u = trade_u
+                ctu1, ctu2, ctu3 = st.columns(3)
+                with ctu1: _plot_tradeoff_bars("Δ Índice de Iodo (II)", labels_u, dII_u, "Δ II")
+                with ctu2: _plot_tradeoff_bars("Δ Índice de Saponificação (ISap)", labels_u, dIS_u, "Δ ISap")
+                with ctu3: _plot_tradeoff_bars("Δ Ponto de Fusão", labels_u, dPF_u, "Δ PF")  # <- rótulo atualizado
+                st.caption("Leitura: as barras mostram como **cada ingrediente** alteraria os KPIs ao adicionar **+5%** equivalente FA (renormalizado).")
+            else:
+                st.caption("Carregue um perfil e/ou ajuste fino para visualizar os trade-offs.")
+
+            st.subheader("Preview de notas por finalidade (0–100)")
+            scores, _ = finalidade_scores(fa_comb, PF_proxy, II)
+            p1, p2, p3, p4 = st.columns(4)
+            p1.metric("Mãos", f"{scores['Mãos']}"); p2.metric("Corpo", f"{scores['Corpo']}")
+            p3.metric("Rosto", f"{scores['Rosto']}"); p4.metric("Cabelos", f"{scores['Cabelos']}")
+
+            st.markdown("---")
+            st.info("Pronto para detalhar por finalidade e assinatura sensorial no **Assistente de Formulação**.")
+            assist_payload = {
+                "fa_profile": fa_comb,
+                "kpis": {"II": II, "ISap": ISap, "PF_proxy": PF_proxy},  # mantém chave PF_proxy para compatibilidade
+                "scores_preview": scores,
+                "source": "upload_real+" + ("ajusteB" if method_upl.startswith("Classe B") else "ajusteC"),
+                "ajuste": {"method": "B" if method_upl.startswith("Classe B") else "C",
+                           "B_vals": dict(B_vals_upload), "C_vals": dict(C_vals_upload)},
+                "variabilidade": {"ativada": bool(consider_var), "cenario": scenario},
+            }
+            st.session_state["assist_payload"] = assist_payload
+            if st.button("➜ Enviar para Assistente de Formulação", key="btn_handoff_assist_real_adj"):
+                st.session_state["go_to_assistente"] = True
+                st.success("Perfil enviado (Upload + Ajuste fino). Abra a aba **Assistente de Formulação** para continuar.")
+        else:
+            st.caption("Carregue um **perfil de ácidos graxos** (ou ingredientes) para habilitar KPIs, gráficos e ajuste fino.")
             
 # ======================================================================
 # TAB 3 — ASSISTENTE DE FORMULAÇÃO (placeholder leve)
