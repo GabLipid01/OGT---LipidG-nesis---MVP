@@ -98,7 +98,7 @@ with tabs[1]:
     render_proposta_cosmetica(st)
 
 with tabs[2]:
-    render_blend_enzimatico(st)
+    render_blend_enzimatico()
 
 with tabs[3]:
     render_assistente_formulacao(st)
