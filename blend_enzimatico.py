@@ -321,7 +321,7 @@ def _plot_radar(rad_dict):
     st.pyplot(fig)
 
 # ----------------- RENDER -----------------
-def render():
+def render_blend_enzimatico():
     st.header("Blend Enzimático ⚗️")
     st.caption(
         "Defina o blend por **Classe A (Ingredientes da palma)** e, se necessário, aplique **ajuste fino** por "
