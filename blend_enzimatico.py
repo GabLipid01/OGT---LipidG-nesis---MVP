@@ -28,14 +28,14 @@ INGREDIENTS = [
 # ----------------- Médias calibradas (faixas típicas) -----------------
 # II/ISap = médias das faixas mostradas nos expanders; PF = média calibrada se conhecida.
 KPI_MEANS = {
-    "rbd_palma":          {"II": 52.5, "ISap": 197.5, "PF": 36},  # PF 34–38 → 36
-    "estearina_palma":    {"II": 37.0, "ISap": 192.5},            # PF não informado: será estimado do perfil FA
-    "oleina_palma":       {"II": 60.0, "ISap": 200.0},
-    "rpko_palmiste":      {"II": 18.0, "ISap": 247.5, "PF": 26},  # média típica ~24–28 °C
-    "estearina_palmiste": {"II": 11.0, "ISap": 242.5},
-    "oleina_palmiste":    {"II": 23.0, "ISap": 247.5},
-    "pfad":               {"II": 50.0, "ISap": 195.0},
-    "soapstock":          {"II": 57.5, "ISap": 197.5},
+    "rbd_palma":          {"II": 52.5, "ISap": 197.5, "PF": 36},  # 34–38 → 36
+    "estearina_palma":    {"II": 37.0, "ISap": 192.5, "PF": 54},  # ~50–58 → 54
+    "oleina_palma":       {"II": 60.0, "ISap": 200.0, "PF": 22},  # ~19–24 → 22
+    "rpko_palmiste":      {"II": 18.0, "ISap": 247.5, "PF": 26},  # ~24–28 → 26
+    "estearina_palmiste": {"II": 11.0, "ISap": 242.5, "PF": 35},  # ~33–37 → 35
+    "oleina_palmiste":    {"II": 23.0, "ISap": 247.5, "PF": 20},  # ~18–22 → 20
+    "pfad":               {"II": 50.0, "ISap": 195.0, "PF": 50},  # ~45–55 → 50
+    "soapstock":          {"II": 57.5, "ISap": 197.5, "PF": 40},  # ~35–45 → 40
 }
 
 # ----------------- Constantes FA -----------------
@@ -522,11 +522,17 @@ def render_blend_enzimatico():
                     "- **Soapstock**: ~185–210\n"
                 )
         with e3:
-            with st.expander("ℹ️ Faixas típicas — Ponto de Fusão (índice 0–100)"):
+            with st.expander("ℹ️ Faixas típicas — Ponto de Fusão (°C)"):
                 st.markdown(
-                    "- **Mais saturados/estearinas** → **índice mais alto** (textura firme)\n"
-                    "- **Mais insaturados/oleínas** → **índice mais baixo** (toque fluido)\n"
-                    "_No baseline exibimos a **média calibrada**; com ajuste exibimos o **índice técnico**._"
+                    "- **RBD (Palma)**: ~34–38 °C\n"
+                    "- **Estearina de Palma**: ~50–58 °C\n"
+                    "- **Oleína de Palma**: ~19–24 °C\n"
+                    "- **RPKO (Palmiste)**: ~24–28 °C\n"
+                    "- **Estearina de Palmiste**: ~33–37 °C\n"
+                    "- **Oleína de Palmiste**: ~18–22 °C\n"
+                    "- **PFAD**: ~45–55 °C\n"
+                    "- **Soapstock**: ~35–45 °C\n\n"
+                    "_No baseline exibimos a **média calibrada**; com ajuste exibimos o **índice técnico (proxy)**._"
                 )
 
         st.info("📄 Após finalizar sua formulação, gere o dossiê completo na aba **Exportação PDF** (perfil FA, KPIs, preview e narrativa).")
