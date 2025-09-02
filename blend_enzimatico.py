@@ -398,11 +398,20 @@ def render_blend_enzimatico():
             else:
                 for k in C_vals: C_vals[k] *= scale
             # sincroniza sliders
-            for k, v in A_vals.items(): st.session_state[f"slider_ing_{k}"] = round(v, 2)
+            for k, v in A_vals.items():
+                _k = f"slider_ing_{k}"
+                if _k in st.session_state:
+                    st.session_state[_k] = float(round(v, 2))
             if method.startswith("Classe B"):
-                for fa, v in B_vals.items(): st.session_state[f"slider_fa_{fa}"] = round(v, 2)
+                for fa, v in B_vals.items():
+                    _k = f"slider_fa_{fa}"
+                    if _k in st.session_state:
+                        st.session_state[_k] = float(round(v, 2))
             else:
-                for k, v in C_vals.items(): st.session_state[f"slider_adj_{k}"] = round(v, 2)
+                for k, v in C_vals.items():
+                    _k = f"slider_adj_{k}"
+                    if _k in st.session_state:
+                        st.session_state[_k] = float(round(v, 2))
             st.experimental_rerun()
 
         # Perfil FA estimado (para gráficos e PF índice)
