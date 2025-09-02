@@ -378,7 +378,8 @@ def render_blend_enzimatico():
             colsA = st.columns(4)
             for idx, (k, label) in enumerate(INGREDIENTS):
                 with colsA[idx % 4]:
-                    A_vals[k] = st.slider(label, 0.0, 100.0, 0.0, 1.0, key=f"slider_ing_{k}")
+                    default = st.session_state.get(f"slider_ing_{k}", 0.0)
+                    A_vals[k] = st.slider(label, 0.0, 100.0, default, 1.0, key=f"slider_ing_{k}")
             total_A = sum(A_vals.values()); _badge_total(total_A, "Total Classe A")
 
         # Método ajuste
@@ -394,7 +395,8 @@ def render_blend_enzimatico():
                 colsB = st.columns(4)
                 for idx, fa in enumerate(FA_ORDER):
                     with colsB[idx % 4]:
-                        B_vals[fa] = st.slider(f"FA {fa}", 0.0, 100.0, 0.0, 1.0, key=f"slider_fa_{fa}")
+                        default_b = st.session_state.get(f"slider_fa_{fa}", 0.0)
+                        B_vals[fa] = st.slider(f"FA {fa}", 0.0, 100.0, default_b, 1.0, key=f"slider_fa_{fa}")
                 total_B = sum(B_vals.values()); _badge_total(total_B, "Total Classe B")
                 if total_B > 30:
                     st.warning("A Classe B excede 30% do blend — considere reduzir para manter o caráter do óleo base.")
@@ -407,7 +409,8 @@ def render_blend_enzimatico():
                 colsC = st.columns(4)
                 for idx, (k, label) in enumerate(INGREDIENTS):
                     with colsC[idx % 4]:
-                        C_vals[k] = st.slider(f"{label} (ajuste)", 0.0, 100.0, 0.0, 1.0, key=f"slider_adj_{k}")
+                        default_c = st.session_state.get(f"slider_adj_{k}", 0.0)
+                        C_vals[k] = st.slider(f"{label} (ajuste)", 0.0, 100.0, default_c, 1.0, key=f"slider_adj_{k}")
                 total_C = sum(C_vals.values()); _badge_total(total_C, "Total Classe C")
                 if total_C > 30:
                     st.warning("A Classe C excede 30% do blend — considere reduzir para manter o caráter do óleo base.")
@@ -685,7 +688,8 @@ def render_blend_enzimatico():
                     colsB = st.columns(4)
                     for idx, fa in enumerate(FA_ORDER):
                         with colsB[idx % 4]:
-                            B_vals_u[fa] = st.slider(f"FA {fa} (ajuste fino)", 0.0, 30.0, 0.0, 0.5, key=f"slider_upload_fa_{fa}")
+                            default_ub = st.session_state.get(f"slider_upload_fa_{fa}", 0.0)
+                            B_vals_u[fa] = st.slider(f"FA {fa} (ajuste fino)", 0.0, 30.0, default_ub, 0.5, key=f"slider_upload_fa_{fa}")
                     total_B_u = sum(B_vals_u.values())
                     if total_B_u > 30:
                         st.warning("Classe B excede 30% do blend — considere reduzir para manter o caráter do óleo base.")
@@ -698,7 +702,8 @@ def render_blend_enzimatico():
                     colsC = st.columns(4)
                     for idx, (k, label) in enumerate(INGREDIENTS):
                         with colsC[idx % 4]:
-                            C_vals_u[k] = st.slider(f"{label} (ajuste fino)", 0.0, 30.0, 0.0, 0.5, key=f"slider_upload_adj_{k}")
+                            default_uc = st.session_state.get(f"slider_upload_adj_{k}", 0.0)
+                            C_vals_u[k] = st.slider(f"{label} (ajuste fino)", 0.0, 30.0, default_uc, 0.5, key=f"slider_upload_adj_{k}")
                     total_C_u = sum(C_vals_u.values())
                     if total_C_u > 30:
                         st.warning("Classe C excede 30% do blend — considere reduzir para manter o caráter do óleo base.")
