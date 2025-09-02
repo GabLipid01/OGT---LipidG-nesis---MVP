@@ -7,6 +7,12 @@ import pandas as pd
 import matplotlib.pyplot as plt
 import streamlit as st
 
+def _rerun():
+    if hasattr(st, "rerun"):
+        st.rerun()
+    else:
+        st.experimental_rerun()
+
 # ----------------- Catálogo de ingredientes (Classe A/C) -----------------
 INGREDIENTS = [
     ("rbd_palma",            "🟠 RBD (Óleo de Palma)"),
@@ -424,7 +430,7 @@ def render_blend_enzimatico():
             st.session_state["_norm_A"] = A_scaled
             st.session_state["_norm_B"] = B_scaled
             st.session_state["_norm_C"] = C_scaled
-            st.experimental_rerun()
+            st.rerun()
 
         # Perfil FA estimado (para gráficos e PF índice)
         fa_est = {k: 0.0 for k in FA_ORDER}
@@ -580,7 +586,7 @@ def render_blend_enzimatico():
                             st.session_state[f"slider_adj_{k}"] = float(v)
                         st.session_state["blend"] = loaded
                         st.success("Blend heurístico (A + ajuste) carregado e sliders atualizados.")
-                        st.experimental_rerun()
+                        st.rerun()
                     else:
                         st.warning("JSON não parece ser um blend heurístico.")
                 except Exception as e:
