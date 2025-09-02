@@ -31,7 +31,7 @@ KPI_MEANS = {
     "rbd_palma":          {"II": 52.5, "ISap": 197.5, "PF": 36},  # PF 34–38 → 36
     "estearina_palma":    {"II": 37.0, "ISap": 192.5},            # PF não informado: será estimado do perfil FA
     "oleina_palma":       {"II": 60.0, "ISap": 200.0},
-    "rpko_palmiste":      {"II": 18.0, "ISap": 247.5},
+    "rpko_palmiste":      {"II": 18.0, "ISap": 247.5, "PF": 26},  # média típica ~24–28 °C
     "estearina_palmiste": {"II": 11.0, "ISap": 242.5},
     "oleina_palmiste":    {"II": 23.0, "ISap": 247.5},
     "pfad":               {"II": 50.0, "ISap": 195.0},
