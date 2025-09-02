@@ -113,7 +113,7 @@ def iodine_index(fa_pct: dict) -> float:
     return sum((fa_pct.get(k, 0.0) / 100.0) * FA_CONST[k]["IV"] for k in FA_CONST.keys())
 
 def saponification_index(fa_pct: dict) -> float:
-    return sum((fa_pct.get(k, 0.0) / 100.0) * (560.0 / FA_CONST[k]["MW"]) for k in FA_CONST.keys())
+    return sum(fa_pct.get(k, 0.0) * (560.0 / FA_CONST[k]["MW"]) for k in FA_CONST.keys())
 
 def melt_index(fa_pct: dict) -> float:
     # índice 0–100 (proxy de ponto de fusão)
