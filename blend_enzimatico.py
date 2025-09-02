@@ -308,20 +308,27 @@ def _compute_tradeoffs_upload(fa_start, method_upl, B_vals_u, C_vals_u, consider
     return labels, dII, dIS, dPF
 
 def _plot_fa_bars(fa_norm):
+    # mapa de rótulos amigáveis — inclui C12:0 (Láurico)
+    FRIENDLY_FA_LABELS = {
+        "C12:0": "C12:0 (Láurico)",
+        "C14:0": "C14:0 (Mirístico)",
+        "C16:0": "C16:0 (Palmítico)",
+        "C18:0": "C18:0 (Esteárico)",
+        "C18:1": "C18:1 (Oleico)",
+        "C18:2": "C18:2 (Linoleico)",
+        "C18:3": "C18:3 (Linolênico)",
+    }
+
+    # dados na ordem exata de FA_ORDER
     data = [fa_norm.get(k, 0.0) for k in FA_ORDER]
+    labels = [FRIENDLY_FA_LABELS.get(k, k) for k in FA_ORDER]
+
     fig, ax = plt.subplots()
     ax.bar(range(len(FA_ORDER)), data)
-    FA_LABELS = {
-    "C12:0": "C12:0 (Láurico)",
-    "C14:0": "C14:0 (Mirístico)",
-    "C16:0": "C16:0 (Palmítico)",
-    "C18:0": "C18:0 (Esteárico)",
-    "C18:1": "C18:1 (Oleico)",
-    "C18:2": "C18:2 (Linoleico)",
-    "C18:3": "C18:3 (Linolênico)",
-    }
-    ax.set_xticklabels([FA_LABELS.get(k, k) for k in FA_ORDER], rotation=45, ha='right')
-    ax.set_ylabel('%'); ax.set_title('Composição por Ácido Graxo (%)')
+    ax.set_xticks(range(len(FA_ORDER)))
+    ax.set_xticklabels(labels, rotation=45, ha='right')
+    ax.set_ylabel('%')
+    ax.set_title('Composição por Ácido Graxo (%)')
     st.pyplot(fig)
 
 def _plot_radar(rad_dict):
