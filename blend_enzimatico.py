@@ -344,6 +344,25 @@ def render_blend_enzimatico():
 
     # ---------------- HEURÍSTICO ----------------
     if mode == "Heurísticas (rápido)":
+                # Aplicar normalização pendente (antes de criar widgets)
+        if st.session_state.get("_apply_norm"):
+            normA = st.session_state.get("_norm_A", {})
+            normB = st.session_state.get("_norm_B")
+            normC = st.session_state.get("_norm_C")
+
+            for k, v in normA.items():
+                st.session_state[f"slider_ing_{k}"] = float(round(v, 2))
+            if normB is not None:
+                for k, v in normB.items():
+                    st.session_state[f"slider_fa_{k}"] = float(round(v, 2))
+            if normC is not None:
+                for k, v in normC.items():
+                    st.session_state[f"slider_adj_{k}"] = float(round(v, 2))
+
+            # limpar sinalizadores temporários
+            for _tmp in ("_apply_norm", "_norm_A", "_norm_B", "_norm_C"):
+                st.session_state.pop(_tmp, None)
+                
         st.subheader("Heurísticas com duas camadas: Base (Classe A) + Ajuste fino (B ou C)")
         st.caption("⚠️ **Médias calibradas** para II/ISap/PF quando **sem ajuste**; com ajuste, KPIs passam a ser **técnicos (perfil FA)**.")
 
@@ -392,26 +411,19 @@ def render_blend_enzimatico():
         _badge_total(total_all, "Total Global (A + Ajuste)")
         if total_all > 0 and st.button("🔄 Normalizar Global (A + Ajuste) para 100%", key="btn_norm_AB_or_AC"):
             scale = 100.0 / total_all
-            for k in A_vals: A_vals[k] *= scale
+            A_scaled = {k: A_vals[k] * scale for k in A_vals}
             if method.startswith("Classe B"):
-                for k in B_vals: B_vals[k] *= scale
+                B_scaled = {k: B_vals[k] * scale for k in B_vals}
+                C_scaled = None
             else:
-                for k in C_vals: C_vals[k] *= scale
-            # sincroniza sliders
-            for k, v in A_vals.items():
-                _k = f"slider_ing_{k}"
-                if _k in st.session_state:
-                    st.session_state[_k] = float(round(v, 2))
-            if method.startswith("Classe B"):
-                for fa, v in B_vals.items():
-                    _k = f"slider_fa_{fa}"
-                    if _k in st.session_state:
-                        st.session_state[_k] = float(round(v, 2))
-            else:
-                for k, v in C_vals.items():
-                    _k = f"slider_adj_{k}"
-                    if _k in st.session_state:
-                        st.session_state[_k] = float(round(v, 2))
+                C_scaled = {k: C_vals[k] * scale for k in C_vals}
+                B_scaled = None
+
+            # Sinaliza para aplicar na próxima execução (antes dos sliders existirem)
+            st.session_state["_apply_norm"] = True
+            st.session_state["_norm_A"] = A_scaled
+            st.session_state["_norm_B"] = B_scaled
+            st.session_state["_norm_C"] = C_scaled
             st.experimental_rerun()
 
         # Perfil FA estimado (para gráficos e PF índice)
