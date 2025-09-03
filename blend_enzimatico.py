@@ -474,8 +474,8 @@ def render_blend_enzimatico():
                         fa_est[fa_key] += w * fa_pct
         fa_est = _normalize_percentages(fa_est)
 
-        # KPIs — baseline calibrado (A + C) x atual técnico (se houver ajuste)
-        II_base, IS_base, PF_base = kpis_calibrados_por_medias(A_vals, C_vals, scenario if consider_var else "mean")
+        # KPIs — baseline calibrado (A) x atual técnico (se houver ajuste)
+        II_base, IS_base, PF_base = kpis_calibrados_por_medias(A_vals, {}, scenario if consider_var else "mean")
         has_adjust = (total_B > 0) or (total_C > 0)
         if has_adjust:
             II_now, IS_now, PF_now = iodine_index(fa_est), saponification_index(fa_est), melt_index(fa_est)
