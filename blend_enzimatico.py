@@ -26,7 +26,8 @@ INGREDIENTS = [
 ]
 
 # ----------------- Médias calibradas (faixas típicas) -----------------
-# II/ISap = médias das faixas mostradas nos expanders; PF = média calibrada se conhecida.
+# II/ISap = médias das faixas mostradas nos expanders;
+# PF (°C) = média calibrada quando disponível; usado como baseline de comunicação.
 KPI_MEANS = {
     "rbd_palma":          {"II": 52.5, "ISap": 197.5, "PF": 36},  # 34–38 → 36
     "estearina_palma":    {"II": 37.0, "ISap": 192.5, "PF": 54},  # ~50–58 → 54
@@ -114,22 +115,51 @@ def _get_profile(ing_key: str, scenario: str) -> dict:
     profs = FA_PROFILES_RANGED.get(ing_key, {})
     return profs.get(scenario, profs.get("mean", {}))
 
-# KPIs FA-based
-def iodine_index(fa_pct: dict) -> float:
-    return sum((fa_pct.get(k, 0.0) / 100.0) * FA_CONST[k]["IV"] for k in FA_CONST.keys())
-
-def saponification_index(fa_pct: dict) -> float:
-    return sum(fa_pct.get(k, 0.0) * (560.0 / FA_CONST[k]["MW"]) for k in FA_CONST.keys())
-
+# -------------- Conversão PF índice -> °C (calibrada) --------------
 def melt_index(fa_pct: dict) -> float:
-    # índice 0–100 (proxy de ponto de fusão)
+    """Índice 0–100 (proxy de ponto de fusão) calculado do perfil FA."""
     sat = fa_pct.get("C12:0",0)+fa_pct.get("C14:0",0)+fa_pct.get("C16:0",0)+fa_pct.get("C18:0",0)
     mono = fa_pct.get("C18:1",0)
     poly = fa_pct.get("C18:2",0)+fa_pct.get("C18:3",0)
     score = (0.6*sat + 0.2*(fa_pct.get("C16:0",0)+fa_pct.get("C18:0",0)) - 0.3*poly + 0.05*mono)
     return max(0.0, min(100.0, score))
 
-# Sensorial (heurístico)
+def _fit_pf_index_to_celsius():
+    """Ajusta uma regressão linear °C = a*(PF_idx) + b a partir dos ingredientes com PF calibrado."""
+    xs, ys = [], []
+    for ing_key, means in KPI_MEANS.items():
+        if "PF" in means:
+            prof = _get_profile(ing_key, "mean")
+            x = melt_index(prof)      # índice calculado do perfil 'mean'
+            y = means["PF"]          # °C calibrado de literatura
+            xs.append(float(x)); ys.append(float(y))
+    if len(xs) >= 2:
+        n = len(xs)
+        sumx = sum(xs); sumy = sum(ys)
+        sumx2 = sum(x*x for x in xs); sumxy = sum(x*y for x, y in zip(xs, ys))
+        denom = (n*sumx2 - sumx*sumx)
+        if abs(denom) > 1e-9:
+            a = (n*sumxy - sumx*sumy) / denom
+            b = (sumy - a*sumx) / n
+            return a, b
+    # fallback seguro (mapeamento razoável)
+    return 0.6, 5.0
+
+_PF_A, _PF_B = _fit_pf_index_to_celsius()
+
+def pf_index_to_celsius(pf_idx: float) -> float:
+    """Converte índice de PF (0–100) em °C usando calibração linear."""
+    return max(0.0, _PF_A * float(pf_idx) + _PF_B)
+
+# ----------------- KPIs baseados em FA -----------------
+def iodine_index(fa_pct: dict) -> float:
+    return sum((fa_pct.get(k, 0.0) / 100.0) * FA_CONST[k]["IV"] for k in FA_CONST.keys())
+
+def saponification_index(fa_pct: dict) -> float:
+    # CORRIGIDO: porcentagens em base 0–100 → dividir por 100
+    return sum((fa_pct.get(k, 0.0) / 100.0) * (560.0 / FA_CONST[k]["MW"]) for k in FA_CONST.keys())
+
+# ----------------- Heurísticas sensoriais -----------------
 def _spread(fa):  # espalhabilidade
     insat = fa.get("C18:1",0) + fa.get("C18:2",0) + fa.get("C18:3",0)
     laur = fa.get("C12:0",0) + fa.get("C14:0",0)
@@ -164,7 +194,7 @@ def _scores_finais(fa, PF_idx, II_for_scores):
                         absorcao=int(round((toque+spread)/2)))
     return scores, radar
 
-# Baseline calibrado (A + C)
+# ----------------- Baseline calibrado (A + C) -----------------
 def kpis_calibrados_por_medias(A_vals: dict, C_vals: dict, scenario: str) -> tuple[float,float,float]:
     total_ref = sum(A_vals.values()) + sum(C_vals.values())
     if total_ref <= 0: return 0.0, 0.0, 0.0
@@ -176,13 +206,13 @@ def kpis_calibrados_por_medias(A_vals: dict, C_vals: dict, scenario: str) -> tup
             km = KPI_MEANS.get(ing_key, {})
             II  += w * km.get("II", 0.0)
             IS  += w * km.get("ISap", 0.0)
-            # PF calibrado: usa média calibrada se existir; senão estima do perfil FA 'mean'
+            # PF baseline (°C): média calibrada se existir; senão estimar do perfil 'mean' via conversão calibrada
             if "PF" in km:
-                pf_loc = km["PF"]
+                pf_loc_c = km["PF"]
             else:
                 prof = _get_profile(ing_key, scenario)
-                pf_loc = melt_index(prof)
-            PFm += w * pf_loc
+                pf_loc_c = pf_index_to_celsius(melt_index(prof))
+            PFm += w * pf_loc_c
     return II, IS, PFm
 
 def _fa_from_mix(ing_mix: dict, total_ref: float, scenario_key: str):
@@ -196,6 +226,7 @@ def _fa_from_mix(ing_mix: dict, total_ref: float, scenario_key: str):
             fa_tmp[fa_key] += w * fa_pct
     return _normalize_percentages(fa_tmp)
 
+# ----------------- Gráficos -----------------
 def _plot_tradeoff_bars(title: str, labels: list, deltas: list, ylabel: str):
     fig, ax = plt.subplots()
     ax.bar(range(len(labels)), deltas)
@@ -211,7 +242,7 @@ def _compute_tradeoffs_heuristico(A_vals, method, B_vals, C_vals, consider_var, 
     total_all = total_A + total_adjust
     if total_all <= 0: return None
 
-    # ponto de partida
+    # ponto de partida (perfil FA combinado)
     fa_base = {k:0.0 for k in FA_ORDER}
     for ing_key, pct in A_vals.items():
         if pct <= 0: continue
@@ -232,9 +263,10 @@ def _compute_tradeoffs_heuristico(A_vals, method, B_vals, C_vals, consider_var, 
             for fk, fp in prof.items():
                 fa_base[fk] += w * fp
     fa_base = _normalize_percentages(fa_base)
-    II0, IS0, PF0 = iodine_index(fa_base), saponification_index(fa_base), melt_index(fa_base)
+    II0, IS0 = iodine_index(fa_base), saponification_index(fa_base)
+    PF0_idx = melt_index(fa_base); PF0_c = pf_index_to_celsius(PF0_idx)
 
-    labels, dII, dIS, dPF = [], [], [], []
+    labels, dII, dIS, dPFc = [], [], [], []
     for ing_key, pct in A_vals.items():
         inc = 5.0
         A_new = A_vals.copy(); A_new[ing_key] = max(0.0, pct + inc)
@@ -262,16 +294,21 @@ def _compute_tradeoffs_heuristico(A_vals, method, B_vals, C_vals, consider_var, 
                 for fk, fp in prof2.items():
                     fa_new[fk] += w * fp
         fa_new = _normalize_percentages(fa_new)
-        II1, IS1, PF1 = iodine_index(fa_new), saponification_index(fa_new), melt_index(fa_new)
+        II1, IS1 = iodine_index(fa_new), saponification_index(fa_new)
+        PF1_idx = melt_index(fa_new); PF1_c = pf_index_to_celsius(PF1_idx)
 
         label = next(lbl for key,lbl in INGREDIENTS if key==ing_key)
-        labels.append(label); dII.append(round(II1 - II0, 2)); dIS.append(round(IS1 - IS0, 2)); dPF.append(round(PF1 - PF0, 2))
-    return labels, dII, dIS, dPF
+        labels.append(label)
+        dII.append(round(II1 - II0, 2))
+        dIS.append(round(IS1 - IS0, 2))
+        dPFc.append(round(PF1_c - PF0_c, 2))
+    return labels, dII, dIS, dPFc
 
 def _compute_tradeoffs_upload(fa_start, method_upl, B_vals_u, C_vals_u, consider_var, scenario):
     fa_base = _normalize_percentages(fa_start.copy())
-    II0, IS0, PF0 = iodine_index(fa_base), saponification_index(fa_base), melt_index(fa_base)
-    labels, dII, dIS, dPF = [], [], [], []
+    II0, IS0 = iodine_index(fa_base), saponification_index(fa_base)
+    PF0_c = pf_index_to_celsius(melt_index(fa_base))
+    labels, dII, dIS, dPFc = [], [], [], []
     for ing_key, label in INGREDIENTS:
         add_pct = 5.0
         add_fa = {k:0.0 for k in FA_ORDER}
@@ -303,12 +340,13 @@ def _compute_tradeoffs_upload(fa_start, method_upl, B_vals_u, C_vals_u, consider
                     fa_new[fk] = fa_new.get(fk, 0.0) + inc2
                 fa_new = _normalize_percentages(fa_new)
 
-        II1, IS1, PF1 = iodine_index(fa_new), saponification_index(fa_new), melt_index(fa_new)
-        labels.append(label); dII.append(round(II1 - II0, 2)); dIS.append(round(IS1 - IS0, 2)); dPF.append(round(PF1 - PF0, 2))
-    return labels, dII, dIS, dPF
+        II1, IS1 = iodine_index(fa_new), saponification_index(fa_new)
+        PF1_c = pf_index_to_celsius(melt_index(fa_new))
+        labels.append(label); dII.append(round(II1 - II0, 2)); dIS.append(round(IS1 - IS0, 2)); dPFc.append(round(PF1_c - PF0_c, 2))
+    return labels, dII, dIS, dPFc
 
 def _plot_fa_bars(fa_norm):
-    # mapa de rótulos amigáveis — inclui C12:0 (Láurico)
+    # rótulos amigáveis — inclui C12:0 (Láurico)
     FRIENDLY_FA_LABELS = {
         "C12:0": "C12:0 (Láurico)",
         "C14:0": "C14:0 (Mirístico)",
@@ -318,11 +356,8 @@ def _plot_fa_bars(fa_norm):
         "C18:2": "C18:2 (Linoleico)",
         "C18:3": "C18:3 (Linolênico)",
     }
-
-    # dados na ordem exata de FA_ORDER
     data = [fa_norm.get(k, 0.0) for k in FA_ORDER]
     labels = [FRIENDLY_FA_LABELS.get(k, k) for k in FA_ORDER]
-
     fig, ax = plt.subplots()
     ax.bar(range(len(FA_ORDER)), data)
     ax.set_xticks(range(len(FA_ORDER)))
@@ -366,12 +401,11 @@ def render_blend_enzimatico():
 
     # ---------------- HEURÍSTICO ----------------
     if mode == "Heurísticas (rápido)":
-                # Aplicar normalização pendente (antes de criar widgets)
+        # Aplicar normalização pendente (antes de criar widgets)
         if st.session_state.get("_apply_norm"):
             normA = st.session_state.get("_norm_A", {})
             normB = st.session_state.get("_norm_B")
             normC = st.session_state.get("_norm_C")
-
             for k, v in normA.items():
                 st.session_state[f"slider_ing_{k}"] = float(round(v, 2))
             if normB is not None:
@@ -380,11 +414,9 @@ def render_blend_enzimatico():
             if normC is not None:
                 for k, v in normC.items():
                     st.session_state[f"slider_adj_{k}"] = float(round(v, 2))
-
-            # limpar sinalizadores temporários
             for _tmp in ("_apply_norm", "_norm_A", "_norm_B", "_norm_C"):
                 st.session_state.pop(_tmp, None)
-                
+
         st.subheader("Heurísticas com duas camadas: Base (Classe A) + Ajuste fino (B ou C)")
         st.caption("⚠️ **Médias calibradas** para II/ISap/PF quando **sem ajuste**; com ajuste, KPIs passam a ser **técnicos (perfil FA)**.")
 
@@ -443,8 +475,6 @@ def render_blend_enzimatico():
             else:
                 C_scaled = {k: C_vals[k] * scale for k in C_vals}
                 B_scaled = None
-
-            # Sinaliza para aplicar na próxima execução (antes dos sliders existirem)
             st.session_state["_apply_norm"] = True
             st.session_state["_norm_A"] = A_scaled
             st.session_state["_norm_B"] = B_scaled
@@ -475,12 +505,14 @@ def render_blend_enzimatico():
         fa_est = _normalize_percentages(fa_est)
 
         # KPIs — baseline calibrado (A) x atual técnico (se houver ajuste)
-        II_base, IS_base, PF_base = kpis_calibrados_por_medias(A_vals, {}, scenario if consider_var else "mean")
+        II_base, IS_base, PF_base_c = kpis_calibrados_por_medias(A_vals, {}, scenario if consider_var else "mean")
         has_adjust = (total_B > 0) or (total_C > 0)
         if has_adjust:
-            II_now, IS_now, PF_now = iodine_index(fa_est), saponification_index(fa_est), melt_index(fa_est)
+            II_now = iodine_index(fa_est)
+            IS_now = saponification_index(fa_est)
+            PF_now_c = pf_index_to_celsius(melt_index(fa_est))
         else:
-            II_now, IS_now, PF_now = II_base, IS_base, PF_base
+            II_now, IS_now, PF_now_c = II_base, IS_base, PF_base_c
 
         st.markdown("---")
         st.subheader("KPIs")
@@ -489,18 +521,17 @@ def render_blend_enzimatico():
         cols1 = st.columns(3)
         cols1[0].metric("Índice de Iodo (II)", f"{II_now:.1f}")
         cols1[1].metric("Índice de Saponificação (ISap)", f"{IS_now:.1f} mgKOH/g")
-        cols1[2].metric("Ponto de Fusão", f"{PF_now:.0f}")
+        cols1[2].metric("Ponto de Fusão (°C)", f"{PF_now_c:.1f}")
 
         if has_adjust:
             st.caption("Linha de referência (médias calibradas por ingrediente, sem ajuste):")
             cols2 = st.columns(3)
             cols2[0].metric("II — baseline", f"{II_base:.1f}")
             cols2[1].metric("ISap — baseline", f"{IS_base:.1f} mgKOH/g")
-            cols2[2].metric("PF — baseline", f"{PF_base:.0f}")
+            cols2[2].metric("PF — baseline (°C)", f"{PF_base_c:.1f}")
 
         st.caption("• Sem ajuste: KPIs exibem **médias calibradas por ingrediente**. "
-                   "• Com ajuste (B/C): KPIs passam a ser **calculados do perfil FA**. "
-                   "• ‘Ponto de Fusão’ é um **índice 0–100** derivado do perfil FA.")
+                   "• Com ajuste (B/C): KPIs são **calculados do perfil FA**; o **PF é convertido para °C** por calibração linear. ")
 
         # Expanders (faixas típicas)
         e1, e2, e3 = st.columns(3)
@@ -539,7 +570,7 @@ def render_blend_enzimatico():
                     "- **Oleína de Palmiste**: ~18–22 °C\n"
                     "- **PFAD**: ~45–55 °C\n"
                     "- **Soapstock**: ~35–45 °C\n\n"
-                    "_No baseline exibimos a **média calibrada**; com ajuste exibimos o **índice técnico (proxy)**._"
+                    "_No baseline exibimos a **média calibrada**; com ajuste exibimos o **PF estimado em °C** via calibração do índice._"
                 )
 
         st.info("📄 Após finalizar sua formulação, gere o dossiê completo na aba **Exportação PDF** (perfil FA, KPIs, preview e narrativa).")
@@ -559,11 +590,11 @@ def render_blend_enzimatico():
         if trade is None:
             st.caption("Defina a base (Classe A) para visualizar os trade-offs.")
         else:
-            labels, dII, dIS, dPF = trade
+            labels, dII, dIS, dPFc = trade
             cto1, cto2, cto3 = st.columns(3)
             with cto1: _plot_tradeoff_bars("Δ Índice de Iodo (II)", labels, dII, "Δ II")
             with cto2: _plot_tradeoff_bars("Δ Índice de Saponificação (ISap)", labels, dIS, "Δ ISap")
-            with cto3: _plot_tradeoff_bars("Δ Ponto de Fusão", labels, dPF, "Δ PF")
+            with cto3: _plot_tradeoff_bars("Δ Ponto de Fusão (°C)", labels, dPFc, "Δ PF (°C)")
             st.caption("Leitura: impacto em KPIs ao variar **+5%** (renormalizado).")
 
         # Preview finalidade (estimativo)
@@ -586,7 +617,7 @@ def render_blend_enzimatico():
             "total_pct": float(total_all),
             "variabilidade": {"ativada": bool(consider_var), "cenario": scenario},
             "nota": "Heurístico com Classe A (base) + ajuste fino (B=FA puros OU C=Ingredientes). "
-                    "KPIs: baseline (médias calibradas) e atual (técnico se ajuste).",
+                    "KPIs: baseline (médias calibradas) e atual (técnico se ajuste; PF em °C por calibração).",
         }
         cjs1, cjs2 = st.columns(2)
         with cjs1:
@@ -621,8 +652,9 @@ def render_blend_enzimatico():
         st.info("Pronto para detalhar por finalidade no **Assistente de Formulação** (estimativa baseada em heurística).")
         assist_payload = {
             "fa_profile": fa_est,
-            "kpis": {"II": II_now, "ISap": IS_now, "PF_proxy": melt_index(fa_est)},  # mantém chave PF_proxy p/ compatibilidade
-            "kpis_baseline": {"II": II_base, "ISap": IS_base, "PF": PF_base},
+            "kpis": {"II": II_now, "ISap": IS_now, "PF_proxy": melt_index(fa_est)},  # compatibilidade
+            "kpis_baseline": {"II": II_base, "ISap": IS_base, "PF_celsius": PF_base_c},
+            "PF_celsius": PF_now_c,
             "source": "heuristica_estimada_A+" + ("B" if method.startswith("Classe B") else "C"),
             "classes": {"A": dict(A_vals), "B": dict(B_vals), "C": dict(C_vals)},
             "variabilidade": {"ativada": bool(consider_var), "cenario": scenario},
@@ -686,7 +718,7 @@ def render_blend_enzimatico():
                         st.error("Planilha deve ter colunas 'Ingrediente' e 'Percentual'.")
                 else:
                     col_fa, col_pct = "AcidoGraxos", "Percentual"
-                    if col_fa in df.columns and col_pct in df.columns:   # (fix do '&&')
+                    if col_fa in df.columns and col_pct in df.columns:
                         for _, row in df.iterrows():
                             fa = str(row[col_fa]).strip()
                             pct = float(row[col_pct]) if pd.notna(row[col_pct]) else 0.0
@@ -747,18 +779,19 @@ def render_blend_enzimatico():
                     fa_comb[fa_key] = fa_comb.get(fa_key, 0.0) + inc
                 fa_comb = _normalize_percentages(fa_comb)
 
-            II, ISap, PF_idx = iodine_index(fa_comb), saponification_index(fa_comb), melt_index(fa_comb)
+            II, ISap = iodine_index(fa_comb), saponification_index(fa_comb)
+            PF_c = pf_index_to_celsius(melt_index(fa_comb))
             c1, c2, c3 = st.columns(3)
             c1.metric("Índice de Iodo (II)", f"{II:.1f}")
             c2.metric("Índice de Saponificação (ISap)", f"{ISap:.1f} mgKOH/g")
-            c3.metric("Ponto de Fusão", f"{PF_idx:.0f}")
+            c3.metric("Ponto de Fusão (°C)", f"{PF_c:.1f}")
             st.caption("KPIs calculados sobre o perfil **combinado** (real + ajuste fino, se houver).")
 
             # Gráficos + Radar
             g1, g2 = st.columns(2)
             with g1: _plot_fa_bars(fa_comb)
             with g2:
-                _, radar_vals = _scores_finais(fa_comb, PF_idx, II)
+                _, radar_vals = _scores_finais(fa_comb, melt_index(fa_comb), II)
                 _plot_radar(radar_vals)
 
             # Trade-offs (upload)
@@ -769,17 +802,17 @@ def render_blend_enzimatico():
                                                 C_vals_u=C_vals_u if method_upl.endswith("Ingredientes") else {k:0.0 for k,_ in INGREDIENTS},
                                                 consider_var=False, scenario="mean")
             if trade_u:
-                labels_u, dII_u, dIS_u, dPF_u = trade_u
+                labels_u, dII_u, dIS_u, dPFc_u = trade_u
                 ctu1, ctu2, ctu3 = st.columns(3)
                 with ctu1: _plot_tradeoff_bars("Δ Índice de Iodo (II)", labels_u, dII_u, "Δ II")
                 with ctu2: _plot_tradeoff_bars("Δ Índice de Saponificação (ISap)", labels_u, dIS_u, "Δ ISap")
-                with ctu3: _plot_tradeoff_bars("Δ Ponto de Fusão", labels_u, dPF_u, "Δ PF")
+                with ctu3: _plot_tradeoff_bars("Δ Ponto de Fusão (°C)", labels_u, dPFc_u, "Δ PF (°C)")
             else:
                 st.caption("Carregue um perfil e/ou ajuste fino para visualizar os trade-offs.")
 
             # Preview finalidade
             st.subheader("Preview de notas por finalidade (0–100)")
-            scores, _ = _scores_finais(fa_comb, PF_idx, II)
+            scores, _ = _scores_finais(fa_comb, melt_index(fa_comb), II)
             p1, p2, p3, p4 = st.columns(4)
             p1.metric("Mãos", f"{scores['Mãos']}"); p2.metric("Corpo", f"{scores['Corpo']}")
             p3.metric("Rosto", f"{scores['Rosto']}"); p4.metric("Cabelos", f"{scores['Cabelos']}")
@@ -789,7 +822,8 @@ def render_blend_enzimatico():
             st.info("Pronto para detalhar por finalidade e assinatura sensorial no **Assistente de Formulação**.")
             assist_payload = {
                 "fa_profile": fa_comb,
-                "kpis": {"II": II, "ISap": ISap, "PF_proxy": PF_idx},
+                "kpis": {"II": II, "ISap": ISap, "PF_proxy": melt_index(fa_comb)},
+                "PF_celsius": PF_c,
                 "scores_preview": scores,
                 "source": "upload_real+" + ("ajusteB" if method_upl.startswith("Classe B") else "ajusteC"),
                 "ajuste": {"method": "B" if method_upl.startswith("Classe B") else "C",
