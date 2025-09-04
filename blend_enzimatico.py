@@ -587,43 +587,44 @@ def render_blend_enzimatico():
                    "• Com ajuste (B/C): KPIs são **calculados do perfil FA**; o **PF é convertido para °C** por calibração linear. ")
 
         # --- Botões de Snapshot (Heurístico) ---
-# Baseline FA = somente Classe A (proporcional a total_A), usando perfis 'scenario/mean'
-fa_baseline_A = {k: 0.0 for k in FA_ORDER}
-if sum(A_vals.values()) > 0:
-    for ing_key, pct in A_vals.items():
-        if pct <= 0: 
-            continue
-        w = pct / sum(A_vals.values())
-        profA = _get_profile(ing_key, scenario if consider_var else "mean")
-        for fa_key, fa_pct in profA.items():
-            fa_baseline_A[fa_key] += w * fa_pct
-fa_baseline_A = _normalize_percentages(fa_baseline_A)
+        # Baseline FA = somente Classe A (proporcional a total_A), usando perfis 'scenario/mean'
+        fa_baseline_A = {k: 0.0 for k in FA_ORDER}
+        if sum(A_vals.values()) > 0:
+            for ing_key, pct in A_vals.items():
+                if pct <= 0:
+                    continue
+                w = pct / sum(A_vals.values())
+                profA = _get_profile(ing_key, scenario if consider_var else "mean")
+                for fa_key, fa_pct in profA.items():
+                    fa_baseline_A[fa_key] += w * fa_pct
+        fa_baseline_A = _normalize_percentages(fa_baseline_A)
 
-btnA, btnB, btnClear = st.columns(3)
-if btnA.button("💾 Salvar como A (Baseline)", key="btn_saveA_heur"):
-    # KPIs do baseline A: usar os KPIs calibrados (médias) + PF baseline já exibidos
-    st.session_state["cmp_A"] = _make_snapshot(
-        label="Baseline (Classe A — médias calibradas)",
-        fa_dict=fa_baseline_A,
-        II=II_base, ISap=IS_base, PF_idx=PF_base
-    )
-    st.success("Baseline salvo como A.")
+        btnA, btnB, btnClear = st.columns(3)
+        if btnA.button("💾 Salvar como A (Baseline)", key="btn_saveA_heur"):
+            # KPIs do baseline A: usar os KPIs calibrados (médias) + PF baseline já exibidos
+            st.session_state["cmp_A"] = _make_snapshot(
+                label="Baseline (Classe A — médias calibradas)",
+                fa_dict=fa_baseline_A,
+                II=II_base, ISap=IS_base, PF_idx=PF_base
+            )
+            st.success("Baseline salvo como A.")
 
-if btnB.button("💾 Salvar como B (Atual)", key="btn_saveB_heur"):
-    # KPIs atuais: usar os “now” (se houver ajuste) ou o baseline se não houver (mantém coerência)
-    st.session_state["cmp_B"] = _make_snapshot(
-        label="Atual (A + ajuste fino B/C)" if has_adjust else "Atual (sem ajuste)",
-        fa_dict=fa_est,
-        II=II_now, ISap=IS_now, PF_idx=PF_now
-    )
-    st.success("Atual salvo como B.")
+        if btnB.button("💾 Salvar como B (Atual)", key="btn_saveB_heur"):
+            # KPIs atuais: usar os “now” (se houver ajuste) ou o baseline se não houver (mantém coerência)
+            st.session_state["cmp_B"] = _make_snapshot(
+                label="Atual (A + ajuste fino B/C)" if has_adjust else "Atual (sem ajuste)",
+                fa_dict=fa_est,
+                II=II_now, ISap=IS_now, PF_idx=PF_now
+            )
+            st.success("Atual salvo como B.")
 
-if btnClear.button("🧹 Limpar A e B", key="btn_clear_AB_heur"):
-    st.session_state.pop("cmp_A", None); st.session_state.pop("cmp_B", None)
-    st.info("Snapshots A e B limpos.")
+        if btnClear.button("🧹 Limpar A e B", key="btn_clear_AB_heur"):
+            st.session_state.pop("cmp_A", None)
+            st.session_state.pop("cmp_B", None)
+            st.info("Snapshots A e B limpos.")
 
-# Renderiza comparação, se existir
-_render_compare_AB()
+        # Renderiza comparação, se existir
+        _render_compare_AB()
         
         # Expanders (faixas típicas)
         e1, e2, e3 = st.columns(3)
