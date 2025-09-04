@@ -156,8 +156,6 @@ def iodine_index(fa_pct: dict) -> float:
     return sum((fa_pct.get(k, 0.0) / 100.0) * FA_CONST[k]["IV"] for k in FA_CONST.keys())
 
 def saponification_index(fa_pct: dict) -> float:
-    # CORRIGIDO: porcentagens em base 0–100 → dividir por 100
-    def saponification_index(fa_pct: dict) -> float:
     return sum((fa_pct.get(k, 0.0) / 100.0) * (560.0 / FA_CONST[k]["MW"]) for k in FA_CONST)
 
 # ----------------- Heurísticas sensoriais -----------------
