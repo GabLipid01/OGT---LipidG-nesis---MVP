@@ -376,6 +376,57 @@ def _plot_radar(rad_dict):
     ax.set_title("Radar Sensorial (0–100)")
     st.pyplot(fig)
 
+# --- Helpers para snapshots e comparação A vs B ---
+
+def _make_snapshot(label: str, fa_dict: dict, II: float, ISap: float, PF_idx: float):
+    """Empacota um snapshot para comparação (fa + KPIs + label + radar)."""
+    fa_n = _normalize_percentages(fa_dict)
+    scores, radar = _scores_finais(fa_n, PF_idx, II)
+    return {
+        "label": label,
+        "fa": fa_n,
+        "kpis": {"II": float(II), "ISap": float(ISap), "PF": float(PF_idx)},
+        "scores": scores,
+        "radar": radar,
+    }
+
+def _render_snapshot(title: str, snap: dict):
+    st.markdown(f"**{title}: {snap['label']}**")
+    c1, c2 = st.columns(2)
+    with c1:
+        k = snap["kpis"]
+        k1, k2, k3 = st.columns(3)
+        k1.metric("Índice de Iodo (II)", f"{k['II']:.1f}")
+        k2.metric("Índice de Saponificação (ISap)", f"{k['ISap']:.1f} mgKOH/g")
+        k3.metric("Ponto de Fusão", f"{k['PF']:.0f}")
+        _plot_fa_bars(snap["fa"])
+    with c2:
+        _plot_radar(snap["radar"])
+
+def _render_compare_AB():
+    """Se existir A e B no session_state, renderiza comparação lado a lado."""
+    snapA = st.session_state.get("cmp_A")
+    snapB = st.session_state.get("cmp_B")
+    if not (snapA and snapB):
+        return
+
+    st.markdown("---")
+    st.subheader("Comparação A vs B — Baseline x Atual")
+    st.caption("A = **Baseline** (literatura/média calibrada ou arquivo). B = **Atual** (técnico, perfil FA combinado).")
+
+    cA, cB = st.columns(2)
+    with cA:
+        _render_snapshot("A (Baseline)", snapA)
+    with cB:
+        _render_snapshot("B (Atual)", snapB)
+
+    # Pequena síntese dos deltas
+    KA, KB = snapA["kpis"], snapB["kpis"]
+    dII = KB["II"] - KA["II"]
+    dIS = KB["ISap"] - KA["ISap"]
+    dPF = KB["PF"] - KA["PF"]
+    st.info(f"ΔKPIs (B−A): II = {dII:+.2f} | ISap = {dIS:+.2f} mgKOH/g | PF = {dPF:+.2f}")
+
 # ----------------- RENDER -----------------
 def render_blend_enzimatico():
     st.header("Blend Enzimático ⚗️")
@@ -535,6 +586,45 @@ def render_blend_enzimatico():
         st.caption("• Sem ajuste: KPIs exibem **médias calibradas por ingrediente**. "
                    "• Com ajuste (B/C): KPIs são **calculados do perfil FA**; o **PF é convertido para °C** por calibração linear. ")
 
+        # --- Botões de Snapshot (Heurístico) ---
+# Baseline FA = somente Classe A (proporcional a total_A), usando perfis 'scenario/mean'
+fa_baseline_A = {k: 0.0 for k in FA_ORDER}
+if sum(A_vals.values()) > 0:
+    for ing_key, pct in A_vals.items():
+        if pct <= 0: 
+            continue
+        w = pct / sum(A_vals.values())
+        profA = _get_profile(ing_key, scenario if consider_var else "mean")
+        for fa_key, fa_pct in profA.items():
+            fa_baseline_A[fa_key] += w * fa_pct
+fa_baseline_A = _normalize_percentages(fa_baseline_A)
+
+btnA, btnB, btnClear = st.columns(3)
+if btnA.button("💾 Salvar como A (Baseline)", key="btn_saveA_heur"):
+    # KPIs do baseline A: usar os KPIs calibrados (médias) + PF baseline já exibidos
+    st.session_state["cmp_A"] = _make_snapshot(
+        label="Baseline (Classe A — médias calibradas)",
+        fa_dict=fa_baseline_A,
+        II=II_base, ISap=IS_base, PF_idx=PF_base
+    )
+    st.success("Baseline salvo como A.")
+
+if btnB.button("💾 Salvar como B (Atual)", key="btn_saveB_heur"):
+    # KPIs atuais: usar os “now” (se houver ajuste) ou o baseline se não houver (mantém coerência)
+    st.session_state["cmp_B"] = _make_snapshot(
+        label="Atual (A + ajuste fino B/C)" if has_adjust else "Atual (sem ajuste)",
+        fa_dict=fa_est,
+        II=II_now, ISap=IS_now, PF_idx=PF_now
+    )
+    st.success("Atual salvo como B.")
+
+if btnClear.button("🧹 Limpar A e B", key="btn_clear_AB_heur"):
+    st.session_state.pop("cmp_A", None); st.session_state.pop("cmp_B", None)
+    st.info("Snapshots A e B limpos.")
+
+# Renderiza comparação, se existir
+_render_compare_AB()
+        
         # Expanders (faixas típicas)
         e1, e2, e3 = st.columns(3)
         with e1:
