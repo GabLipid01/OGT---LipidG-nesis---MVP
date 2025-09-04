@@ -605,7 +605,9 @@ def render_blend_enzimatico():
             st.session_state["cmp_A"] = _make_snapshot(
                 label="Baseline (Classe A — médias calibradas)",
                 fa_dict=fa_baseline_A,
-                II=II_base, ISap=IS_base, PF_idx=PF_base
+                II=II_base, 
+                ISap=IS_base,
+                PF_idx=melt_index(fa_baseline_A)
             )
             st.success("Baseline salvo como A.")
 
