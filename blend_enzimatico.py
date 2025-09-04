@@ -614,7 +614,7 @@ def render_blend_enzimatico():
             st.session_state["cmp_B"] = _make_snapshot(
                 label="Atual (A + ajuste fino B/C)" if has_adjust else "Atual (sem ajuste)",
                 fa_dict=fa_est,
-                II=II_now, ISap=IS_now, PF_idx=PF_now
+                II=II_now, ISap=IS_now, PF_idx=melt_index(fa_est)
             )
             st.success("Atual salvo como B.")
 
