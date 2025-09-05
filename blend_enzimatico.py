@@ -675,6 +675,10 @@ def render_blend_enzimatico():
         st.info("📄 Após finalizar sua formulação, gere o dossiê completo na aba **Exportação PDF** (perfil FA, KPIs, preview e narrativa).")
 
         # Gráficos
+        g1, g2 = st.columns(2)          # <-- garante g1 e g2 definidos
+        with g1:
+            _plot_fa_bars(fa_est)
+
         with g2:
             if (sum(A_vals.values()) > 0) or (total_B > 0) or (total_C > 0):
                 II_for_radar = iodine_index(fa_est)
@@ -895,6 +899,10 @@ def render_blend_enzimatico():
             st.caption("KPIs calculados sobre o perfil **combinado** (real + ajuste fino, se houver).")
 
             # Gráficos + Radar
+            g1, g2 = st.columns(2)          # <-- garante g1 e g2 definidos
+            with g1:
+                _plot_fa_bars(fa_comb)
+
             with g2:
                 if fa_norm and sum(fa_comb.values()) > 0:
                     _, radar_vals = _scores_finais(fa_comb, melt_index(fa_comb), II)
