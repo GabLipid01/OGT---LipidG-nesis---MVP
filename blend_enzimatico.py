@@ -156,7 +156,8 @@ def iodine_index(fa_pct: dict) -> float:
     return sum((fa_pct.get(k, 0.0) / 100.0) * FA_CONST[k]["IV"] for k in FA_CONST.keys())
 
 def saponification_index(fa_pct: dict) -> float:
-    return sum(fa_pct.get(k, 0.0) * (560.0 / FA_CONST[k]["MW"]) for k in FA_CONST.keys())
+    # fa_pct vem em % (somando ~100). Precisamos ponderar por fração (/%100).
+    return sum((fa_pct.get(k, 0.0) / 100.0) * (560.0 / FA_CONST[k]["MW"]) for k in FA_CONST.keys())
 
 # ----------------- Heurísticas sensoriais -----------------
 def _spread(fa):  # espalhabilidade
@@ -379,13 +380,16 @@ def _plot_radar(rad_dict):
 # --- Helpers para snapshots e comparação A vs B ---
 
 def _make_snapshot(label: str, fa_dict: dict, II: float, ISap: float, PF_idx: float):
-    """Empacota um snapshot para comparação (fa + KPIs + label + radar)."""
+    """Empacota um snapshot para comparação (fa + KPIs + label + radar).
+       PF_idx (índice 0–100) é convertido para °C para manter consistência visual.
+    """
     fa_n = _normalize_percentages(fa_dict)
+    PF_c = pf_index_to_celsius(PF_idx)
     scores, radar = _scores_finais(fa_n, PF_idx, II)
     return {
         "label": label,
         "fa": fa_n,
-        "kpis": {"II": float(II), "ISap": float(ISap), "PF": float(PF_idx)},
+        "kpis": {"II": float(II), "ISap": float(ISap), "PF": float(PF_c)},  # guarda PF em °C
         "scores": scores,
         "radar": radar,
     }
@@ -398,7 +402,7 @@ def _render_snapshot(title: str, snap: dict):
         k1, k2, k3 = st.columns(3)
         k1.metric("Índice de Iodo (II)", f"{k['II']:.1f}")
         k2.metric("Índice de Saponificação (ISap)", f"{k['ISap']:.1f} mgKOH/g")
-        k3.metric("Ponto de Fusão", f"{k['PF']:.0f}")
+        k3.metric("Ponto de Fusão (°C)", f"{k['PF']:.1f}")
         _plot_fa_bars(snap["fa"])
     with c2:
         _plot_radar(snap["radar"])
@@ -425,7 +429,7 @@ def _render_compare_AB():
     dII = KB["II"] - KA["II"]
     dIS = KB["ISap"] - KA["ISap"]
     dPF = KB["PF"] - KA["PF"]
-    st.info(f"ΔKPIs (B−A): II = {dII:+.2f} | ISap = {dIS:+.2f} mgKOH/g | PF = {dPF:+.2f}")
+    st.info(f"ΔKPIs (B−A): II = {dII:+.2f} | ISap = {dIS:+.2f} mgKOH/g | PF (°C) = {dPF:+.2f}")
 
 # ----------------- RENDER -----------------
 def render_blend_enzimatico():
