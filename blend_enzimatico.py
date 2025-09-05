@@ -675,12 +675,13 @@ def render_blend_enzimatico():
         st.info("📄 Após finalizar sua formulação, gere o dossiê completo na aba **Exportação PDF** (perfil FA, KPIs, preview e narrativa).")
 
         # Gráficos
-        g1, g2 = st.columns(2)
-        with g1: _plot_fa_bars(fa_est)
         with g2:
-            II_for_radar = iodine_index(fa_est)  # coerente com heurísticas sensoriais
-            _, radar_vals = _scores_finais(fa_est, melt_index(fa_est), II_for_radar)
-            _plot_radar(radar_vals)
+            if (sum(A_vals.values()) > 0) or (total_B > 0) or (total_C > 0):
+                II_for_radar = iodine_index(fa_est)
+                _, radar_vals = _scores_finais(fa_est, melt_index(fa_est), II_for_radar)
+                _plot_radar(radar_vals)
+            else:
+                st.caption("Adicione ingredientes da Classe A e/ou um ajuste fino (B/C) para exibir o radar sensorial.")
 
         # Trade-offs
         st.markdown("---")
@@ -894,11 +895,12 @@ def render_blend_enzimatico():
             st.caption("KPIs calculados sobre o perfil **combinado** (real + ajuste fino, se houver).")
 
             # Gráficos + Radar
-            g1, g2 = st.columns(2)
-            with g1: _plot_fa_bars(fa_comb)
             with g2:
-                _, radar_vals = _scores_finais(fa_comb, melt_index(fa_comb), II)
-                _plot_radar(radar_vals)
+                if fa_norm and sum(fa_comb.values()) > 0:
+                    _, radar_vals = _scores_finais(fa_comb, melt_index(fa_comb), II)
+                    _plot_radar(radar_vals)
+                else:
+                    st.caption("Carregue um perfil (ou aplique um ajuste) para exibir o radar sensorial.")
 
             # Trade-offs (upload)
             st.markdown("---")
