@@ -636,7 +636,7 @@ def render_blend_enzimatico():
                 fa_dict=fa_baseline_A,
                 II=II_base, 
                 ISap=IS_base,
-                PF_idx=melt_index(fa_baseline_A)
+                PF_idx=pf_index_to_celsius(melt_index(fa_baseline_A))
             )
             st.success("Baseline salvo como A.")
 
@@ -645,7 +645,7 @@ def render_blend_enzimatico():
             st.session_state["cmp_B"] = _make_snapshot(
                 label="Atual (A + ajuste fino B/C)" if has_adjust else "Atual (sem ajuste)",
                 fa_dict=fa_est,
-                II=II_now, ISap=IS_now, PF_idx=melt_index(fa_est)
+                II=II_now, ISap=IS_now, PF_idx=pf_index_to_celsius(melt_index(fa_est))
             )
             st.success("Atual salvo como B.")
 
