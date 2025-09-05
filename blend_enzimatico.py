@@ -366,14 +366,39 @@ def _plot_fa_bars(fa_norm):
     ax.set_title('Composição por Ácido Graxo (%)')
     st.pyplot(fig)
 
-def _plot_radar(rad_dict):
-    labels = list(rad_dict.keys()); values = [rad_dict[k] for k in labels]
-    N = len(labels); import math as _m
+def _plot_radar(rad_dict=None):
+    """Desenha o radar. Se rad_dict for vazio/None, mostra apenas o 'frame' (sem polígono)."""
+    import math as _m
+
+    # Ordem usada em _scores_finais:
+    base_labels = ["toque", "hidr", "brilho", "oclusividade", "absorcao"]
+
+    if not rad_dict:
+        labels = base_labels
+        N = len(labels)
+        angles = [n / float(N) * 2 * _m.pi for n in range(N)]
+        fig, ax = plt.subplots(subplot_kw=dict(polar=True))
+        # Apenas eixos/labels – sem plot nem fill
+        ax.set_xticks(angles)
+        ax.set_xticklabels(labels)
+        ax.set_yticklabels([])
+        ax.set_title("Radar Sensorial (0–100)")
+        st.pyplot(fig)
+        return
+
+    # Caso normal (com dados)
+    labels = list(rad_dict.keys())
+    values = [rad_dict[k] for k in labels]
+    N = len(labels)
     angles = [n / float(N) * 2 * _m.pi for n in range(N)]
-    values += values[:1]; angles += angles[:1]
+    values += values[:1]
+    angles += angles[:1]
     fig, ax = plt.subplots(subplot_kw=dict(polar=True))
-    ax.plot(angles, values); ax.fill(angles, values, alpha=0.25)
-    ax.set_xticks(angles[:-1]); ax.set_xticklabels(labels); ax.set_yticklabels([])
+    ax.plot(angles, values)
+    ax.fill(angles, values, alpha=0.25)
+    ax.set_xticks(angles[:-1])
+    ax.set_xticklabels(labels)
+    ax.set_yticklabels([])
     ax.set_title("Radar Sensorial (0–100)")
     st.pyplot(fig)
 
@@ -680,12 +705,12 @@ def render_blend_enzimatico():
             _plot_fa_bars(fa_est)
 
         with g2:
-            if (sum(A_vals.values()) > 0) or (total_B > 0) or (total_C > 0):
+            if sum(A_vals.values()) + sum(B_vals.values()) + sum(C_vals.values()) > 0:
                 II_for_radar = iodine_index(fa_est)
                 _, radar_vals = _scores_finais(fa_est, melt_index(fa_est), II_for_radar)
                 _plot_radar(radar_vals)
             else:
-                st.caption("Adicione ingredientes da Classe A e/ou um ajuste fino (B/C) para exibir o radar sensorial.")
+                _plot_radar(None)  # mostra só o frame vazio até ter algo selecionado
 
         # Trade-offs
         st.markdown("---")
@@ -899,16 +924,15 @@ def render_blend_enzimatico():
             st.caption("KPIs calculados sobre o perfil **combinado** (real + ajuste fino, se houver).")
 
             # Gráficos + Radar
-            g1, g2 = st.columns(2)          # <-- garante g1 e g2 definidos
+            g1, g2 = st.columns(2)
             with g1:
                 _plot_fa_bars(fa_comb)
-
             with g2:
-                if fa_norm and sum(fa_comb.values()) > 0:
+                if fa_comb:  # se já existe perfil carregado
                     _, radar_vals = _scores_finais(fa_comb, melt_index(fa_comb), II)
                     _plot_radar(radar_vals)
                 else:
-                    st.caption("Carregue um perfil (ou aplique um ajuste) para exibir o radar sensorial.")
+                    _plot_radar(None)  # mostra radar vazio até ter dados
 
             # Trade-offs (upload)
             st.markdown("---")
