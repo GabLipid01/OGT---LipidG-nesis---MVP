@@ -705,7 +705,7 @@ def render_blend_enzimatico():
             p2.metric("Corpo", f"{scores['Corpo']}")
             p3.metric("Rosto", f"{scores['Rosto']}")
             p4.metric("Cabelos", f"{scores['Cabelos']}")
-         else:
+        else:
             st.caption("Defina ao menos 1 ingrediente da Classe A e/ou um ajuste fino (B/C) para ver as notas por finalidade.")
 
         # Salvar/Carregar
