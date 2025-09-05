@@ -696,12 +696,17 @@ def render_blend_enzimatico():
             with cto3: _plot_tradeoff_bars("Δ Ponto de Fusão (°C)", labels, dPFc, "Δ PF (°C)")
             st.caption("Leitura: impacto em KPIs ao variar **+5%** (renormalizado).")
 
-        # Preview finalidade (estimativo)
+        # Preview finalidade (estimativo) — só exibe com seleção/ajuste
         st.subheader("Preview de notas por finalidade (0–100) – estimativas")
-        scores, _ = _scores_finais(fa_est, melt_index(fa_est), iodine_index(fa_est))
-        p1, p2, p3, p4 = st.columns(4)
-        p1.metric("Mãos", f"{scores['Mãos']}"); p2.metric("Corpo", f"{scores['Corpo']}")
-        p3.metric("Rosto", f"{scores['Rosto']}"); p4.metric("Cabelos", f"{scores['Cabelos']}")
+        if (sum(A_vals.values()) > 0) or (total_B > 0) or (total_C > 0):
+            scores, _ = _scores_finais(fa_est, melt_index(fa_est), iodine_index(fa_est))
+            p1, p2, p3, p4 = st.columns(4)
+            p1.metric("Mãos", f"{scores['Mãos']}")
+            p2.metric("Corpo", f"{scores['Corpo']}")
+            p3.metric("Rosto", f"{scores['Rosto']}")
+            p4.metric("Cabelos", f"{scores['Cabelos']}")
+         else:
+            st.caption("Defina ao menos 1 ingrediente da Classe A e/ou um ajuste fino (B/C) para ver as notas por finalidade.")
 
         # Salvar/Carregar
         st.markdown("---")
@@ -911,12 +916,17 @@ def render_blend_enzimatico():
             else:
                 st.caption("Carregue um perfil e/ou ajuste fino para visualizar os trade-offs.")
 
-            # Preview finalidade
+            # Preview de notas por finalidade (0–100) — só exibe após carregar perfil e/ou ajustar
             st.subheader("Preview de notas por finalidade (0–100)")
-            scores, _ = _scores_finais(fa_comb, melt_index(fa_comb), II)
-            p1, p2, p3, p4 = st.columns(4)
-            p1.metric("Mãos", f"{scores['Mãos']}"); p2.metric("Corpo", f"{scores['Corpo']}")
-            p3.metric("Rosto", f"{scores['Rosto']}"); p4.metric("Cabelos", f"{scores['Cabelos']}")
+            if fa_norm and sum(fa_comb.values()) > 0:
+                scores, _ = _scores_finais(fa_comb, melt_index(fa_comb), II)
+                p1, p2, p3, p4 = st.columns(4)
+                p1.metric("Mãos", f"{scores['Mãos']}")
+                p2.metric("Corpo", f"{scores['Corpo']}")
+                p3.metric("Rosto", f"{scores['Rosto']}")
+                p4.metric("Cabelos", f"{scores['Cabelos']}")
+            else:
+                st.caption("Carregue um perfil (ou aplique um ajuste) para exibir as notas por finalidade.")
 
             # Handoff
             st.markdown("---")
