@@ -405,16 +405,17 @@ def _plot_radar(rad_dict=None):
 # --- Helpers para snapshots e comparação A vs B ---
 
 def _make_snapshot(label: str, fa_dict: dict, II: float, ISap: float, PF_idx: float):
-    """Empacota um snapshot para comparação (fa + KPIs + label + radar).
-       PF_idx (índice 0–100) é convertido para °C para manter consistência visual.
-    """
     fa_n = _normalize_percentages(fa_dict)
-    PF_c = pf_index_to_celsius(PF_idx)
-    scores, radar = _scores_finais(fa_n, PF_idx, II)
+    # PF_idx aqui virá em °C no seu fluxo atual → mantenha para exibição
+    PF_celsius = float(PF_idx)
+    PF_index   = melt_index(fa_n)  # índice 0–100 correto para heurísticas/radar
+
+    scores, radar = _scores_finais(fa_n, PF_index, II)
     return {
         "label": label,
         "fa": fa_n,
-        "kpis": {"II": float(II), "ISap": float(ISap), "PF": float(PF_c)},  # guarda PF em °C
+        "kpis": {"II": float(II), "ISap": float(ISap), "PF": PF_celsius},  # mostra °C
+        "pf_index": PF_index,   # guarda índice técnico para radar/heurísticas
         "scores": scores,
         "radar": radar,
     }
@@ -645,7 +646,9 @@ def render_blend_enzimatico():
             st.session_state["cmp_B"] = _make_snapshot(
                 label="Atual (A + ajuste fino B/C)" if has_adjust else "Atual (sem ajuste)",
                 fa_dict=fa_est,
-                II=II_now, ISap=IS_now, PF_idx=PF_now_c      # usa exatamente o PF (°C) atual mostrado nos KPIs
+                II=II_now,
+                ISap=IS_now, 
+                PF_idx=PF_now_c      # usa exatamente o PF (°C) atual mostrado nos KPIs
             )
             st.success("Atual salvo como B.")
 
