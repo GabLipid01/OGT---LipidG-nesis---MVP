@@ -156,8 +156,8 @@ def iodine_index(fa_pct: dict) -> float:
     return sum((fa_pct.get(k, 0.0) / 100.0) * FA_CONST[k]["IV"] for k in FA_CONST.keys())
 
 def saponification_index(fa_pct: dict) -> float:
-    # fa_pct vem em % (somando ~100). Precisamos ponderar por fração (/%100).
-    return sum((fa_pct.get(k, 0.0) / 100.0) * (560.0 / FA_CONST[k]["MW"]) for k in FA_CONST.keys())
+    # fa_pct em % (0–100). NÃO dividir por 100 aqui.
+    return sum(fa_pct.get(k, 0.0) * (560.0 / FA_CONST[k]["MW"]) for k in FA_CONST.keys())
 
 # ----------------- Heurísticas sensoriais -----------------
 def _spread(fa):  # espalhabilidade
