@@ -456,6 +456,96 @@ def _render_compare_AB():
     dIS = KB["ISap"] - KA["ISap"]
     dPF = KB["PF"] - KA["PF"]
     st.info(f"ΔKPIs (B−A): II = {dII:+.2f} | ISap = {dIS:+.2f} mgKOH/g | PF (°C) = {dPF:+.2f}")
+    
+    # ⛳ ANCHOR: notas_por_finalidade_tabela
+    st.markdown("**Notas por finalidade (A vs B)**")
+
+    def _row_scores(s: dict):
+        # garante ordem e evita KeyError
+        return [s.get("Mãos", 0), s.get("Corpo", 0), s.get("Rosto", 0), s.get("Cabelos", 0)]
+
+    notas_cols = ["Mãos", "Corpo", "Rosto", "Cabelos"]
+    a_vals = _row_scores(snapA["scores"])
+    b_vals = _row_scores(snapB["scores"])
+    deltas = [round(b - a, 1) for a, b in zip(a_vals, b_vals)]
+
+    try:
+        import pandas as _pd
+        df_notas = _pd.DataFrame(
+            {"A (baseline)": a_vals, "B (atual)": b_vals, "Δ (B−A)": deltas},
+            index=notas_cols,
+        )
+        st.dataframe(df_notas, use_container_width=True)
+    except Exception:
+        st.write({"A (baseline)": a_vals, "B (atual)": b_vals, "Δ (B−A)": deltas})
+
+    # ⛳ ANCHOR: tradeoffs_sob_demanda
+    st.markdown("**Trade-offs (variação de +5%)**")
+    ctx = st.session_state.get("cmp_ctx", {})
+    tcolA, tcolB = st.columns(2)
+
+    with tcolA:
+        if st.button("Calcular trade-offs de A", key="btn_tradeoffs_A"):
+            if ctx.get("mode") == "heur":
+                # A = baseline (Classe A, sem ajuste)
+                labels, dII, dIS, dPFc = _compute_tradeoffs_heuristico(
+                    A_vals=ctx.get("A_vals", {}),
+                    method="Classe C — Ingredientes",   # força sem ajuste para baseline
+                    B_vals={k: 0.0 for k in FA_ORDER},
+                    C_vals={k: 0.0 for k, _ in INGREDIENTS},
+                    consider_var=bool(ctx.get("consider_var", False)),
+                    scenario=ctx.get("scenario", "mean"),
+                )
+            else:  # upload
+                labels, dII, dIS, dPFc = _compute_tradeoffs_upload(
+                    fa_start=snapA["fa"],
+                    method_upl="Classe C — Ingredientes",
+                    B_vals_u={k: 0.0 for k in FA_ORDER},
+                    C_vals_u={k: 0.0 for k, _ in INGREDIENTS},
+                    consider_var=False, scenario="mean",
+                )
+            st.session_state["cmp_A_tradeoffs"] = (labels, dII, dIS, dPFc)
+
+    with tcolB:
+        if st.button("Calcular trade-offs de B", key="btn_tradeoffs_B"):
+            if ctx.get("mode") == "heur":
+                labels, dII, dIS, dPFc = _compute_tradeoffs_heuristico(
+                    A_vals=ctx.get("A_vals", {}),
+                    method=ctx.get("method", "Classe C — Ingredientes"),
+                    B_vals=ctx.get("B_vals", {k: 0.0 for k in FA_ORDER}),
+                    C_vals=ctx.get("C_vals", {k: 0.0 for k, _ in INGREDIENTS}),
+                    consider_var=bool(ctx.get("consider_var", False)),
+                    scenario=ctx.get("scenario", "mean"),
+                )
+            else:  # upload
+                labels, dII, dIS, dPFc = _compute_tradeoffs_upload(
+                    fa_start=snapB["fa"],
+                    method_upl=ctx.get("method", "Classe C — Ingredientes"),
+                    B_vals_u=ctx.get("B_vals", {k: 0.0 for k in FA_ORDER}),
+                    C_vals_u=ctx.get("C_vals", {k: 0.0 for k, _ in INGREDIENTS}),
+                    consider_var=False, scenario="mean",
+                )
+            st.session_state["cmp_B_tradeoffs"] = (labels, dII, dIS, dPFc)
+
+    # Mostrar (se existirem)
+    ta = st.session_state.get("cmp_A_tradeoffs")
+    tb = st.session_state.get("cmp_B_tradeoffs")
+    if ta or tb:
+        with st.expander("Ver gráficos de trade-offs", expanded=False):
+            if ta:
+                st.markdown("**A (Baseline)**")
+                la, a_dII, a_dIS, a_dPFc = ta
+                c1, c2, c3 = st.columns(3)
+                with c1: _plot_tradeoff_bars("Δ II (A)", la, a_dII, "Δ II")
+                with c2: _plot_tradeoff_bars("Δ ISap (A)", la, a_dIS, "Δ ISap")
+                with c3: _plot_tradeoff_bars("Δ PF (°C) (A)", la, a_dPFc, "Δ PF (°C)")
+            if tb:
+                st.markdown("**B (Atual)**")
+                lb, b_dII, b_dIS, b_dPFc = tb
+                c1, c2, c3 = st.columns(3)
+                with c1: _plot_tradeoff_bars("Δ II (B)", lb, b_dII, "Δ II")
+                with c2: _plot_tradeoff_bars("Δ ISap (B)", lb, b_dIS, "Δ ISap")
+                with c3: _plot_tradeoff_bars("Δ PF (°C) (B)", lb, b_dPFc, "Δ PF (°C)")
 
 # ----------------- RENDER -----------------
 def render_blend_enzimatico():
@@ -628,6 +718,16 @@ def render_blend_enzimatico():
                 for fa_key, fa_pct in profA.items():
                     fa_baseline_A[fa_key] += w * fa_pct
         fa_baseline_A = _normalize_percentages(fa_baseline_A)
+        # ⛳ ANCHOR: cmp_ctx_setup (DEVE ficar logo antes dos botões Salvar A/B)
+        st.session_state["cmp_ctx"] = {
+            "mode": "heur",
+            "A_vals": dict(A_vals),
+            "B_vals": dict(B_vals),
+            "C_vals": dict(C_vals),
+            "method": "Classe B — Ácidos graxos puros" if method.startswith("Classe B") else "Classe C — Ingredientes",
+            "consider_var": bool(consider_var),
+            "scenario": scenario,
+         }
 
         btnA, btnB, btnClear = st.columns(3)
         if btnA.button("💾 Salvar como A (Baseline)", key="btn_saveA_heur"):
@@ -655,6 +755,9 @@ def render_blend_enzimatico():
         if btnClear.button("🧹 Limpar A e B", key="btn_clear_AB_heur"):
             st.session_state.pop("cmp_A", None)
             st.session_state.pop("cmp_B", None)
+            st.session_state.pop("cmp_ctx", None)          # limpa o contexto
+            st.session_state.pop("cmp_A_tradeoffs", None)  # limpa trade-offs de A
+            st.session_state.pop("cmp_B_tradeoffs", None)  # limpa trade-offs de B
             st.info("Snapshots A e B limpos.")
 
         # Renderiza comparação, se existir
