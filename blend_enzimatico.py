@@ -479,55 +479,47 @@ def _render_compare_AB():
     except Exception:
         st.write({"A (baseline)": a_vals, "B (atual)": b_vals, "Δ (B−A)": deltas})
 
-    # ⛳ ANCHOR: tradeoffs_sob_demanda
+        # --- Trade-offs sob demanda (usando perfis congelados dos snapshots) ---
+    # Requer: snapA, snapB já definidos no topo de _render_compare_AB()
     st.markdown("**Trade-offs (variação de +5%)**")
-    ctx = st.session_state.get("cmp_ctx", {})
+
     tcolA, tcolB = st.columns(2)
 
     with tcolA:
         if st.button("Calcular trade-offs de A", key="btn_tradeoffs_A"):
-            if ctx.get("mode") == "heur":
-                # A = baseline (Classe A, sem ajuste)
-                labels, dII, dIS, dPFc = _compute_tradeoffs_heuristico(
-                    A_vals=ctx.get("A_vals", {}),
-                    method="Classe C — Ingredientes",   # força sem ajuste para baseline
-                    B_vals={k: 0.0 for k in FA_ORDER},
-                    C_vals={k: 0.0 for k, _ in INGREDIENTS},
-                    consider_var=bool(ctx.get("consider_var", False)),
-                    scenario=ctx.get("scenario", "mean"),
-                )
-            else:  # upload
+            if not snapA:
+                st.warning("Salve o snapshot A primeiro.")
+            else:
+                # Calcula trade-offs ao redor do perfil FA congelado do snapshot A
                 labels, dII, dIS, dPFc = _compute_tradeoffs_upload(
                     fa_start=snapA["fa"],
-                    method_upl="Classe C — Ingredientes",
+                    method_upl="Classe C — Ingredientes",   # sem aplicar B/C extra; só a variação de +5% por ingrediente
                     B_vals_u={k: 0.0 for k in FA_ORDER},
                     C_vals_u={k: 0.0 for k, _ in INGREDIENTS},
-                    consider_var=False, scenario="mean",
+                    consider_var=False,
+                    scenario="mean",
                 )
-            st.session_state["cmp_A_tradeoffs"] = (labels, dII, dIS, dPFc)
+                st.session_state["cmp_A_tradeoffs"] = (labels, dII, dIS, dPFc)
+                st.success("Trade-offs de A calculados.")
 
     with tcolB:
         if st.button("Calcular trade-offs de B", key="btn_tradeoffs_B"):
-            if ctx.get("mode") == "heur":
-                labels, dII, dIS, dPFc = _compute_tradeoffs_heuristico(
-                    A_vals=ctx.get("A_vals", {}),
-                    method=ctx.get("method", "Classe C — Ingredientes"),
-                    B_vals=ctx.get("B_vals", {k: 0.0 for k in FA_ORDER}),
-                    C_vals=ctx.get("C_vals", {k: 0.0 for k, _ in INGREDIENTS}),
-                    consider_var=bool(ctx.get("consider_var", False)),
-                    scenario=ctx.get("scenario", "mean"),
-                )
-            else:  # upload
+            if not snapB:
+                st.warning("Salve o snapshot B primeiro.")
+            else:
+                # Calcula trade-offs ao redor do perfil FA congelado do snapshot B
                 labels, dII, dIS, dPFc = _compute_tradeoffs_upload(
                     fa_start=snapB["fa"],
-                    method_upl=ctx.get("method", "Classe C — Ingredientes"),
-                    B_vals_u=ctx.get("B_vals", {k: 0.0 for k in FA_ORDER}),
-                    C_vals_u=ctx.get("C_vals", {k: 0.0 for k, _ in INGREDIENTS}),
-                    consider_var=False, scenario="mean",
+                    method_upl="Classe C — Ingredientes",
+                    B_vals_u={k: 0.0 for k in FA_ORDER},
+                    C_vals_u={k: 0.0 for k, _ in INGREDIENTS},
+                    consider_var=False,
+                    scenario="mean",
                 )
-            st.session_state["cmp_B_tradeoffs"] = (labels, dII, dIS, dPFc)
+                st.session_state["cmp_B_tradeoffs"] = (labels, dII, dIS, dPFc)
+                st.success("Trade-offs de B calculados.")
 
-    # Mostrar (se existirem)
+    # Mostrar resultados (se existirem)
     ta = st.session_state.get("cmp_A_tradeoffs")
     tb = st.session_state.get("cmp_B_tradeoffs")
     if ta or tb:
@@ -546,6 +538,7 @@ def _render_compare_AB():
                 with c1: _plot_tradeoff_bars("Δ II (B)", lb, b_dII, "Δ II")
                 with c2: _plot_tradeoff_bars("Δ ISap (B)", lb, b_dIS, "Δ ISap")
                 with c3: _plot_tradeoff_bars("Δ PF (°C) (B)", lb, b_dPFc, "Δ PF (°C)")
+
 
 # ----------------- RENDER -----------------
 def render_blend_enzimatico():
