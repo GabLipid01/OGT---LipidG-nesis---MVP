@@ -39,6 +39,50 @@ KPI_MEANS = {
     "soapstock":          {"II": 57.5, "ISap": 197.5, "PF": 40},  # ~35–45 → 40
 }
 
+# >>> ADD: KPI_RANGES (min/mean/max) – coerente com os expanders
+KPI_RANGES = {
+    "rbd_palma": {
+        "II":   {"min": 50.0, "mean": 52.5, "max": 55.0},
+        "ISap": {"min": 190.0, "mean": 197.5, "max": 205.0},
+        "PF":   {"min": 34.0, "mean": 36.0, "max": 38.0},
+    },
+    "estearina_palma": {
+        "II":   {"min": 32.0, "mean": 37.0, "max": 42.0},
+        "ISap": {"min": 185.0, "mean": 192.5, "max": 200.0},
+        "PF":   {"min": 50.0, "mean": 54.0, "max": 58.0},
+    },
+    "oleina_palma": {
+        "II":   {"min": 55.0, "mean": 60.0, "max": 65.0},
+        "ISap": {"min": 195.0, "mean": 200.0, "max": 205.0},
+        "PF":   {"min": 19.0, "mean": 22.0, "max": 24.0},
+    },
+    "rpko_palmiste": {
+        "II":   {"min": 14.0, "mean": 18.0, "max": 22.0},
+        "ISap": {"min": 240.0, "mean": 247.5, "max": 255.0},
+        "PF":   {"min": 24.0, "mean": 26.0, "max": 28.0},
+    },
+    "estearina_palmiste": {
+        "II":   {"min":  8.0, "mean": 11.0, "max": 14.0},
+        "ISap": {"min": 235.0, "mean": 242.5, "max": 250.0},
+        "PF":   {"min": 33.0, "mean": 35.0, "max": 37.0},
+    },
+    "oleina_palmiste": {
+        "II":   {"min": 18.0, "mean": 23.0, "max": 28.0},
+        "ISap": {"min": 240.0, "mean": 247.5, "max": 255.0},
+        "PF":   {"min": 18.0, "mean": 20.0, "max": 22.0},
+    },
+    "pfad": {
+        "II":   {"min": 45.0, "mean": 50.0, "max": 55.0},
+        "ISap": {"min": 185.0, "mean": 195.0, "max": 205.0},
+        "PF":   {"min": 45.0, "mean": 50.0, "max": 55.0},
+    },
+    "soapstock": {
+        "II":   {"min": 50.0, "mean": 57.5, "max": 65.0},
+        "ISap": {"min": 185.0, "mean": 197.5, "max": 210.0},
+        "PF":   {"min": 35.0, "mean": 40.0, "max": 45.0},
+    },
+}
+
 # ----------------- Constantes FA -----------------
 FA_CONST = {
     "C12:0": {"IV": 0.0,   "MW": 200.32},
@@ -194,26 +238,45 @@ def _scores_finais(fa, PF_idx, II_for_scores):
                         absorcao=int(round((toque+spread)/2)))
     return scores, radar
 
-# ----------------- Baseline calibrado (A + C) -----------------
+# >>> REPLACE: baseline usa KPI_RANGES por cenário (min/mean/max)
 def kpis_calibrados_por_medias(A_vals: dict, C_vals: dict, scenario: str) -> tuple[float,float,float]:
+    """
+    Baseline (sem ajuste): usa diretamente as faixas de literatura (KPI_RANGES) de acordo com o cenário
+    'min' | 'mean' | 'max'. Se algum ingrediente não estiver em KPI_RANGES, cai no KPI_MEANS.
+    Retorna II (estim.), ISap (mgKOH/g, estim.), PF (°C, estim.).
+    """
     total_ref = sum(A_vals.values()) + sum(C_vals.values())
-    if total_ref <= 0: return 0.0, 0.0, 0.0
-    II = 0.0; IS = 0.0; PFm = 0.0
-    for bucket, vals in (("A", A_vals), ("C", C_vals)):
+    if total_ref <= 0:
+        return 0.0, 0.0, 0.0
+
+    II = 0.0
+    IS = 0.0
+    PFc = 0.0
+
+    for vals in (A_vals, C_vals):
         for ing_key, pct in vals.items():
-            if pct <= 0: continue
+            if pct <= 0:
+                continue
             w = pct / total_ref
-            km = KPI_MEANS.get(ing_key, {})
-            II  += w * km.get("II", 0.0)
-            IS  += w * km.get("ISap", 0.0)
-            # PF baseline (°C): média calibrada se existir; senão estimar do perfil 'mean' via conversão calibrada
-            if "PF" in km:
-                pf_loc_c = km["PF"]
+
+            kr = KPI_RANGES.get(ing_key)
+            if kr and scenario in ("min", "mean", "max"):
+                II  += w * float(kr["II"][scenario])
+                IS  += w * float(kr["ISap"][scenario])
+                PFc += w * float(kr["PF"][scenario])
             else:
-                prof = _get_profile(ing_key, scenario)
-                pf_loc_c = pf_index_to_celsius(melt_index(prof))
-            PFm += w * pf_loc_c
-    return II, IS, PFm
+                # fallback: mantém compatibilidade com sua média calibrada
+                km = KPI_MEANS.get(ing_key, {})
+                II  += w * float(km.get("II", 0.0))
+                IS  += w * float(km.get("ISap", 0.0))
+                if "PF" in km:
+                    PFc += w * float(km["PF"])
+                else:
+                    # último recurso: estimar PF via perfil 'mean'
+                    prof = _get_profile(ing_key, "mean")
+                    PFc += w * pf_index_to_celsius(melt_index(prof))
+
+    return II, IS, PFc
 
 def _fa_from_mix(ing_mix: dict, total_ref: float, scenario_key: str):
     fa_tmp = {k: 0.0 for k in FA_ORDER}
@@ -672,24 +735,6 @@ def render_blend_enzimatico():
 
         # KPIs — baseline calibrado (A) x atual técnico (se houver ajuste)
         II_base, IS_base, PF_base_c = kpis_calibrados_por_medias(A_vals, {}, scenario if consider_var else "mean")
-        # --- Override do baseline pelos perfis Min/Típico/Max, quando a variabilidade estiver ativa ---
-        if consider_var and sum(A_vals.values()) > 0:
-            faA_var = {k: 0.0 for k in FA_ORDER}
-            totA = sum(A_vals.values())
-            for ing_key, pct in A_vals.items():
-                if pct <= 0:
-                    continue
-                w = pct / totA
-                prof = _get_profile(ing_key, scenario)  # 'mean' / 'min' / 'max'
-                for fk, fp in prof.items():
-                    faA_var[fk] += w * fp
-            faA_var = _normalize_percentages(faA_var)
-
-            # KPIs agora calculados do perfil FA do cenário selecionado
-            II_base   = iodine_index(faA_var)
-            IS_base   = saponification_index(faA_var)
-            PF_base_c = pf_index_to_celsius(melt_index(faA_var))
-
         has_adjust = (total_B > 0) or (total_C > 0)
         if has_adjust:
             II_now = iodine_index(fa_est)
