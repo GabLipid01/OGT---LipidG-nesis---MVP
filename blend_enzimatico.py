@@ -672,6 +672,31 @@ def render_blend_enzimatico():
 
         # KPIs — baseline calibrado (A) x atual técnico (se houver ajuste)
         II_base, IS_base, PF_base_c = kpis_calibrados_por_medias(A_vals, {}, scenario if consider_var else "mean")
+        # --- Override do baseline pelos perfis Min/Típico/Max, quando a variabilidade estiver ativa ---
+        if consider_var and sum(A_vals.values()) > 0:
+            faA_var = {k: 0.0 for k in FA_ORDER}
+            totA = sum(A_vals.values())
+            for ing_key, pct in A_vals.items():
+                if pct <= 0:
+                    continue
+                w = pct / totA
+                prof = _get_profile(ing_key, scenario)  # 'mean' / 'min' / 'max'
+                for fk, fp in prof.items():
+                    faA_var[fk] += w * fp
+            faA_var = _normalize_percentages(faA_var)
+
+            # KPIs agora calculados do perfil FA do cenário selecionado
+            II_base   = iodine_index(faA_var)
+            IS_base   = saponification_index(faA_var)
+            PF_base_c = pf_index_to_celsius(melt_index(faA_var))
+
+        has_adjust = (total_B > 0) or (total_C > 0)
+        if has_adjust:
+            II_now = iodine_index(fa_est)
+            IS_now = saponification_index(fa_est)
+            PF_now_c = pf_index_to_celsius(melt_index(fa_est))
+        else:
+            II_now, IS_now, PF_now_c = II_base, IS_base, PF_base_c
         has_adjust = (total_B > 0) or (total_C > 0)
         if has_adjust:
             II_now = iodine_index(fa_est)
