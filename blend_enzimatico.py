@@ -1136,16 +1136,6 @@ def render_blend_enzimatico():
             else:
                 st.caption("Carregue um perfil e/ou ajuste fino para visualizar os trade-offs.")
 
-            # defina um default antes do bloco de preview
-            scores = {}
-
-            st.subheader("Preview de notas por finalidade (0–100)")
-            if fa_norm and sum(fa_comb.values()) > 0:
-                scores, _ = _scores_finais(fa_comb, melt_index(fa_comb), II)
-                ...
-            else:
-                st.caption("Carregue um perfil (ou aplique um ajuste) para exibir as notas por finalidade.")
-
             # Preview de notas por finalidade (0–100) — só exibe após carregar perfil e/ou ajustar
             st.subheader("Preview de notas por finalidade (0–100)")
             if fa_norm and sum(fa_comb.values()) > 0:
