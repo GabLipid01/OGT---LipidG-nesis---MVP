@@ -167,13 +167,34 @@ def _get_profile(ing_key: str, scenario: str) -> dict:
     return profs.get(scenario, profs.get("mean", {}))
 
 # -------------- Conversão PF índice -> °C (calibrada) --------------
+# ⛳ PF_PATCH1: melt_index_reweighted
 def melt_index(fa_pct: dict) -> float:
-    """Índice 0–100 (proxy de ponto de fusão) calculado do perfil FA."""
-    sat = fa_pct.get("C12:0",0)+fa_pct.get("C14:0",0)+fa_pct.get("C16:0",0)+fa_pct.get("C18:0",0)
-    mono = fa_pct.get("C18:1",0)
-    poly = fa_pct.get("C18:2",0)+fa_pct.get("C18:3",0)
-    score = (0.6*sat + 0.2*(fa_pct.get("C16:0",0)+fa_pct.get("C18:0",0)) - 0.3*poly + 0.05*mono)
-    return max(0.0, min(100.0, score))
+    """
+    Índice 0–100 (proxy de PF) com pesos físico-químicos coerentes:
+    • C12:0/C14:0 (saturados curtos) REDUZEM PF  → peso negativo
+    • C16:0/C18:0 (saturados longos) AUMENTAM PF → peso positivo
+    • Insaturados (C18:1, C18:2, C18:3) REDUZEM PF (mais forte para poli)
+    O retorno continua clampado em 0–100 para a regressão PF_idx→°C.
+    """
+    sat_short = fa_pct.get("C12:0", 0.0) + fa_pct.get("C14:0", 0.0)            # ↓ PF
+    sat_long  = fa_pct.get("C16:0", 0.0) + fa_pct.get("C18:0", 0.0)            # ↑ PF
+    mono      = fa_pct.get("C18:1", 0.0)                                       # ↓ PF
+    poly      = fa_pct.get("C18:2", 0.0) + fa_pct.get("C18:3", 0.0)            # ↓↓ PF
+
+    # Pesos calibráveis (ajuste fino se necessário)
+    W_SHORT = -0.45   # saturados curtos (laúrico/mirístico)
+    W_LONG  =  0.85   # saturados longos (palmítico/esteárico)
+    W_MONO  = -0.35   # oleico
+    W_POLY  = -0.70   # linoleico/linolênico
+
+    raw = (W_SHORT * sat_short) + (W_LONG * sat_long) + (W_MONO * mono) + (W_POLY * poly)
+
+    # Normalização para 0–100 (mapeia faixa bruta esperada para [0,100])
+    raw_min, raw_max = -70.0, 85.0  # ~100% poli vs ~100% saturados longos
+    idx = 100.0 * (raw - raw_min) / (raw_max - raw_min)
+
+    # Clamp de segurança
+    return max(0.0, min(100.0, float(idx)))
 
 def _fit_pf_index_to_celsius():
     """Ajusta uma regressão linear °C = a*(PF_idx) + b a partir dos ingredientes com PF calibrado."""
