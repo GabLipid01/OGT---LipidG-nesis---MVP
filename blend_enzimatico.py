@@ -7,6 +7,11 @@ import pandas as pd
 import matplotlib.pyplot as plt
 import streamlit as st
 
+# --- MICRO3A: parâmetros para suavizar ΔISap ---
+ISAP_DELTA_CLAMP = 6.0  # mgKOH/g (limite |ΔISap|); ajuste fino se quiser
+def _clamp(x, lo, hi):
+    return max(lo, min(hi, x))
+
 def _rerun():
     if hasattr(st, "rerun"):
         st.rerun()
@@ -132,10 +137,12 @@ FA_PROFILES_RANGED = {
         "min":  {"C16:0": 47, "C18:1": 33, "C18:2": 8,  "C18:0": 4},
         "max":  {"C16:0": 53, "C18:1": 37, "C18:2": 12, "C18:0": 6},
     },
+    # ⛳ MICRO4: soapstock_variabilidade_mais_larga
     "soapstock": {
         "mean": {"C16:0": 40, "C18:1": 40, "C18:2": 15, "C18:0": 5},
-        "min":  {"C16:0": 37, "C18:1": 38, "C18:2": 13, "C18:0": 4},
-        "max":  {"C16:0": 43, "C18:1": 42, "C18:2": 17, "C18:0": 6},
+        # aumentamos a amplitude min/max para refletir maior variabilidade típica do subproduto
+        "min":  {"C16:0": 35, "C18:1": 36, "C18:2": 12, "C18:0": 4},
+        "max":  {"C16:0": 45, "C18:1": 44, "C18:2": 20, "C18:0": 7},
     },
 }
 
@@ -191,9 +198,15 @@ def _fit_pf_index_to_celsius():
 
 _PF_A, _PF_B = _fit_pf_index_to_celsius()
 
+# ⛳ MICRO2: sensibilidade_pf_linear
+PF_SENSITIVITY = 1.6  # ~1.5–1.8 é um bom intervalo; ajuste fino se desejar
+
 def pf_index_to_celsius(pf_idx: float) -> float:
-    """Converte índice de PF (0–100) em °C usando calibração linear."""
-    return max(0.0, _PF_A * float(pf_idx) + _PF_B)
+    """
+    Converte índice de PF (0–100) em °C.
+    Leve ganho de sensibilidade aplicado em 'a' (declive), preservando intercepto 'b'.
+    """
+    return max(0.0, (_PF_A * PF_SENSITIVITY) * float(pf_idx) + _PF_B)
 
 # ----------------- KPIs baseados em FA -----------------
 def iodine_index(fa_pct: dict) -> float:
@@ -363,7 +376,8 @@ def _compute_tradeoffs_heuristico(A_vals, method, B_vals, C_vals, consider_var, 
         label = next(lbl for key,lbl in INGREDIENTS if key==ing_key)
         labels.append(label)
         dII.append(round(II1 - II0, 2))
-        dIS.append(round(IS1 - IS0, 2))
+        # MICRO3A: clamp em ΔISap
+        dIS.append(round(_clamp(IS1 - IS0, -ISAP_DELTA_CLAMP, ISAP_DELTA_CLAMP), 2))
         dPFc.append(round(PF1_c - PF0_c, 2))
     return labels, dII, dIS, dPFc
 
@@ -405,7 +419,7 @@ def _compute_tradeoffs_upload(fa_start, method_upl, B_vals_u, C_vals_u, consider
 
         II1, IS1 = iodine_index(fa_new), saponification_index(fa_new)
         PF1_c = pf_index_to_celsius(melt_index(fa_new))
-        labels.append(label); dII.append(round(II1 - II0, 2)); dIS.append(round(IS1 - IS0, 2)); dPFc.append(round(PF1_c - PF0_c, 2))
+        labels.append(label); dII.append(round(II1 - II0, 2)); dIS.append(round(_clamp(IS1 - IS0, -ISAP_DELTA_CLAMP, ISAP_DELTA_CLAMP), 2)); dPFc.append(round(PF1_c - PF0_c, 2))
     return labels, dII, dIS, dPFc
 
 def _plot_fa_bars(fa_norm):
@@ -465,20 +479,20 @@ def _plot_radar(rad_dict=None):
     ax.set_title("Radar Sensorial (0–100)")
     st.pyplot(fig)
 
-# --- Helpers para snapshots e comparação A vs B ---
-
-def _make_snapshot(label: str, fa_dict: dict, II: float, ISap: float, PF_idx: float):
+# ⛳ MICRO1: pf_em_celsius_no_snapshot
+def _make_snapshot(label: str, fa_dict: dict, II: float, ISap: float, PF_celsius: float):
+    """
+    PF_celsius deve ser passado já em °C (como você exibe nos KPIs).
+    Mantemos também o 'pf_index' (0–100) apenas para radar/heurísticas.
+    """
     fa_n = _normalize_percentages(fa_dict)
-    # PF_idx aqui virá em °C no seu fluxo atual → mantenha para exibição
-    PF_celsius = float(PF_idx)
-    PF_index   = melt_index(fa_n)  # índice 0–100 correto para heurísticas/radar
-
+    PF_index = melt_index(fa_n)  # índice 0–100 para radar/sensório
     scores, radar = _scores_finais(fa_n, PF_index, II)
     return {
         "label": label,
         "fa": fa_n,
-        "kpis": {"II": float(II), "ISap": float(ISap), "PF": PF_celsius},  # mostra °C
-        "pf_index": PF_index,   # guarda índice técnico para radar/heurísticas
+        "kpis": {"II": float(II), "ISap": float(ISap), "PF": float(PF_celsius)},  # sempre °C
+        "pf_index": PF_index,  # técnico para radar
         "scores": scores,
         "radar": radar,
     }
@@ -505,7 +519,12 @@ def _render_compare_AB():
 
     st.markdown("---")
     st.subheader("Comparação A vs B — Baseline x Atual")
-    st.caption("A = **Baseline** (literatura/média calibrada ou arquivo). B = **Atual** (técnico, perfil FA combinado).")
+    # ⛳ MICRO5: rotulo_comparador_clareza
+    st.caption(
+    "A = **Baseline** (médias da literatura calibradas em °C; sem ajuste). "
+    "B = **Atual** (perfil FA técnico; PF convertido para °C via calibração). "
+    "Radar sensorial = **estimativo**."
+    )
 
     cA, cB = st.columns(2)
     with cA:
@@ -752,8 +771,10 @@ def render_blend_enzimatico():
 
         st.markdown("---")
         st.subheader("KPIs")
+        # ⛳ MICRO5: rotulo_kpis_clareza
+            st.caption("• Sem ajuste: KPIs usam **médias calibradas por ingrediente**. "
+                       "• Com ajuste (B/C): KPIs são **calculados do perfil FA**; o **PF exibido está em °C** (conversão calibrada do índice).")
         if has_adjust:
-            st.caption("🟢 **KPIs no modo técnico (perfil FA)** — ajuste fino ativo.")
         cols1 = st.columns(3)
         cols1[0].metric("Índice de Iodo (II)", f"{II_now:.1f}")
         cols1[1].metric("Índice de Saponificação (ISap)", f"{IS_now:.1f} mgKOH/g")
@@ -800,7 +821,7 @@ def render_blend_enzimatico():
                 fa_dict=fa_baseline_A,
                 II=II_base, 
                 ISap=IS_base,
-                PF_idx=PF_base_c     # usa exatamente o PF — baseline (°C) mostrado nos KPIs
+                PF_celsius=PF_base_c     # usa exatamente o PF — baseline (°C) mostrado nos KPIs
             )
             st.success("Baseline salvo como A.")
 
@@ -811,7 +832,7 @@ def render_blend_enzimatico():
                 fa_dict=fa_est,
                 II=II_now,
                 ISap=IS_now, 
-                PF_idx=PF_now_c      # usa exatamente o PF (°C) atual mostrado nos KPIs
+                PF_celsius=PF_now_c      # usa exatamente o PF (°C) atual mostrado nos KPIs
             )
             st.success("Atual salvo como B.")
 
@@ -880,6 +901,9 @@ def render_blend_enzimatico():
                 _plot_radar(radar_vals)
             else:
                 _plot_radar(None)  # mostra só o frame vazio até ter algo selecionado
+                # ⛳ MICRO5: radar_frame_caption
+            # (logo após _plot_radar(None))
+            st.caption("Radar exibido como referência (sem dados) até selecionar ingredientes/ajustes.")
 
         # Trade-offs
         st.markdown("---")
