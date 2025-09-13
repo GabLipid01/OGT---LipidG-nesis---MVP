@@ -761,34 +761,27 @@ def render_blend_enzimatico():
             PF_now_c = pf_index_to_celsius(melt_index(fa_est))
         else:
             II_now, IS_now, PF_now_c = II_base, IS_base, PF_base_c
-        has_adjust = (total_B > 0) or (total_C > 0)
-        if has_adjust:
-            II_now = iodine_index(fa_est)
-            IS_now = saponification_index(fa_est)
-            PF_now_c = pf_index_to_celsius(melt_index(fa_est))
-        else:
-            II_now, IS_now, PF_now_c = II_base, IS_base, PF_base_c
 
         st.markdown("---")
         st.subheader("KPIs")
-        # ⛳ MICRO5: rotulo_kpis_clareza
-            st.caption("• Sem ajuste: KPIs usam **médias calibradas por ingrediente**. "
-                       "• Com ajuste (B/C): KPIs são **calculados do perfil FA**; o **PF exibido está em °C** (conversão calibrada do índice).")
-        if has_adjust:
+
+        # Clareza do que está sendo mostrado
+        st.caption("• Sem ajuste: KPIs usam **médias calibradas por ingrediente**. "
+                   "• Com ajuste (B/C): KPIs são **calculados do perfil FA**; o **PF exibido está em °C** (conversão calibrada do índice).")
+
+        # Métricas atuais (sempre mostramos)
         cols1 = st.columns(3)
         cols1[0].metric("Índice de Iodo (II)", f"{II_now:.1f}")
         cols1[1].metric("Índice de Saponificação (ISap)", f"{IS_now:.1f} mgKOH/g")
         cols1[2].metric("Ponto de Fusão (°C)", f"{PF_now_c:.1f}")
 
+        # Linha de referência só quando houver ajuste
         if has_adjust:
             st.caption("Linha de referência (médias calibradas por ingrediente, sem ajuste):")
             cols2 = st.columns(3)
             cols2[0].metric("II — baseline", f"{II_base:.1f}")
             cols2[1].metric("ISap — baseline", f"{IS_base:.1f} mgKOH/g")
             cols2[2].metric("PF — baseline (°C)", f"{PF_base_c:.1f}")
-
-        st.caption("• Sem ajuste: KPIs exibem **médias calibradas por ingrediente**. "
-                   "• Com ajuste (B/C): KPIs são **calculados do perfil FA**; o **PF é convertido para °C** por calibração linear. ")
 
         # --- Botões de Snapshot (Heurístico) ---
         # Baseline FA = somente Classe A (proporcional a total_A), usando perfis 'scenario/mean'
