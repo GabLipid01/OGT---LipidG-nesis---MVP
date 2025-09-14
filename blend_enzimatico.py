@@ -167,34 +167,31 @@ def _get_profile(ing_key: str, scenario: str) -> dict:
     return profs.get(scenario, profs.get("mean", {}))
 
 # -------------- Conversão PF índice -> °C (calibrada) --------------
-# ⛳ PF_PATCH1: melt_index_reweighted
+# ⛳ ANCHOR: melt_index_v2_chain_aware
 def melt_index(fa_pct: dict) -> float:
     """
-    Índice 0–100 (proxy de PF) com pesos físico-químicos coerentes:
-    • C12:0/C14:0 (saturados curtos) REDUZEM PF  → peso negativo
-    • C16:0/C18:0 (saturados longos) AUMENTAM PF → peso positivo
-    • Insaturados (C18:1, C18:2, C18:3) REDUZEM PF (mais forte para poli)
-    O retorno continua clampado em 0–100 para a regressão PF_idx→°C.
+    Índice 0–100 que sobe com saturados de cadeia longa (C16:0, C18:0),
+    cai levemente com cadeia média (C12:0, C14:0) e cai com insaturados
+    (poli > |mono|). Clamp 0–100.
     """
-    sat_short = fa_pct.get("C12:0", 0.0) + fa_pct.get("C14:0", 0.0)            # ↓ PF
-    sat_long  = fa_pct.get("C16:0", 0.0) + fa_pct.get("C18:0", 0.0)            # ↑ PF
-    mono      = fa_pct.get("C18:1", 0.0)                                       # ↓ PF
-    poly      = fa_pct.get("C18:2", 0.0) + fa_pct.get("C18:3", 0.0)            # ↓↓ PF
+    C12 = fa_pct.get("C12:0", 0.0)
+    C14 = fa_pct.get("C14:0", 0.0)
+    C16 = fa_pct.get("C16:0", 0.0)
+    C18_0 = fa_pct.get("C18:0", 0.0)
+    C18_1 = fa_pct.get("C18:1", 0.0)
+    C18_2 = fa_pct.get("C18:2", 0.0)
+    C18_3 = fa_pct.get("C18:3", 0.0)
 
-    # Pesos calibráveis (ajuste fino se necessário)
-    W_SHORT = -0.45   # saturados curtos (laúrico/mirístico)
-    W_LONG  =  0.85   # saturados longos (palmítico/esteárico)
-    W_MONO  = -0.35   # oleico
-    W_POLY  = -0.70   # linoleico/linolênico
+    LS   = C16 + C18_0                 # long-chain saturated
+    MS   = C12 + C14                   # medium-chain saturated
+    MONO = C18_1
+    POLY = C18_2 + C18_3
 
-    raw = (W_SHORT * sat_short) + (W_LONG * sat_long) + (W_MONO * mono) + (W_POLY * poly)
+    w_LS, w_MS, w_MONO, w_POLY = 0.90, -0.20, -0.20, -0.55
+    score = (w_LS*LS + w_MS*MS + w_MONO*MONO + w_POLY*POLY
+             + 0.004*(LS**2))  # leve curvatura
 
-    # Normalização para 0–100 (mapeia faixa bruta esperada para [0,100])
-    raw_min, raw_max = -70.0, 85.0  # ~100% poli vs ~100% saturados longos
-    idx = 100.0 * (raw - raw_min) / (raw_max - raw_min)
-
-    # Clamp de segurança
-    return max(0.0, min(100.0, float(idx)))
+    return max(0.0, min(100.0, score))
 
 def _fit_pf_index_to_celsius():
     """Ajusta uma regressão linear °C = a*(PF_idx) + b a partir dos ingredientes com PF calibrado."""
@@ -219,8 +216,8 @@ def _fit_pf_index_to_celsius():
 
 _PF_A, _PF_B = _fit_pf_index_to_celsius()
 
-# ⛳ MICRO2: sensibilidade_pf_linear
-PF_SENSITIVITY = 1.6  # ~1.5–1.8 é um bom intervalo; ajuste fino se desejar
+# ⛳ ANCHOR: pf_sensitivity_tune
+PF_SENSITIVITY = 1.15  # antes 1.6; reduz ganho para deltas mais realistas
 
 def pf_index_to_celsius(pf_idx: float) -> float:
     """
@@ -236,6 +233,35 @@ def iodine_index(fa_pct: dict) -> float:
 def saponification_index(fa_pct: dict) -> float:
     # fa_pct em % (0–100). NÃO dividir por 100 aqui.
     return sum(fa_pct.get(k, 0.0) * (560.0 / FA_CONST[k]["MW"]) for k in FA_CONST.keys())
+
+# ⛳ ANCHOR: kpis_tecnicos_do_baseline
+def kpis_tecnicos_do_baseline(A_vals: dict, C_vals: dict, scenario: str) -> tuple[float, float, float]:
+    """
+    Calcula KPIs do *baseline A* de forma **técnica**, a partir do perfil FA médio
+    (usando FA_PROFILES_RANGED no 'scenario' selecionado), sem ajuste B/C.
+    Retorna (II, ISap, PF_celsius).
+    """
+    total_A = sum(A_vals.values())
+    total_C = sum(C_vals.values())
+    total_ref = total_A + total_C
+    if total_ref <= 0:
+        return 0.0, 0.0, 0.0
+
+    fa_mean = {k: 0.0 for k in FA_ORDER}
+    for mix, tot in ((A_vals, total_ref), (C_vals, total_ref)):
+        for ing_key, pct in mix.items():
+            if pct <= 0:
+                continue
+            w = pct / total_ref
+            prof = _get_profile(ing_key, scenario)
+            for fa_key, fa_pct in prof.items():
+                fa_mean[fa_key] += w * fa_pct
+
+    fa_mean = _normalize_percentages(fa_mean)
+    II  = iodine_index(fa_mean)
+    IS  = saponification_index(fa_mean)
+    PFc = pf_index_to_celsius(melt_index(fa_mean))
+    return II, IS, PFc
 
 # ----------------- Heurísticas sensoriais -----------------
 def _spread(fa):  # espalhabilidade
@@ -537,6 +563,26 @@ def _render_compare_AB():
     snapB = st.session_state.get("cmp_B")
     if not (snapA and snapB):
         return
+
+        # ⛳ ANCHOR: delta_compare_mode
+    compare_vs = st.radio(
+        "Comparar A (B-A) contra:",
+        ["Baseline calibrado (atual)", "Baseline técnico (FA mean)"],
+        horizontal=True,
+        key="cmp_delta_mode"
+    )
+
+    if compare_vs == "Baseline técnico (FA mean)":
+        # Reconstrói baseline técnico a partir do contexto salvo ao criar A
+        ctx = st.session_state.get("cmp_ctx", {})
+        A_vals_ctx = ctx.get("A_vals", {})
+        scenario_ctx = ctx.get("scenario", "mean")
+
+        II_A_t, IS_A_t, PF_A_t, _faA_t = kpis_tecnicos_do_baseline(
+            A_vals_ctx, scenario_ctx
+        )
+
+        KA = {"II": II_A_t, "ISap": IS_A_t, "PF": PF_A_t}
 
     st.markdown("---")
     st.subheader("Comparação A vs B — Baseline x Atual")
