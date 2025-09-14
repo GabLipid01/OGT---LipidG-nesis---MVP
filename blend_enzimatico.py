@@ -555,7 +555,36 @@ def _render_snapshot(title: str, snap: dict):
         k3.metric("Ponto de Fusão (°C)", f"{k['PF']:.1f}")
         _plot_fa_bars(snap["fa"])
     with c2:
-        _plot_radar(snap["radar"])
+        _plot_radar(snap["radar"]) 
+
+# ⛳ ANCHOR: kpis_tecnicos_do_baseline
+def kpis_tecnicos_do_baseline(A_vals_ctx: dict, scenario_ctx: str):
+    """
+    Reconstrói o baseline técnico A a partir das proporções de Classe A
+    e do cenário ('min'|'mean'|'max'), e calcula KPIs técnicos pelo perfil FA.
+    Retorna (II, ISap, PF_celsius, fa_A_norm).
+    """
+    totA = sum(A_vals_ctx.values())
+    if totA <= 0:
+        faA = {k: 0.0 for k in FA_ORDER}
+        return 0.0, 0.0, 0.0, faA
+
+    # monta FA só com Classe A, no cenário escolhido
+    faA = {k: 0.0 for k in FA_ORDER}
+    scen = scenario_ctx if scenario_ctx in ("min", "mean", "max") else "mean"
+    for ing_key, pct in A_vals_ctx.items():
+        if pct <= 0: 
+            continue
+        w = pct / totA
+        prof = _get_profile(ing_key, scen)
+        for fk, fp in prof.items():
+            faA[fk] += w * fp
+
+    faA = _normalize_percentages(faA)
+    II_A   = iodine_index(faA)
+    IS_A   = saponification_index(faA)
+    PF_A_c = pf_index_to_celsius(melt_index(faA))
+    return II_A, IS_A, PF_A_c, faA
 
 def _render_compare_AB():
     """Se existir A e B no session_state, renderiza comparação lado a lado."""
@@ -564,25 +593,35 @@ def _render_compare_AB():
     if not (snapA and snapB):
         return
 
-        # ⛳ ANCHOR: delta_compare_mode
+    # ⛳ ANCHOR: delta_compare_mode
     compare_vs = st.radio(
-        "Comparar A (B-A) contra:",
+        "Comparar A (B−A) contra:",
         ["Baseline calibrado (atual)", "Baseline técnico (FA mean)"],
         horizontal=True,
-        key="cmp_delta_mode"
+        key="cmp_delta_mode",
     )
 
+    # por padrão, o A mostrado no snapshot é o calibrado
+    KA = snapA["kpis"]
+
+    # se o usuário escolher comparar contra o baseline técnico (FA mean),
+    # reconstruímos A técnico a partir do contexto salvo ao criar A.
     if compare_vs == "Baseline técnico (FA mean)":
-        # Reconstrói baseline técnico a partir do contexto salvo ao criar A
-        ctx = st.session_state.get("cmp_ctx", {})
-        A_vals_ctx = ctx.get("A_vals", {})
+        ctx = st.session_state.get("cmp_ctx", {}) or {}
+        A_vals_ctx  = ctx.get("A_vals", {}) or {}
         scenario_ctx = ctx.get("scenario", "mean")
+        try:
+            II_A_t, IS_A_t, PF_A_t, _ = kpis_tecnicos_do_baseline(A_vals_ctx, scenario_ctx)
+            KA = {"II": II_A_t, "ISap": IS_A_t, "PF": PF_A_t}
+        except Exception:
+            # fallback seguro: mantém o calibrado se não houver contexto (ex.: snapshots criados via Upload)
+            KA = snapA["kpis"]
 
-        II_A_t, IS_A_t, PF_A_t, _faA_t = kpis_tecnicos_do_baseline(
-            A_vals_ctx, scenario_ctx
-        )
-
-        KA = {"II": II_A_t, "ISap": IS_A_t, "PF": PF_A_t}
+    KB  = snapB["kpis"]
+    dII = KB["II"]   - KA["II"]
+    dIS = KB["ISap"] - KA["ISap"]
+    dPF = KB["PF"]   - KA["PF"]
+    st.info(f"ΔKPIs (B−A): II = {dII:+.2f} | ISap = {dIS:+.2f} mgKOH/g | PF (°C) = {dPF:+.2f}")
 
     st.markdown("---")
     st.subheader("Comparação A vs B — Baseline x Atual")
