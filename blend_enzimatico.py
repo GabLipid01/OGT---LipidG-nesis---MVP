@@ -216,6 +216,47 @@ def _fit_pf_index_to_celsius():
 
 _PF_A, _PF_B = _fit_pf_index_to_celsius()
 
+# ⛳ ANCHOR: kpi_linear_calibration
+def _fit_linear_map_x_to_y(x_list, y_list, default_a=1.0, default_b=0.0):
+    if len(x_list) >= 2:
+        n = len(x_list)
+        sx = sum(x_list); sy = sum(y_list)
+        sxx = sum(x*x for x in x_list); sxy = sum(x*y for x, y in zip(x_list, y_list))
+        denom = n*sxx - sx*sx
+        if abs(denom) > 1e-9:
+            a = (n*sxy - sx*sy) / denom
+            b = (sy - a*sx) / n
+            return a, b
+    return default_a, default_b
+
+def _ingredient_means_fa(ing_key: str) -> dict:
+    return _get_profile(ing_key, "mean")
+
+def _prepare_kpi_calibration():
+    xs_ii, ys_ii = [], []
+    xs_is, ys_is = [], []
+    for ing_key, means in KPI_MEANS.items():
+        fa_mean = _ingredient_means_fa(ing_key)
+        ii_raw = iodine_index(fa_mean)
+        is_raw = saponification_index(fa_mean)
+        ii_tgt = float(means.get("II", ii_raw))
+        is_tgt = float(means.get("ISap", is_raw))
+        xs_ii.append(ii_raw); ys_ii.append(ii_tgt)
+        xs_is.append(is_raw); ys_is.append(is_tgt)
+    a_ii, b_ii = _fit_linear_map_x_to_y(xs_ii, ys_ii, default_a=1.0, default_b=0.0)
+    a_is, b_is = _fit_linear_map_x_to_y(xs_is, ys_is, default_a=1.0, default_b=0.0)
+    return (a_ii, b_ii), (a_is, b_is)
+
+(_II_A, _II_B), (_IS_A, _IS_B) = _prepare_kpi_calibration()
+
+def ii_calibrated_from_fa(fa_pct: dict) -> float:
+    raw = iodine_index(fa_pct)
+    return _II_A * raw + _II_B
+
+def isap_calibrated_from_fa(fa_pct: dict) -> float:
+    raw = saponification_index(fa_pct)
+    return _IS_A * raw + _IS_B
+
 # ⛳ ANCHOR: pf_sensitivity_tune
 PF_SENSITIVITY = 1.15  # antes 1.6; reduz ganho para deltas mais realistas
 
@@ -861,9 +902,10 @@ def render_blend_enzimatico():
         # KPIs — baseline calibrado (A) x atual técnico (se houver ajuste)
         II_base, IS_base, PF_base_c = kpis_calibrados_por_medias(A_vals, {}, scenario if consider_var else "mean")
         has_adjust = (total_B > 0) or (total_C > 0)
+        # ⛳ ANCHOR: apply_calibrated_kpis_heur_now
         if has_adjust:
-            II_now = iodine_index(fa_est)
-            IS_now = saponification_index(fa_est)
+            II_now = ii_calibrated_from_fa(fa_est)
+            IS_now = isap_calibrated_from_fa(fa_est)
             PF_now_c = pf_index_to_celsius(melt_index(fa_est))
         else:
             II_now, IS_now, PF_now_c = II_base, IS_base, PF_base_c
@@ -1207,7 +1249,9 @@ def render_blend_enzimatico():
                     fa_comb[fa_key] = fa_comb.get(fa_key, 0.0) + inc
                 fa_comb = _normalize_percentages(fa_comb)
 
-            II, ISap = iodine_index(fa_comb), saponification_index(fa_comb)
+            # ⛳ ANCHOR: apply_calibrated_kpis_upload
+            II  = ii_calibrated_from_fa(fa_comb)
+            ISap = isap_calibrated_from_fa(fa_comb)
             PF_c = pf_index_to_celsius(melt_index(fa_comb))
             c1, c2, c3 = st.columns(3)
             c1.metric("Índice de Iodo (II)", f"{II:.1f}")
