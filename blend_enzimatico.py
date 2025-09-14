@@ -216,6 +216,24 @@ def _fit_pf_index_to_celsius():
 
 _PF_A, _PF_B = _fit_pf_index_to_celsius()
 
+# ⛳ ANCHOR: pf_sensitivity_tune
+PF_SENSITIVITY = 1.15  # antes 1.6; reduz ganho para deltas mais realistas
+
+def pf_index_to_celsius(pf_idx: float) -> float:
+    """
+    Converte índice de PF (0–100) em °C.
+    Leve ganho de sensibilidade aplicado em 'a' (declive), preservando intercepto 'b'.
+    """
+    return max(0.0, (_PF_A * PF_SENSITIVITY) * float(pf_idx) + _PF_B)
+
+# ----------------- KPIs baseados em FA -----------------
+def iodine_index(fa_pct: dict) -> float:
+    return sum((fa_pct.get(k, 0.0) / 100.0) * FA_CONST[k]["IV"] for k in FA_CONST.keys())
+
+def saponification_index(fa_pct: dict) -> float:
+    # fa_pct em % (0–100). NÃO dividir por 100 aqui.
+    return sum(fa_pct.get(k, 0.0) * (560.0 / FA_CONST[k]["MW"]) for k in FA_CONST.keys())
+
 # ⛳ ANCHOR: kpi_linear_calibration
 def _fit_linear_map_x_to_y(x_list, y_list, default_a=1.0, default_b=0.0):
     if len(x_list) >= 2:
@@ -256,24 +274,6 @@ def ii_calibrated_from_fa(fa_pct: dict) -> float:
 def isap_calibrated_from_fa(fa_pct: dict) -> float:
     raw = saponification_index(fa_pct)
     return _IS_A * raw + _IS_B
-
-# ⛳ ANCHOR: pf_sensitivity_tune
-PF_SENSITIVITY = 1.15  # antes 1.6; reduz ganho para deltas mais realistas
-
-def pf_index_to_celsius(pf_idx: float) -> float:
-    """
-    Converte índice de PF (0–100) em °C.
-    Leve ganho de sensibilidade aplicado em 'a' (declive), preservando intercepto 'b'.
-    """
-    return max(0.0, (_PF_A * PF_SENSITIVITY) * float(pf_idx) + _PF_B)
-
-# ----------------- KPIs baseados em FA -----------------
-def iodine_index(fa_pct: dict) -> float:
-    return sum((fa_pct.get(k, 0.0) / 100.0) * FA_CONST[k]["IV"] for k in FA_CONST.keys())
-
-def saponification_index(fa_pct: dict) -> float:
-    # fa_pct em % (0–100). NÃO dividir por 100 aqui.
-    return sum(fa_pct.get(k, 0.0) * (560.0 / FA_CONST[k]["MW"]) for k in FA_CONST.keys())
 
 # ⛳ ANCHOR: kpis_tecnicos_do_baseline
 def kpis_tecnicos_do_baseline(A_vals: dict, C_vals: dict, scenario: str) -> tuple[float, float, float]:
